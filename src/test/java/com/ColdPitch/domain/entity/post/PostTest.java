@@ -1,8 +1,11 @@
 package com.ColdPitch.domain.entity.post;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.ColdPitch.domain.entity.Post;
 import com.ColdPitch.domain.repository.PostRepository;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -19,37 +22,42 @@ public class PostTest {
 
     @Test
     @Order(1)
-    @DisplayName("게시글 작성 테스트")
-    public void postCreateTest() {
-        int repeatCount = 10;
-        for (int i = 0; i < repeatCount; i++) {
-            Post post = Post.builder()
-                .title("testTitle")
-                .text("testText")
-                .status("OPEN")
-                .category("testCategory")
-                .userId(getRandom(repeatCount))
-                .build();
-            postRepository.save(post);
-        }
+    @DisplayName("게시글 생성 테스트")
+    public void 게시글_생성_테스트() {
+        Long testId = getRandom(10);
+        Post post = Post.builder()
+            .title("testTitle")
+            .text("testText")
+            .status("OPEN")
+            .category("testCategory")
+            .userId(testId)
+            .build();
+
+        postRepository.save(post);
+
+        Post post2 = postRepository.findById(post.getId()).orElseThrow();
+        assertThat(post.equals(post2)).isEqualTo(true);
     }
 
     @Test
     @Order(2)
     @DisplayName("게시글 수정 테스트")
-    public void postUpdateTest() {
-        Post post = postRepository.findById(getRandom(10)).orElseThrow();
+    public void 게시글_수정_테스트() {
+        Post post = postRepository.findById((long) 1).orElseThrow();
         post.setTitle("updatedTitle");
         post.setText("updatedText");
         post.setCategory("updatedCategory");
         post.setStatus("UpdatedStatus");
         postRepository.save(post);
+
+        Post post2 = postRepository.findById(post.getId()).orElseThrow();
+        assertThat(post2.getTitle()).isEqualTo(post.getTitle());
     }
 
     @Test
     @Order(3)
     @DisplayName("게시글 조회 테스트")
-    public void postListTest() {
+    public void 게시글_조회_테스트() {
         List<Post> postList = postRepository.findAll();
         postList.forEach(p -> log.info(p.toString()));
     }
@@ -57,8 +65,10 @@ public class PostTest {
     @Test
     @Order(4)
     @DisplayName("게시글 삭제 테스트")
-    public void postDeleteTest() {
-        postRepository.deleteById(getRandom(10));
+    public void 게시글_삭제_테스트() {
+        Long testId = (long) 1;
+        postRepository.deleteById(testId);
+        assertThat(postRepository.findById(testId).isEmpty()).isEqualTo(true);
     }
 
     private long getRandom(int end) {
