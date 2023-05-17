@@ -35,8 +35,11 @@ public class Comment extends TimeEntity {
     @Column(name = "poster_id", nullable = false)
     Long posterId;
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     @Column(name = "text", nullable = false)
-    @Setter
     String text;
 
     @Override
@@ -60,12 +63,13 @@ public class Comment extends TimeEntity {
 
     @Override
     public String toString() {
-        return "Comment{" +
+        return "Comment {" +
             "commentId=" + commentId +
             ", userId=" + userId +
             ", posterId=" + posterId +
             ", text='" + text + '\'' +
-            ", createAt='" + super.getCreateAt() +
+            ", createAt='" + super.getCreateAt() + '\'' +
+            ", updatedAt-'" + super.getUpdatedAt() + '\'' +
             '}';
     }
 }
