@@ -1,6 +1,7 @@
 package com.ColdPitch.domain.entity;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -13,7 +14,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public abstract class TimeEntity {
+    @Column(name="create_at", updatable = false)
     private LocalDateTime createAt;
+    @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
     @PrePersist
