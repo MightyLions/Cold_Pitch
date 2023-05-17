@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.entity;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,9 +27,6 @@ public class Post extends BaseEntity{
     private String title;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     private String text;
 
     @Column(nullable = false)
@@ -42,6 +40,53 @@ public class Post extends BaseEntity{
 
     @Column(nullable = true)
     private Long boardId;
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+            "postId=" + postId +
+            ", title='" + title + '\'' +
+            ", text='" + text + '\'' +
+            ", status='" + status + '\'' +
+            ", category='" + category + '\'' +
+            ", userId=" + userId +
+            ", boardId=" + boardId +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Post post = (Post) o;
+        return Objects.equals(postId, post.getPostId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(postId, title, text, status, category, userId);
+    }
+
 }
 
 
