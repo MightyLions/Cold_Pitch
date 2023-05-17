@@ -1,46 +1,34 @@
 package com.ColdPitch.domain.entity;
 
-import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
+import javax.persistence.*;
+import java.util.Objects;
+
 @Entity
-@Table(name = "comment")
 @Getter
-@Builder
-@RequiredArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends TimeEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder(toBuilder = true)
+public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    Long commentId;
+    private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    Long userId;
+    @Column(nullable = false)
+    private Long userId;
 
-    @Column(name = "poster_id", nullable = false)
-    Long posterId;
+    @Column(nullable = false)
+    private Long posterId;
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    @Column(name = "text", nullable = false)
-    String text;
+    @Column(nullable = false)
+    @Setter
+    private String text;
 
     @Override
     public boolean equals(Object o) {
@@ -52,24 +40,23 @@ public class Comment extends TimeEntity {
             return false;
         }
         Comment comment = (Comment) o;
-        return getCommentId() != null && Objects.equals(getCommentId(),
-            comment.getCommentId());
+        return getId() != null && Objects.equals(getId(),
+            comment.getId());
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "commentId=" + id +
+                ", userId=" + userId +
+                ", posterId=" + posterId +
+                ", text='" + text + '\'' +
+                ", " + super.toString() +
+                "}";
     }
 
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Comment {" +
-            "commentId=" + commentId +
-            ", userId=" + userId +
-            ", posterId=" + posterId +
-            ", text='" + text + '\'' +
-            ", createAt='" + super.getCreateAt() + '\'' +
-            ", updatedAt-'" + super.getUpdatedAt() + '\'' +
-            '}';
     }
 }
