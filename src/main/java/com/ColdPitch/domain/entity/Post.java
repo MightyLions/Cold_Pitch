@@ -21,24 +21,25 @@ public class Post extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    @Column(name = "post_id")
+    private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "text", nullable = false)
     private String text;
 
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private String status;
 
-    @Column(nullable = false)
+    @Column(name = "category", nullable = false)
     private String category;
 
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(nullable = true)
+    @Column(name = "board_id", nullable = true)
     private Long boardId;
 
     public void setTitle(String title) {
@@ -60,7 +61,7 @@ public class Post extends BaseEntity{
     @Override
     public String toString() {
         return "Post{" +
-            "postId=" + postId +
+            "id=" + id +
             ", title='" + title + '\'' +
             ", text='" + text + '\'' +
             ", status='" + status + '\'' +
@@ -79,12 +80,7 @@ public class Post extends BaseEntity{
             return false;
         }
         Post post = (Post) o;
-        return Objects.equals(postId, post.getPostId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(postId, title, text, status, category, userId);
+        return Objects.equals(id, post.getId());
     }
 
 }
