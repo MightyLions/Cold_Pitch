@@ -24,22 +24,22 @@ public class Post extends BaseEntity{
     @Column(name = "post_id")
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "text", nullable = false)
+    @Column(nullable = false)
     private String text;
 
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private String status;
 
-    @Column(name = "category", nullable = false)
+    @Column(nullable = false)
     private String category;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(nullable = false)
     private Long userId;
 
-    @Column(name = "board_id", nullable = true)
+    @Column(nullable = true)
     private Long boardId;
 
     public void setTitle(String title) {
