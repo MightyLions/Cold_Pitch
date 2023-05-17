@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.event.annotation.BeforeTestExecution;
 
 @SpringBootTest
 @Slf4j
@@ -19,6 +20,20 @@ public class PostTest {
 
     @Autowired
     PostRepository postRepository;
+
+    @BeforeTestExecution
+    public Post 게시글_초기값_생성() {
+        Long testId = getRandom(10);
+        Post post = Post.builder()
+            .title("testTitle")
+            .text("testText")
+            .status("OPEN")
+            .category("testCategory")
+            .userId(testId)
+            .build();
+        postRepository.save(post);
+        return post;
+    }
 
     @Test
     @Order(1)
@@ -69,6 +84,18 @@ public class PostTest {
         Long testId = (long) 1;
         postRepository.deleteById(testId);
         assertThat(postRepository.findById(testId).isEmpty()).isEqualTo(true);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("게시글 상태변환 테스트")
+    public void 게시글_닫기_테스트() {
+        Post post = 게시글_초기값_생성();
+        post.setStatus(CurState.CLOSED.getStatus());
+        postRepository.save(post);
+
+        Post post2 = postRepository.findById(post.getId()).orElseThrow();
+        assertThat(post.getStatus()).isEqualTo(post2.getStatus()).isEqualTo(CurState.CLOSED.getStatus());
     }
 
     private long getRandom(int end) {
