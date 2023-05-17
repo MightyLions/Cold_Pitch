@@ -13,27 +13,31 @@ spring:
 #      on-profile: local
 
   datasource:
-    url: jdbc:mysql://coldpitch-rds.cwjrnu5w51np.ap-northeast-2.rds.amazonaws.com/coldPitch_db
+    url: jdbc:mysql://localhost:3306/coldPitch_db
     username: root
-    password: qwer0509!
+    password: qwer1234
 
 #  datasource:
-#    url: jdbc:mysql://localhost:3306/dbcoldpitch
+#    url: jdbc:mysql://dbcoldpitch.cwjrnu5w51np.ap-northeast-2.rds.amazonaws.com:3306/dbcoldpitch
 #    username: root
 #    password: qwer0509!
 
+
   #jpa Settings
   jpa:
+    database: mysql
     show-sql: true
+    generate-ddl: false
     # hibernate Settings
     hibernate:
       naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       # 스키마만 만들고 추후 변경필요!! none으로 변경해야함
       ddl-auto: create
       dialect: org.hibernate.dialect.MySQL8Dialect
-
     open-in-view: true
+
 # logging level settings
 logging.level:
   org.hibernate.SQL: info

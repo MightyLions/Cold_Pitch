@@ -1,22 +1,15 @@
 package com.ColdPitch.domain.entity.comment;
 
-import com.ColdPitch.aop.LoggingAspect;
 import com.ColdPitch.domain.entity.Comment;
 import com.ColdPitch.domain.repository.CommentRepository;
-import java.util.Random;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.annotation.BeforeTestExecution;
+
+import java.util.List;
+import java.util.Random;
 
 @SpringBootTest
 @Slf4j
@@ -72,20 +65,25 @@ public class CommentTest {
         comRepo.save(com);
     }
 
+        @Test
+        @Order(3)
+        @DisplayName("댓글 전체 조회")
+        public void commentSelectAllTest() {
+            List<Comment> all = comRepo.findAll();
+
+            all.stream()
+                    .forEach(comment -> log.info(comment.toString()));
+    }
+
+
     /**
      * 랜덤 Long을 생성하는 메소드
      * @param end inclusive
      * @return 0부터 end 이하까지의 범위
      */
-    public long getRandom(int end) {
+    private long getRandom(int end) {
         Random random = new Random();
 
         return (long) random.nextInt(end);
-    }
-
-    public long getRandom() {
-        Random random = new Random();
-
-        return random.nextLong();
     }
 }
