@@ -21,7 +21,8 @@ public class Post extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    @Column(name = "post_id")
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -60,7 +61,7 @@ public class Post extends BaseEntity{
     @Override
     public String toString() {
         return "Post{" +
-            "postId=" + postId +
+            "id=" + id +
             ", title='" + title + '\'' +
             ", text='" + text + '\'' +
             ", status='" + status + '\'' +
@@ -79,12 +80,7 @@ public class Post extends BaseEntity{
             return false;
         }
         Post post = (Post) o;
-        return Objects.equals(postId, post.getPostId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(postId, title, text, status, category, userId);
+        return Objects.equals(id, post.getId());
     }
 
 }
