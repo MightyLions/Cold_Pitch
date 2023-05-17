@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.ColdPitch.domain.entity.Post;
 import com.ColdPitch.domain.repository.PostRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -91,11 +90,11 @@ public class PostTest {
     @DisplayName("게시글 상태변환 테스트")
     public void 게시글_닫기_테스트() {
         Post post = 게시글_초기값_생성();
-        post.setStatus(CurState.CLOSED.getStatus());
+        post.setStatus(PostState.CLOSED.getStatus());
         postRepository.save(post);
 
         Post post2 = postRepository.findById(post.getId()).orElseThrow();
-        assertThat(post.getStatus()).isEqualTo(post2.getStatus()).isEqualTo(CurState.CLOSED.getStatus());
+        assertThat(post.getStatus()).isEqualTo(post2.getStatus()).isEqualTo(PostState.CLOSED.getStatus());
     }
 
     private long getRandom(int end) {
