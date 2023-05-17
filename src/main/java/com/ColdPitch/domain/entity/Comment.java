@@ -35,12 +35,18 @@ public class Comment extends TimeEntity {
     @Column(name = "poster_id", nullable = false)
     Long posterId;
 
+    @Column(name = "text", nullable = false)
+    String text;
+
+    @Column(name = "reply_com_id")
+    Long replyComId;
+
+    @Column(name = "reply_idx")
+    Long replyIdx;
+
     public void setText(String text) {
         this.text = text;
     }
-
-    @Column(name = "text", nullable = false)
-    String text;
 
     @Override
     public boolean equals(Object o) {
