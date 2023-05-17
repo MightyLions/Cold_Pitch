@@ -26,7 +26,8 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private Long posterId;
 
-    @Column(nullable = false)
+<<<<<<< HEAD
+    @Column(name = "text", nullable = false)
     String text;
 
     @Column(name = "reply_com_id")
@@ -38,6 +39,11 @@ public class Comment extends BaseEntity {
     public void setText(String text) {
         this.text = text;
     }
+=======
+    @Column(nullable = false)
+    @Setter
+    private String text;
+>>>>>>> root_repo/main
 
     @Override
     public boolean equals(Object o) {
@@ -45,12 +51,12 @@ public class Comment extends BaseEntity {
             return true;
         }
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(
-                o)) {
+            o)) {
             return false;
         }
         Comment comment = (Comment) o;
         return getId() != null && Objects.equals(getId(),
-                comment.getId());
+            comment.getId());
     }
 
     @Override
