@@ -1,14 +1,13 @@
 package com.ColdPitch.domain.entity.post;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public enum CurState {
+public enum PostState {
     CLOSED("CLOSED"), OPEN("OPEN"), PRIVATE("PRIVATE");
 
     private final String status;
-    CurState(String status) {
+    PostState(String status) {
         this.status = status;
     }
 }
