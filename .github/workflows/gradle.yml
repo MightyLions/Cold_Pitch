@@ -1,0 +1,95 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  CI-CD: 
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3    
+      with:
+        java-version: '11'
+        distribution: 'temurin'   
+   
+    # gradle caching
+    - name: Gradle Caching
+      uses: actions/cache@v3
+      with:
+       path: |
+         ~/.gradle/caches
+         ~/.gradle/wrapper
+       key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+       restore-keys: |
+         ${{ runner.os }}-gradle-
+          
+    # create application.yml
+    - name: make application.yml
+      if: contains(github.ref, 'main') # branch가 main 일 때, 나머지는 위와 동일
+      run: |
+           cd ./src/main/resources
+           touch ./application.yml
+           echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.properties
+      shell: bash
+  
+    # gradlew permission denied
+    - name: gradlew accessed
+      run: chmod +x gradlew
+        
+    # Spring Boot Build
+    - name: Spring Boot Build
+      run: ./gradlew clean build --debug --exclude-task test
+      
+    # DockerHub Login
+    - name: docker login 
+      #uses: docker login-action@v2
+      run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    # Docker 이미지 Build
+    - name: docker image build
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }} ./
+      
+    # Docker Hub push
+    - name: docker push
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}
+
+    # AWS Docker Deploy
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.AWS_HOST }} # EC2 인스턴스 퍼블릭 DNS
+        username: ubuntu
+        key: ${{ secrets.AWS_PRIVACY_KEY }} # pem 키
+        # 도커 작업
+        script: |
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+          # docker stop $(docker ps -a -q)
+          docker stop coldpitch
+          # docker rm $(docker ps --filter 'status=exited' -a -q)
+          docker rm coldpitch
+          docker run -d --log-driver=syslog -p 9000:8080 --name coldpitch --restart always ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+          docker image prune -a -f  
+    
+      ## time
+  current-time:
+    needs: CI-CD
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Current Time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYY-MM-DDTHH:mm:ss
+          utcOffset: "+09:00" # 기준이 UTC이기 때문에 한국시간인 KST를 맞추기 위해 +9시간 추가
+
+      - name: Print Current Time
+        run: echo "Current Time=${{steps.current-time.outputs.formattedTime}}" # current-time 에서 지정한 포맷대로 현재 시간 출력
+        shell: bash
