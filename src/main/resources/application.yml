@@ -1,0 +1,48 @@
+#server Settings
+server:
+  compression:
+    enabled: true
+  port: 8080
+
+#Spring Settings
+spring:
+  profiles:
+    default: local
+#  config:
+#    activate:
+#      on-profile: local
+
+  datasource:
+    url: jdbc:mysql://coldpitch-rds.cwjrnu5w51np.ap-northeast-2.rds.amazonaws.com/coldPitch_db
+    username: root
+    password: qwer0509!
+
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/dbcoldpitch
+#    username: root
+#    password: qwer0509!
+
+  #jpa Settings
+  jpa:
+    show-sql: true
+    # hibernate Settings
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      # 스키마만 만들고 추후 변경필요!! none으로 변경해야함
+      ddl-auto: create
+      dialect: org.hibernate.dialect.MySQL8Dialect
+
+    open-in-view: true
+# logging level settings
+logging.level:
+  org.hibernate.SQL: info
+  org.hibernate.type: info
+
+#  data:
+#    web:
+#      pageable:
+#        default-page-size: 10
+#        max-page-size: 2000
+#        #page 객체의 값은 + 1을 바라보고 만들기 때문에 사용의 한계가 있음
+#        one-indexed-parameters: false

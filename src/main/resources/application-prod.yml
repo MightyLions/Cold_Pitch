@@ -1,0 +1,51 @@
+#server Settings
+server:
+  compression:
+    enabled: true
+  port: 8080
+
+#Spring Settings
+spring:
+  profiles:
+    default: production
+  config:
+    activate:
+      on-profile: production
+
+  datasource:
+    url: jdbc:mysql://coldpitch-rds.cwjrnu5w51np.ap-northeast-2.rds.amazonaws.com/coldPitch_db
+    username: root
+    password: qwer0509!
+
+  #jpa Settings
+  jpa:
+    show-sql: true
+    # hibernate Settings
+    hibernate:
+      naming:
+        #대소문자로 구분하고 대문자 앞 언더바 작성 전략 (Entity Column에 적용 됩니다)
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+      # 스키마만 만들고 추후 변경필요!! none으로 변경해야함
+      ddl-auto: create
+      dialect: org.hibernate.dialect.MySQL8Dialect
+
+    open-in-view: true
+
+# logging level settings
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: info
+
+#logging:
+#  file:
+#    name: coldpitch.log
+#    path: /var/log
+
+# Pagable default Settings
+#  data:
+#    web:
+#      pageable:
+#        default-page-size: 10
+#        max-page-size: 2000
+#        one-indexed-parameters: false
