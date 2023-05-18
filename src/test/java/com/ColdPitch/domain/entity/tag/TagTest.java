@@ -8,7 +8,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,19 +24,19 @@ class TagTest {
     public void 태그_객체_생성_테스트() {
         // given
         Tag tag = Tag.builder()
-                .name(TagName.LOGISTICS)
-                .registrationDate(new Date())
-                .lastUpdatedDate(new Date())
+                .tagName(TagName.LOGISTICS.name())
+                .registrationDate(LocalDateTime.now())
+                .lastUpdatedDate(LocalDateTime.now())
                 .iconPath("icon/path")
-                .description("logistics tag 는 물류와 관련된 스타트업을 나타내는 태그입니다.")
+                .description("logistics tag는 물류와 관련된 스타트업을 나타내는 태그입니다.")
                 .build();
 
         // when
         tagRepository.save(tag);
 
         // then
-        Tag savedTag = tagRepository.findById(tag.getTagId()).get();
-        assertThat(savedTag.getName()).isEqualTo(TagName.LOGISTICS);
+        Tag savedTag = tagRepository.findById(tag.getId()).get();
+        assertThat(savedTag.getTagName()).isEqualTo(TagName.LOGISTICS.name());
     }
 
     @Test
@@ -43,11 +44,11 @@ class TagTest {
         // given
         for (TagName tagName : TagName.values()) {
             Tag tag = Tag.builder()
-                    .name(tagName)
-                    .registrationDate(new Date())
-                    .lastUpdatedDate(new Date())
+                    .tagName(tagName.name())
+                    .registrationDate(LocalDateTime.now())
+                    .lastUpdatedDate(LocalDateTime.now())
                     .iconPath("icon/path")
-                    .description( tagName + " 를 가지는 스타트업입니다. ")
+                    .description(tagName.name() + "를 가지는 스타트업입니다.")
                     .build();
             tagRepository.save(tag);
         }

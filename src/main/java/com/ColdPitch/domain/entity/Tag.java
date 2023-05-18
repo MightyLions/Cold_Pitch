@@ -1,11 +1,10 @@
 package com.ColdPitch.domain.entity;
 
-import com.ColdPitch.domain.entity.tag.TagName;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import javax.persistence.*;
-import java.util.*;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,17 +14,17 @@ public class Tag extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
-    private Long tagId;
+    @Column(name = "id")
+    private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private TagName name;
-
-    @Column(nullable = false)
-    private Date registrationDate;
+    @Column(name = "tag_name", nullable = false)
+    private String tagName;
 
     @Column(nullable = false)
-    private Date lastUpdatedDate;
+    private LocalDateTime registrationDate;
+
+    @Column(nullable = false)
+    private LocalDateTime lastUpdatedDate;
 
     @Column()
     private String iconPath;
@@ -35,14 +34,13 @@ public class Tag extends BaseEntity {
 
     @Override
     public String toString() {
-        return super.toString() +
-                ", tagId=" + tagId +
-                ", name='" + name + '\'' +
+        return "Tag{" +
+                "id=" + id +
+                ", tagName='" + tagName + '\'' +
                 ", registrationDate=" + registrationDate +
                 ", lastUpdatedDate=" + lastUpdatedDate +
                 ", iconPath='" + iconPath + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }
-
 }
