@@ -68,6 +68,7 @@ public class Post extends BaseEntity{
             ", category='" + category + '\'' +
             ", userId=" + userId +
             ", boardId=" + boardId +
+            ", " + super.toString() +
             '}';
     }
 

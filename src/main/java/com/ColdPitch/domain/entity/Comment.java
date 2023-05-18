@@ -3,7 +3,6 @@ package com.ColdPitch.domain.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
@@ -24,16 +23,13 @@ public class Comment extends BaseEntity {
     private Long userId;
 
     @Column(nullable = false)
-    private Long posterId;
+    private Long postId;
 
     @Column(nullable = false)
-    String text;
+    private String text;
 
-    @Column(name = "reply_com_id")
-    Long replyComId;
-
-    @Column(name = "reply_idx")
-    Long replyIdx;
+    @Column(name = "p_comment_id")
+    private Long pCommentId;
 
     public void setText(String text) {
         this.text = text;
@@ -58,7 +54,7 @@ public class Comment extends BaseEntity {
         return "Comment{" +
                 "commentId=" + id +
                 ", userId=" + userId +
-                ", posterId=" + posterId +
+                ", postId=" + postId +
                 ", text='" + text + '\'' +
                 ", " + super.toString() +
                 "}";
