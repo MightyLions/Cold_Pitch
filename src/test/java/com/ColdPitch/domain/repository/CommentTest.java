@@ -1,4 +1,4 @@
-package com.ColdPitch.domain.entity.comment;
+package com.ColdPitch.domain.repository;
 
 import com.ColdPitch.domain.entity.Comment;
 import com.ColdPitch.domain.repository.CommentRepository;

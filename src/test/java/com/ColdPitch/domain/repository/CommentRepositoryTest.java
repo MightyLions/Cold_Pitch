@@ -1,4 +1,4 @@
-package com.ColdPitch.domain.entity.comment;
+package com.ColdPitch.domain.repository;
 
 import com.ColdPitch.domain.entity.Comment;
 import com.ColdPitch.domain.repository.CommentRepository;
@@ -17,7 +17,7 @@ public class CommentRepositoryTest {
 
     @Test
     @DisplayName("CommentRepository(QueryDsl) 테스트\nfindAllByPostId()")
-    void findAllByPostId() {
+    void findAllByPostIdTest() {
         Long postId = 1L;
 
         List<Comment> commentList = commentRepository.findAllByPostId(postId);
@@ -27,7 +27,7 @@ public class CommentRepositoryTest {
 
     @Test
     @DisplayName("CommentRepository(JPA Repository) 테스트\nfindById()")
-    void findByCommentI() {
+    void findByCommentIdTest() {
         Long commentId = 1L;
 
         Comment comment = commentRepository.findById(commentId).orElse(null);
