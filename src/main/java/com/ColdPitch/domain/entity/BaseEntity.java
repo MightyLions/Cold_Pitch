@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
@@ -16,6 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @MappedSuperclass
+@Getter
 @SuperBuilder(toBuilder = true)
 public class BaseEntity {
     @CreatedDate
