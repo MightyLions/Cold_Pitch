@@ -20,12 +20,6 @@ public class Tag extends BaseEntity {
     @Column(name = "tag_name", nullable = false)
     private String tagName;
 
-    @Column(nullable = false)
-    private LocalDateTime registrationDate;
-
-    @Column(nullable = false)
-    private LocalDateTime lastUpdatedDate;
-
     @Column()
     private String iconPath;
 
@@ -37,10 +31,9 @@ public class Tag extends BaseEntity {
         return "Tag{" +
                 "id=" + id +
                 ", tagName='" + tagName + '\'' +
-                ", registrationDate=" + registrationDate +
-                ", lastUpdatedDate=" + lastUpdatedDate +
                 ", iconPath='" + iconPath + '\'' +
                 ", description='" + description + '\'' +
+                super.toString()+
                 '}';
     }
 }

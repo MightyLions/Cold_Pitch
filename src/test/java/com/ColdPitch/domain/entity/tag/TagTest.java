@@ -8,7 +8,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,8 +24,6 @@ class TagTest {
         // given
         Tag tag = Tag.builder()
                 .tagName(TagName.LOGISTICS.name())
-                .registrationDate(LocalDateTime.now())
-                .lastUpdatedDate(LocalDateTime.now())
                 .iconPath("icon/path")
                 .description("logistics tag는 물류와 관련된 스타트업을 나타내는 태그입니다.")
                 .build();
@@ -45,8 +42,6 @@ class TagTest {
         for (TagName tagName : TagName.values()) {
             Tag tag = Tag.builder()
                     .tagName(tagName.name())
-                    .registrationDate(LocalDateTime.now())
-                    .lastUpdatedDate(LocalDateTime.now())
                     .iconPath("icon/path")
                     .description(tagName.name() + "를 가지는 스타트업입니다.")
                     .build();

@@ -2,7 +2,6 @@ package com.ColdPitch.domain.entity.user;
 
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -14,7 +13,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserTest {
     @Autowired
