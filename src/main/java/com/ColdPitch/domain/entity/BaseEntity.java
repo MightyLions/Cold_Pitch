@@ -37,7 +37,6 @@ public class BaseEntity {
         return "createAt=" + createAt +
                 ", updatedAt=" + modifiedAt +
                 ", createBy='" + createdBy + '\'' +
-                ", updateBy='" + modifiedBy + '\'' +
-                '}';
+                ", updateBy='" + modifiedBy + '\'';
     }
 }
