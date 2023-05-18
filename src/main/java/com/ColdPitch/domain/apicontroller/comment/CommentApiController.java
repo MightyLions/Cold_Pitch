@@ -17,32 +17,25 @@ public class CommentApiController {
     private final CommentService comService;
 
     @GetMapping("/comment/post")
-    public List<Comment> getCommentList(HttpServletRequest request) {
-        List<Comment> list = comService.findCommentsByPostId(Long.valueOf(request.getParameter("postId")));
+    public List<Comment> getCommentList(Long postId) {
+        List<Comment> list = comService.findCommentsByPostId(postId);
         return list;
     }
 
     @PostMapping("/comment")
-    public Comment postComment(HttpServletRequest request) {
-        Comment com = Comment.builder()
-            .userId(Long.valueOf(request.getParameter("userId")))
-            .postId(Long.valueOf(request.getParameter("postId")))
-            .text(request.getParameter("text"))
-            .pCommentId(request.getParameter("replyComId") != null ?
-                Long.valueOf(request.getParameter("replyComId")) : null)
-            .build();
+    public Comment postComment(Comment comment) {
+        Comment com = comment;
 
         return comService.save(com);
     }
 
     @PatchMapping("/comment")
-    public Comment patchComment(HttpServletRequest request) {
-        return comService.updateComment(Long.valueOf(request.getParameter("comId")),
-            request.getParameter("text"));
+    public Comment patchComment(Comment comment) {
+        return comService.updateComment(comment.getId(), comment.getText());
     }
 
     @DeleteMapping("/comment")
-    public String deleteComment(HttpServletRequest request) {
-        return comService.deleteComment(Long.valueOf(request.getParameter("comId")));
+    public String deleteComment(Long commentId) {
+        return comService.deleteComment(commentId);
     }
 }
