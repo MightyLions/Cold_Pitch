@@ -9,13 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
     public List<Comment> findCommentsByPostId(Long postId) {
-//        List<Comment> list = commentRepository.findAllByPostId(postId).orElse(null);
-//
-//        return list;
-        return null;
+        return commentRepository.findAllByPostId(postId);
     }
 
     public Comment save(Comment comment) {

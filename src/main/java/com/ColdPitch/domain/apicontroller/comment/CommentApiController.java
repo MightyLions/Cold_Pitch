@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class CommentApiController {
-    CommentService comService;
+    private final CommentService comService;
 
     @GetMapping("/comment/post")
     public List<Comment> getCommentList(HttpServletRequest request) {
