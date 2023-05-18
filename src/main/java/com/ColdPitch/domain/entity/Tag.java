@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -14,14 +13,11 @@ public class Tag extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "tag_id")
     private Long id;
 
     @Column(name = "tag_name", nullable = false)
     private String tagName;
-
-    @Column()
-    private String iconPath;
 
     @Column(nullable = false)
     private String description;
@@ -31,7 +27,6 @@ public class Tag extends BaseEntity {
         return "Tag{" +
                 "id=" + id +
                 ", tagName='" + tagName + '\'' +
-                ", iconPath='" + iconPath + '\'' +
                 ", description='" + description + '\'' +
                 super.toString()+
                 '}';

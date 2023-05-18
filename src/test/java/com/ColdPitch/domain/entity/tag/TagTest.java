@@ -24,7 +24,6 @@ class TagTest {
         // given
         Tag tag = Tag.builder()
                 .tagName(TagName.LOGISTICS.name())
-                .iconPath("icon/path")
                 .description("logistics tag는 물류와 관련된 스타트업을 나타내는 태그입니다.")
                 .build();
 
@@ -42,7 +41,6 @@ class TagTest {
         for (TagName tagName : TagName.values()) {
             Tag tag = Tag.builder()
                     .tagName(tagName.name())
-                    .iconPath("icon/path")
                     .description(tagName.name() + "를 가지는 스타트업입니다.")
                     .build();
             tagRepository.save(tag);
