@@ -54,7 +54,7 @@ public class Comment extends BaseEntity {
         return "Comment{" +
                 "commentId=" + id +
                 ", userId=" + userId +
-                ", posterId=" + postId +
+                ", postId=" + postId +
                 ", text='" + text + '\'' +
                 ", " + super.toString() +
                 "}";
