@@ -35,6 +35,10 @@ public class Comment extends BaseEntity {
         this.text = text;
     }
 
+    public void setpCommentId(Long pCommentId) {
+        this.pCommentId = pCommentId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

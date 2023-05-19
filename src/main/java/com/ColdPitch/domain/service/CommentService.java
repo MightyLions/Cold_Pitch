@@ -38,4 +38,12 @@ public class CommentService {
 
         return "comment delete successful";
     }
+
+    public List<Comment> findCommentsByParentId(Long parentId) {
+        return commentRepository.findAllByParentId(parentId);
+    }
+
+    public List<Comment> findCommentsByUserId(Long userId) {
+        return commentRepository.findAllByUserId(userId);
+    }
 }

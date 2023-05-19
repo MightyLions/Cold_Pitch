@@ -13,7 +13,7 @@ public class Tag extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "tag_name", nullable = false)

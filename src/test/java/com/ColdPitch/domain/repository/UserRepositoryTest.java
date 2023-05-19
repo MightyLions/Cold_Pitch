@@ -1,6 +1,7 @@
-package com.ColdPitch.domain.entity.user;
+package com.ColdPitch.domain.repository;
 
 import com.ColdPitch.domain.entity.User;
+import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.repository.UserRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
-class UserTest {
+class UserRepositoryTest {
     @Autowired
     UserRepository userRepository;
 

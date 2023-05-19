@@ -17,4 +17,20 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
             .where(QComment.comment.postId.eq(postId))
             .fetch();
     }
+
+    @Override
+    public List<Comment> findAllByParentId(Long parentId) {
+        return queryFactory
+            .selectFrom(QComment.comment)
+            .where(QComment.comment.pCommentId.eq(parentId))
+            .fetch();
+    }
+
+    @Override
+    public List<Comment> findAllByUserId(Long userId) {
+        return queryFactory
+            .selectFrom(QComment.comment)
+            .where(QComment.comment.userId.eq(userId))
+            .fetch();
+    }
 }
