@@ -42,3 +42,6 @@ out/
 /src/test/resources/*.yml
 !**/src/test/resources/*.yml
 intellij-java-google-style.xml
+
+### jwt ###
+/src/main/resources/secret.properties
