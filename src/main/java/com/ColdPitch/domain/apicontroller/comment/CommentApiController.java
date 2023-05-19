@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentApiController {
     private final CommentService comService;
 
-    @GetMapping("/comment/post")
+    @GetMapping("/comment")
     public List<Comment> getCommentList(Long postId) {
         List<Comment> list = comService.findCommentsByPostId(postId);
         return list;
@@ -37,5 +37,10 @@ public class CommentApiController {
     @DeleteMapping("/comment")
     public String deleteComment(Long commentId) {
         return comService.deleteComment(commentId);
+    }
+
+    @GetMapping("/comment/reply")
+    public List<Comment> getReplyComments(Long parentId) {
+        return comService.findCommentsByParentId(parentId);
     }
 }
