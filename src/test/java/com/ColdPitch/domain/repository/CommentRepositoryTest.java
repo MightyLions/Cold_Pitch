@@ -8,18 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Slf4j
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 public class CommentRepositoryTest {
     @Autowired
@@ -31,12 +27,20 @@ public class CommentRepositoryTest {
     public void setUpDummyComment() {
         int repeatCount = 10;
 
-        for (int i = 0; i < repeatCount; i++) {
+        for (long i = 0; i < repeatCount; i++) {
             Comment entity = Comment.builder()
                 .postId(getRandom(repeatCount))
                 .userId(getRandom(repeatCount))
                 .text("comment " + i)
                 .build();
+
+            if (i == 0) {
+                entity = entity.toBuilder().postId(1L).build();
+            }
+
+            if (i % 2 == 0) {
+                entity.setpCommentId(2L);
+            }
 
             entity = commentRepository.saveAndFlush(entity);
             commentList.add(entity);
@@ -49,7 +53,6 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    @Order(1)
     @DisplayName("댓글 입력 테스트")
     public void commentInsertTest() {
         int repeatCount = 10;
@@ -66,7 +69,6 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    @Order(2)
     @DisplayName("댓글 업데이트 테스트")
     public void commentUpdateTest() {
         int i = 1;
@@ -79,7 +81,6 @@ public class CommentRepositoryTest {
     }
 
     @Test
-    @Order(3)
     @DisplayName("댓글 전체 조회")
     public void commentSelectAllTest() {
         List<Comment> all = commentRepository.findAll();
@@ -107,6 +108,17 @@ public class CommentRepositoryTest {
 
         log.info(comment.toString());
     }
+
+    @Test
+    @DisplayName("CommentRepository(QueryDSL) 테스트\nfindAllByParentId()")
+    void findAllByParentId() {
+        Long parentId = 2L;
+
+        List<Comment> list = commentRepository.findAllByParentId(parentId);
+
+        list.forEach(comment -> log.info(comment.toString()));
+    }
+
 
     /**
      * 랜덤 Long을 생성하는 메소드
