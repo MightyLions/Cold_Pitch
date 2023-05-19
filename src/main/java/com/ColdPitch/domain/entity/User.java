@@ -3,6 +3,7 @@ package com.ColdPitch.domain.entity;
 import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -20,18 +21,20 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String userName;
+    private String name;
 
     @Column(nullable = false)
-    private String userNickname;
-    private boolean userSocial;// 확장성
+    private String nickname;
+
+    @Builder.Default
+    private boolean userSocial = false;// 확장성
 
     @Column(nullable = false)
-    private String userPw;
+    private String password;
     @Column(nullable = false)
-    private String userEmail;
+    private String email;
     @Column(nullable = false)
-    private String userPhoneNumber;
+    private String phoneNumber;
 
     //companyRegisrationNumber
 
@@ -39,6 +42,7 @@ public class User extends BaseEntity {
     private UserType userType;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private CurState curState;
 
 
@@ -46,14 +50,15 @@ public class User extends BaseEntity {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", userNickname='" + userNickname + '\'' +
+                ", name='" + name + '\'' +
+                ", nickname='" + nickname + '\'' +
                 ", userSocial=" + userSocial +
-                ", userPw='" + userPw + '\'' +
-                ", userEmail='" + userEmail + '\'' +
-                ", userPhoneNumber='" + userPhoneNumber + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", userType=" + userType +
                 ", curState=" + curState +
+                super.toString() +
                 '}';
     }
 }

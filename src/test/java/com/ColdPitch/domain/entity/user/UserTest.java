@@ -23,30 +23,30 @@ class UserTest {
     @Test
     public void 유저객체_생성_테스트() {
         //given
-        User user = User.builder().userName("test")
-                .userPw("test")
-                .userEmail("test@naver.com")
+        User user = User.builder().name("test")
+                .password("test")
+                .email("test@naver.com")
                 .curState(CurState.LIVE)
-                .userNickname("nick")
-                .userPhoneNumber("010-1234-1234").build();
+                .nickname("nick")
+                .phoneNumber("010-1234-1234").build();
 
         //when
         userRepository.save(user);
 
         //then
         User user2 = userRepository.findById(user.getId()).get();
-        assertThat(user.getUserEmail()).isEqualTo(user2.getUserEmail());
+        assertThat(user.getEmail()).isEqualTo(user2.getEmail());
     }
 
     @Test
     public void 유저객체_전체_조회() {
         //given
         for (int i = 0; i < 10; i++) {
-            userRepository.save(User.builder().userName("test" + i)
-                    .userNickname("test" + i)
-                    .userPw("test" + i)
-                    .userEmail("bo" + i + "@n.com")
-                    .userPhoneNumber(String.valueOf(i)).build());
+            userRepository.save(User.builder().name("test" + i)
+                    .nickname("test" + i)
+                    .password("test" + i)
+                    .email("bo" + i + "@n.com")
+                    .phoneNumber(String.valueOf(i)).build());
         }
 
         //when
@@ -56,7 +56,7 @@ class UserTest {
         //then
         for (int i = 0; i < 10; i++) {
             //log.info("{}", all.get(i));
-            assertThat(all.get(i).getUserName()).isEqualTo("test" + i);
+            assertThat(all.get(i).getName()).isEqualTo("test" + i);
         }
     }
 
