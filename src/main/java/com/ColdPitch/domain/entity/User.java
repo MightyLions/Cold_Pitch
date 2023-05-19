@@ -26,7 +26,6 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String nickname;
 
-    @Builder.Default
     private boolean userSocial = false;// 확장성
 
     @Column(nullable = false)
@@ -42,7 +41,6 @@ public class User extends BaseEntity {
     private UserType userType;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
     private CurState curState;
 
 
