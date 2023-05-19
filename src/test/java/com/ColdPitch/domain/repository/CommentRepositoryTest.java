@@ -22,6 +22,10 @@ public class CommentRepositoryTest {
     private CommentRepository commentRepository;
 
     List<Comment> commentList = new ArrayList<>();
+    long POST_ID = 1L;
+    long USER_ID = 1L;
+    long PARENT_COMMENT_ID = 2L;
+
 
     @BeforeAll
     public void setUpDummyComment() {
@@ -35,11 +39,11 @@ public class CommentRepositoryTest {
                 .build();
 
             if (i == 0) {
-                entity = entity.toBuilder().postId(1L).build();
+                entity = entity.toBuilder().postId(POST_ID).build();
             }
 
             if (i % 2 == 0) {
-                entity.setpCommentId(2L);
+                entity = entity.toBuilder().userId(USER_ID).pCommentId(PARENT_COMMENT_ID).build();
             }
 
             entity = commentRepository.saveAndFlush(entity);
@@ -92,9 +96,7 @@ public class CommentRepositoryTest {
     @Test
     @DisplayName("CommentRepository(QueryDsl) 테스트\nfindAllByPostId()")
     void findAllByPostIdTest() {
-        Long postId = 1L;
-
-        List<Comment> list = commentRepository.findAllByPostId(postId);
+        List<Comment> list = commentRepository.findAllByPostId(POST_ID);
 
         list.forEach(comment -> log.info(comment.toString()));
     }
@@ -102,9 +104,7 @@ public class CommentRepositoryTest {
     @Test
     @DisplayName("CommentRepository(JPA Repository) 테스트\nfindById()")
     void findByCommentIdTest() {
-        Long commentId = 1L;
-
-        Comment comment = commentRepository.findById(commentId).orElse(null);
+        Comment comment = commentRepository.findById(1L).orElse(null);
 
         log.info(comment.toString());
     }
@@ -112,9 +112,15 @@ public class CommentRepositoryTest {
     @Test
     @DisplayName("CommentRepository(QueryDSL) 테스트\nfindAllByParentId()")
     void findAllByParentId() {
-        Long parentId = 2L;
+        List<Comment> list = commentRepository.findAllByParentId(PARENT_COMMENT_ID);
 
-        List<Comment> list = commentRepository.findAllByParentId(parentId);
+        list.forEach(comment -> log.info(comment.toString()));
+    }
+
+    @Test
+    @DisplayName("CommentRepository(QueryDSL) 테스트\nfindAllByUserId()")
+    void findAllByUserId() {
+        List<Comment> list = commentRepository.findAllByUserId(USER_ID);
 
         list.forEach(comment -> log.info(comment.toString()));
     }
