@@ -1,12 +1,14 @@
-package com.ColdPitch.domain.entity.tag;
+package com.ColdPitch.domain.repository;
 
 import com.ColdPitch.domain.entity.Tag;
+import com.ColdPitch.domain.entity.tag.TagName;
 import com.ColdPitch.domain.repository.TagRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,7 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class TagTest {
+@Transactional
+class TagRepositoryTest {
 
     @Autowired
     private TagRepository tagRepository;

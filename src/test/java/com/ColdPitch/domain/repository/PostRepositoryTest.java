@@ -1,8 +1,9 @@
-package com.ColdPitch.domain.entity.post;
+package com.ColdPitch.domain.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ColdPitch.domain.entity.Post;
+import com.ColdPitch.domain.entity.post.PostState;
 import com.ColdPitch.domain.repository.PostRepository;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +16,7 @@ import org.springframework.test.context.event.annotation.BeforeTestExecution;
 @SpringBootTest
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class PostTest {
+public class PostRepositoryTest {
 
     @Autowired
     PostRepository postRepository;
