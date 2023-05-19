@@ -20,7 +20,7 @@ public class PostRepositoryTest {
     PostRepository postRepository;
 
     @BeforeEach
-    public void 게시글_초기값_생성() {
+    public void initailizer() {
         Post post = Post.builder()
             .title("firstTitle")
             .text("firstText")
@@ -32,13 +32,13 @@ public class PostRepositoryTest {
     }
 
     @AfterEach
-    public void 게시글_초기값_삭제() {
+    public void finalizer() {
         postRepository.deleteAll();
     }
 
     @Test
     @DisplayName("게시글 생성 테스트")
-    public void 게시글_생성_테스트() {
+    public void post_Create_Test() {
         Post post = Post.builder()
             .title("testTitle")
             .text("testText")
@@ -55,7 +55,7 @@ public class PostRepositoryTest {
 
     @Test
     @DisplayName("게시글 수정 테스트")
-    public void 게시글_수정_테스트() {
+    public void post_Update_Test() {
         Post post = postRepository.findAll().get(0);
         post.setTitle("updatedTitle");
         post.setText("updatedText");
@@ -69,14 +69,14 @@ public class PostRepositoryTest {
 
     @Test
     @DisplayName("게시글 조회 테스트")
-    public void 게시글_조회_테스트() {
+    public void post_List_Test() {
         List<Post> postList = postRepository.findAll();
         postList.forEach(p -> log.info(p.toString()));
     }
 
     @Test
     @DisplayName("게시글 삭제 테스트")
-    public void 게시글_삭제_테스트() {
+    public void post_Delete_Test() {
         Post post = postRepository.findAll().get(0);
         postRepository.deleteById(post.getId());
         assertThat(postRepository.findById((long) 1).isEmpty()).isEqualTo(true);
@@ -84,7 +84,7 @@ public class PostRepositoryTest {
 
     @Test
     @DisplayName("게시글 상태변환 테스트")
-    public void 게시글_닫기_테스트() {
+    public void post_Close_Test() {
         Post post = postRepository.findAll().get(0);
         post.setStatus(PostState.CLOSED.getStatus());
         postRepository.save(post);
