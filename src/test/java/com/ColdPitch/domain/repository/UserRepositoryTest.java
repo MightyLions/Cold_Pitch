@@ -2,7 +2,8 @@ package com.ColdPitch.domain.repository;
 
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.user.CurState;
-import com.ColdPitch.domain.repository.UserRepository;
+import com.ColdPitch.domain.entity.user.UserType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -22,12 +23,14 @@ class UserRepositoryTest {
     UserRepository userRepository;
 
     @Test
-    public void 유저객체_생성_테스트() {
+    @DisplayName("유저 객체 생성 테스트")
+    public void makeTestUser() {
         //given
         User user = User.builder().name("test")
                 .password("test")
                 .email("test@naver.com")
                 .curState(CurState.LIVE)
+                .userType(UserType.USER)
                 .nickname("nick")
                 .phoneNumber("010-1234-1234").build();
 
@@ -40,13 +43,16 @@ class UserRepositoryTest {
     }
 
     @Test
-    public void 유저객체_전체_조회() {
+    @DisplayName("유저 객체 전체 조회")
+    public void findAllUser() {
         //given
         for (int i = 0; i < 10; i++) {
             userRepository.save(User.builder().name("test" + i)
                     .nickname("test" + i)
                     .password("test" + i)
                     .email("bo" + i + "@n.com")
+                    .userType(UserType.USER)
+                    .curState(CurState.LIVE)
                     .phoneNumber(String.valueOf(i)).build());
         }
 

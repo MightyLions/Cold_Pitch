@@ -3,7 +3,6 @@ package com.ColdPitch.domain.entity;
 import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -30,19 +29,23 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String password;
+
     @Column(nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String phoneNumber;
 
     //companyRegisrationNumber
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserType userType;
 
     @Enumerated(EnumType.STRING)
-    private CurState curState;
+    @Column(nullable = false)
 
+    private CurState curState;
 
     @Override
     public String toString() {

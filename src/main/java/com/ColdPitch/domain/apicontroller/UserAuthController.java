@@ -14,18 +14,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/auth") // 권한 인증 관련 api 여기에서 모두 관리.
+@RequestMapping("/api/v1/auth") // 권한 인증 관련 api 여기에서 모두 관리.
 public class UserAuthController {
     private final UserService userService;
 
     @PostMapping(value = "/signup")
     @Operation(summary = "회원가입", description = "회원 가입 API")
-    public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto userRequestDto) throws IOException {
+    public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto userRequestDto) {
         log.info("회원가입 시도:{} ", userRequestDto);
         //회원 가입부분
         User savedMember = userService.signup(userRequestDto);
@@ -46,7 +44,7 @@ public class UserAuthController {
                 .build();
 
         log.info("회원가입 완료:{}", userResponseDto);
-        return ResponseEntity.ok(userResponseDto);
+        return ResponseEntity.status(200).body(userResponseDto);
     }
 
 }

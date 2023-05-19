@@ -25,7 +25,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("유저회원 로그인을 확인한다. ")
-    void signup() {
+    public void signup() {
         //given
         UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
 
@@ -42,7 +42,7 @@ class UserServiceTest {
     }
 
 
-    public boolean checkPassword(String password, String exPassword) {
+    private boolean checkPassword(String password, String exPassword) {
         return passwordEncoder.matches(exPassword, password);
     }
 }
