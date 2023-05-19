@@ -2,7 +2,9 @@ package com.ColdPitch.domain.entity.comment;
 
 import com.ColdPitch.domain.entity.Comment;
 import com.ColdPitch.domain.repository.CommentRepository;
+import java.util.ArrayList;
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,9 @@ public class CommentTest {
 
     @Autowired
     CommentRepository comRepo;
+    List<Comment> commentList = new ArrayList<>();
 
-    @PostConstruct
+    @BeforeAll
     public void setUpDummyComment() {
         int repeatCount = 10;
 
@@ -30,8 +33,14 @@ public class CommentTest {
                 .text("comment " + i)
                 .build();
 
-            comRepo.save(entity);
+            entity = comRepo.saveAndFlush(entity);
+            commentList.add(entity);
         }
+    }
+
+    @AfterEach
+    public void removeDummyComment() {
+        comRepo.deleteAll(commentList);
     }
 
     @Test
@@ -47,7 +56,7 @@ public class CommentTest {
                 .text("comment " + i)
                 .build();
 
-            comRepo.save(entity);
+            comRepo.saveAndFlush(entity);
         }
 
 //        for (long i = 0; i < repeatCount; i++) {
