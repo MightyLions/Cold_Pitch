@@ -90,7 +90,7 @@ public class PostRepositoryTest {
         postRepository.save(post);
 
         Post post2 = postRepository.findById(post.getId()).orElseThrow();
-        assertThat(post.getStatus()).isEqualTo(post2.getStatus()).isEqualTo(PostState.CLOSED.getStatus());
+        assertThat(post.getStatus()).isEqualTo(post2.getStatus()).isEqualTo(PostState.CLOSED);
     }
 
 }
