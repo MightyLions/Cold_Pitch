@@ -54,4 +54,10 @@ public class PostService {
                 .status(post.getStatus())
                 .build();
     }
+
+    @Transactional
+    public String deletePost(String userName, PostRequestDto requestDto) {
+        postRepository.deleteById(requestDto.getId());
+        return "post deleted successfully";
+    }
 }
