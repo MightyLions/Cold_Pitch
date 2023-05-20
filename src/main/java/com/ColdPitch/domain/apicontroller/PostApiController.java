@@ -8,10 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -31,5 +29,11 @@ public class PostApiController {
     @Operation(summary = "게시글 수정")
     public ResponseEntity<PostResponseDto> updatePost(Authentication authentication, PostRequestDto postRequestDto) {
         return ResponseEntity.status(200).body(postService.updatePost(authentication.getName(), postRequestDto));
+    }
+
+    @DeleteMapping()
+    @Operation(summary = "게시글 삭제")
+    public ResponseEntity<String> deletePost(Authentication authentication, PostRequestDto postRequestDto) {
+        return ResponseEntity.status(200).body(postService.deletePost(authentication.getName(), postRequestDto));
     }
 }
