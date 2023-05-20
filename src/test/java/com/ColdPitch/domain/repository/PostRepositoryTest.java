@@ -24,7 +24,7 @@ public class PostRepositoryTest {
         Post post = Post.builder()
             .title("firstTitle")
             .text("firstText")
-            .status("OPEN")
+            .status(PostState.OPEN)
             .category("firstCategory")
             .userId((long) 1)
             .build();
@@ -42,7 +42,7 @@ public class PostRepositoryTest {
         Post post = Post.builder()
             .title("testTitle")
             .text("testText")
-            .status("OPEN")
+            .status(PostState.OPEN)
             .category("testCategory")
             .userId((long) 2)
             .build();
@@ -60,7 +60,7 @@ public class PostRepositoryTest {
         post.setTitle("updatedTitle");
         post.setText("updatedText");
         post.setCategory("updatedCategory");
-        post.setStatus("UpdatedStatus");
+        post.setStatus(PostState.CLOSED);
         postRepository.save(post);
 
         Post post2 = postRepository.findById(post.getId()).orElseThrow();
@@ -86,11 +86,11 @@ public class PostRepositoryTest {
     @DisplayName("게시글 상태변환 테스트")
     public void post_Close_Test() {
         Post post = postRepository.findAll().get(0);
-        post.setStatus(PostState.CLOSED.getStatus());
+        post.setStatus(PostState.CLOSED);
         postRepository.save(post);
 
         Post post2 = postRepository.findById(post.getId()).orElseThrow();
-        assertThat(post.getStatus()).isEqualTo(post2.getStatus()).isEqualTo(PostState.CLOSED.getStatus());
+        assertThat(post.getStatus()).isEqualTo(post2.getStatus()).isEqualTo(PostState.CLOSED);
     }
 
 }

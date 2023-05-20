@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,10 +23,13 @@ public class PostApiController {
 
     @PostMapping()
     @Operation(summary = "게시글 등록")
-    public ResponseEntity<PostResponseDto> createPost(Authentication authentication,
-        PostRequestDto postRequestDto) {
-        return ResponseEntity
-            .status(200)
-            .body(postService.createPost(authentication.getName(), postRequestDto));
+    public ResponseEntity<PostResponseDto> createPost(Authentication authentication, PostRequestDto postRequestDto) {
+        return ResponseEntity.status(200).body(postService.createPost(authentication.getName(), postRequestDto));
+    }
+
+    @PatchMapping()
+    @Operation(summary = "게시글 수정")
+    public ResponseEntity<PostResponseDto> updatePost(Authentication authentication, PostRequestDto postRequestDto) {
+        return ResponseEntity.status(200).body(postService.updatePost(authentication.getName(), postRequestDto));
     }
 }
