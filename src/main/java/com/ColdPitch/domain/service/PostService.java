@@ -35,4 +35,23 @@ public class PostService {
             .status(post.getStatus())
             .build();
     }
+
+    @Transactional
+    public PostResponseDto updatePost(String userName, PostRequestDto requestDto) {
+        User user = userRepository.findByName(userName);
+        Post post = postRepository.findById(requestDto.getId()).orElseThrow();
+        post.setTitle(requestDto.getTitle());
+        post.setText(requestDto.getText());
+        post.setCategory(requestDto.getCategory());
+        return PostResponseDto.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .text(post.getText())
+                .userName(userName)
+                .category(post.getCategory())
+                .createAt(post.getCreateAt())
+                .modifyAt(post.getModifiedAt())
+                .status(post.getStatus())
+                .build();
+    }
 }
