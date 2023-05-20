@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "dislike")
+@Table(name = "dislike_table")
 public class Dislike extends BaseEntity{
 
     @Id
