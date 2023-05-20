@@ -1,5 +1,7 @@
 package com.ColdPitch.domain.repository;
 
+import static com.ColdPitch.domain.utils.RandomUtil.getRandom;
+
 import com.ColdPitch.domain.entity.Comment;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,18 +125,5 @@ public class CommentRepositoryTest {
         List<Comment> list = commentRepository.findAllByUserId(USER_ID);
 
         list.forEach(comment -> log.info(comment.toString()));
-    }
-
-
-    /**
-     * 랜덤 Long을 생성하는 메소드
-     *
-     * @param end inclusive
-     * @return 0부터 end 이하까지의 범위
-     */
-    private long getRandom(int end) {
-        Random random = new Random();
-
-        return (long) random.nextInt(end);
     }
 }
