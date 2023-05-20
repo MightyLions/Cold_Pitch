@@ -1,5 +1,9 @@
 package com.ColdPitch.config.security;
 
+import com.ColdPitch.jwt.JwtFilter;
+import com.ColdPitch.jwt.exception.JwtAccessDeniedHandler;
+import com.ColdPitch.jwt.exception.JwtAuthenticationEntryPoint;
+import com.ColdPitch.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,12 +14,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig {
+    private final TokenProvider tokenUtils;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -47,6 +56,14 @@ public class SecurityConfig {
 
         // http disable
         security.httpBasic().disable();
+
+        // jwt filter
+        security.addFilterBefore(new JwtFilter(tokenUtils), UsernamePasswordAuthenticationFilter.class);
+
+        //jwt exception handling
+        security.exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler);
 
         return security.build();
     }
