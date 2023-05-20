@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.ColdPitch.domain.entity.post.PostState;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +33,7 @@ public class Post extends BaseEntity{
     private String text;
 
     @Column(nullable = false)
-    private String status;
+    private PostState status;
 
     @Column(nullable = false)
     private String category;
@@ -50,7 +52,7 @@ public class Post extends BaseEntity{
         this.text = text;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PostState status) {
         this.status = status;
     }
 
@@ -82,6 +84,16 @@ public class Post extends BaseEntity{
         }
         Post post = (Post) o;
         return Objects.equals(id, post.getId());
+    }
+
+    public static Post toEntity(String title, String text, String category, Long userId, PostState status) {
+        return Post.builder()
+                .title(title)
+                .text(text)
+                .category(category)
+                .userId(userId)
+                .status(status)
+                .build();
     }
 
 }
