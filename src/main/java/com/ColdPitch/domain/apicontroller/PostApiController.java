@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,19 +20,25 @@ public class PostApiController {
 
     @PostMapping()
     @Operation(summary = "게시글 등록")
-    public ResponseEntity<PostResponseDto> createPost(Authentication authentication, PostRequestDto postRequestDto) {
+    public ResponseEntity<PostResponseDto> createPost(Authentication authentication, @RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200).body(postService.createPost(authentication.getName(), postRequestDto));
     }
 
     @PatchMapping()
     @Operation(summary = "게시글 수정")
-    public ResponseEntity<PostResponseDto> updatePost(Authentication authentication, PostRequestDto postRequestDto) {
+    public ResponseEntity<PostResponseDto> updatePost(Authentication authentication, @RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200).body(postService.updatePost(authentication.getName(), postRequestDto));
     }
 
     @DeleteMapping()
     @Operation(summary = "게시글 삭제")
-    public ResponseEntity<String> deletePost(Authentication authentication, PostRequestDto postRequestDto) {
+    public ResponseEntity<String> deletePost(Authentication authentication, @RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200).body(postService.deletePost(authentication.getName(), postRequestDto));
+    }
+
+    @GetMapping()
+    @Operation(summary = "게시글 조회")
+    public ResponseEntity<PostResponseDto> getPost(Authentication authentication, @RequestParam Long postId) {
+        return ResponseEntity.status(200).body(postService.getPost(authentication.getName(), postId));
     }
 }

@@ -24,16 +24,7 @@ public class PostService {
         User user = userRepository.findByName(userName);
         Post post = Post.toEntity(requestDto.getTitle(), requestDto.getText(), requestDto.getCategory(), user.getId(), PostState.OPEN);
         postRepository.save(post);
-        return PostResponseDto.builder()
-            .id(post.getId())
-            .title(post.getTitle())
-            .text(post.getText())
-            .userName(userName)
-            .category(post.getCategory())
-            .createAt(post.getCreateAt())
-            .modifyAt(post.getModifiedAt())
-            .status(post.getStatus())
-            .build();
+        return convertDto(post, userName);
     }
 
     @Transactional
@@ -43,6 +34,21 @@ public class PostService {
         post.setTitle(requestDto.getTitle());
         post.setText(requestDto.getText());
         post.setCategory(requestDto.getCategory());
+        return convertDto(post, userName);
+    }
+
+    @Transactional
+    public String deletePost(String userName, PostRequestDto requestDto) {
+        postRepository.deleteById(requestDto.getId());
+        return "post deleted successfully";
+    }
+
+    public PostResponseDto getPost(String userName, Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow();
+        return convertDto(post, userName);
+    }
+
+    public PostResponseDto convertDto(Post post, String userName) {
         return PostResponseDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -53,11 +59,5 @@ public class PostService {
                 .modifyAt(post.getModifiedAt())
                 .status(post.getStatus())
                 .build();
-    }
-
-    @Transactional
-    public String deletePost(String userName, PostRequestDto requestDto) {
-        postRepository.deleteById(requestDto.getId());
-        return "post deleted successfully";
     }
 }
