@@ -91,4 +91,13 @@ public class UserService {
         return tokenDto;
     }
 
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public void logout(User nowLogin) {
+        refreshTokenRepository.deleteByKey(nowLogin.getEmail());
+    }
 }
