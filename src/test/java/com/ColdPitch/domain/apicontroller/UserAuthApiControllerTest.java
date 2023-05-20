@@ -1,12 +1,15 @@
 package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.User;
+import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.repository.UserRepository;
+import com.ColdPitch.domain.service.RefreshTokenService;
 import com.ColdPitch.domain.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,6 +43,8 @@ class UserAuthApiControllerTest {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
     @Test
     @DisplayName("유저 회원가입 확인")
@@ -98,6 +105,27 @@ class UserAuthApiControllerTest {
                         .content(requestBody))
                 .andExpect(status().is4xxClientError())
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("유저 로그아웃 테스트")
+    public void logoutTest() throws Exception {
+        //given
+        User user = userService.signup(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
+        Assertions.assertThat(userService.findUserByEmail(user.getEmail()).getNickname()).isEqualTo(user.getNickname());
+
+        LoginDto loginDto = new LoginDto("email@naver.com", "password");
+        TokenDto login = userService.login(loginDto);
+
+        //when 회원가입 되지 않은 유저 로그인시에
+        mockMvc.perform(post("/api/v1/auth/logout")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("Authorization", "Bearer " + login.getAccessToken()))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        //then
+        Assertions.assertThat(refreshTokenService.findKey("email@naver.com")).isEqualTo(Optional.empty());
     }
 
 

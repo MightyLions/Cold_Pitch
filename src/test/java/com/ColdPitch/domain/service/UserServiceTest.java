@@ -30,6 +30,8 @@ class UserServiceTest {
     PasswordEncoder passwordEncoder;
     @Autowired
     TokenProvider tokenProvider;
+    @Autowired
+    RefreshTokenService refreshTokenService;
 
     @Test
     @DisplayName("유저회원 회원가입을 확인한다. ")
@@ -77,6 +79,22 @@ class UserServiceTest {
             userService.login(loginDto);
         });
 
+    }
+
+    @Test
+    @DisplayName("유저 로그아웃을 확인한다.")
+    public void logoutTestsuite() {
+        //given
+        UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
+        User signup = userService.signup(userRequestDto);
+        LoginDto loginDto = new LoginDto("email@naver.com", "password");
+        TokenDto login = userService.login(loginDto);
+
+        //when
+        userService.logout(signup);
+
+        //then ( 생성된 토큰의 유효성을 확인한다. )
+        assertThat(refreshTokenService.findKey(signup.getEmail())).isEqualTo(java.util.Optional.empty());
     }
 
     private boolean checkPassword(String password, String exPassword) {
