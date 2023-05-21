@@ -7,15 +7,20 @@ import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.entity.user.UserType;
+import com.ColdPitch.domain.service.RefreshTokenService;
 import com.ColdPitch.domain.service.UserService;
+import com.ColdPitch.jwt.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth") // 권한 인증 관련 api 여기에서 모두 관리.
 public class UserAuthApiController {
     private final UserService userService;
+    private final SecurityUtil securityUtil;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping(value = "/signup")
     @Operation(summary = "회원가입", description = "회원 가입 API")
@@ -51,7 +58,6 @@ public class UserAuthApiController {
     }
 
 
-
     @PostMapping("/login")
     @Operation(summary = "로그인")
     public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
@@ -59,10 +65,27 @@ public class UserAuthApiController {
         return ResponseEntity.status(200).body(loginResponse);
     }
 
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃")
+    public void logout() {
+        User nowLogin = getUserAndCheckNowUserIsPresent();
+
+        //리프레시 토큰 삭제
+        userService.logout(nowLogin);
+    }
+
     @PostMapping("/reissue")
     @Operation(summary = "토큰 재 발급")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
+    }
+
+    private User getUserAndCheckNowUserIsPresent() {
+        Optional<User> currentUser = securityUtil.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            throw new RequestRejectedException("로그인된 회원이 없습니다.");
+        }
+        return currentUser.get();
     }
 
 }

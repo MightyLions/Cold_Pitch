@@ -25,7 +25,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String nickname;
 
-    private boolean userSocial = false;// 확장성
+    private boolean userSocial;// 확장성
 
     @Column(nullable = false)
     private String password;
