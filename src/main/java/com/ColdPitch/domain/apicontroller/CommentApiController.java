@@ -1,4 +1,4 @@
-package com.ColdPitch.domain.apicontroller.comment;
+package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.Comment;
 import com.ColdPitch.domain.repository.CommentRepository;
