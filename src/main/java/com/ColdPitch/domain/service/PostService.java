@@ -30,20 +30,21 @@ public class PostService {
     @Transactional
     public PostResponseDto updatePost(String userEmail, PostRequestDto requestDto) {
         User user = userRepository.findByEmail(userEmail);
+        // 게시 유저와 유저가 같으면 권한 부여
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
         post.setTitle(requestDto.getTitle());
         post.setText(requestDto.getText());
         post.setCategory(requestDto.getCategory());
-        // 게시 유저와 유저가 같으면 권한 부여
+
         return convertDto(post, userEmail);
     }
 
     @Transactional
-    public String deletePost(String userEmail, PostRequestDto requestDto) {
-        Post post = postRepository.findById(requestDto.getId()).orElseThrow();
-        post.setStatus(PostState.DELETED);
+    public PostResponseDto postStateChange(String userEmail, Long postId, String state) {
         // 게시 유저와 유저가 같으면 권한 부여
-        return "post deleted successfully";
+        Post post = postRepository.findById(postId).orElseThrow();
+        post.setStatus(PostState.valueOf(state));
+        return state.equals("DELETED") ? null : convertDto(post, userEmail) ;
     }
 
     public PostResponseDto getPost(String userEmail, Long postId) {

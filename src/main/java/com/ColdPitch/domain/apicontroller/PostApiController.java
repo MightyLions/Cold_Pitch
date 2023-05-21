@@ -2,8 +2,8 @@ package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
 import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
+import com.ColdPitch.domain.entity.post.PostState;
 import com.ColdPitch.domain.service.PostService;
-import com.ColdPitch.jwt.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +32,10 @@ public class PostApiController {
         return ResponseEntity.status(200).body(postService.updatePost(authentication.getName(), postRequestDto));
     }
 
-    @PatchMapping("/delete")
-    @Operation(summary = "게시글 삭제")
-    public ResponseEntity<String> deletePost(@ApiIgnore Authentication authentication, @RequestBody PostRequestDto postRequestDto) {
-        return ResponseEntity.status(200).body(postService.deletePost(authentication.getName(), postRequestDto));
+    @PatchMapping("/{postId}/{status}")
+    @Operation(summary = "게시글 상태변경")
+    public ResponseEntity<PostResponseDto> changeStatus(@ApiIgnore Authentication authentication, @PathVariable Long postId, @PathVariable String status) {
+        return ResponseEntity.status(200).body(postService.postStateChange(authentication.getName(),postId,status));
     }
 
     @GetMapping
@@ -43,6 +43,5 @@ public class PostApiController {
     public ResponseEntity<PostResponseDto> getPost(@ApiIgnore Authentication authentication, @RequestParam Long postId) {
         return ResponseEntity.status(200).body(postService.getPost(authentication.getName(), postId));
     }
-
 
 }
