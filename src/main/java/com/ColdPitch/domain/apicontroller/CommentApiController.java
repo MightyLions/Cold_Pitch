@@ -1,12 +1,19 @@
 package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.Comment;
+import com.ColdPitch.domain.entity.comment.CommentState;
+import com.ColdPitch.domain.entity.dto.comment.CommentRequestDto;
+import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
 import com.ColdPitch.domain.repository.CommentRepository;
 import com.ColdPitch.domain.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,72 +23,110 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class CommentApiController {
-    private final CommentService comService;
+    private final CommentService commentService;
     private final CommentRepository commentRepository;
 
     @GetMapping("/comment")
-    public List<Comment> getCommentList(Long postId) {
-        List<Comment> list = comService.findCommentsByPostId(postId);
-        return list;
+    public ResponseEntity<List<CommentResponseDto>> getCommentList(Long id, String type) {
+        if (id == null && type == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        switch (type) {
+            case "postId" :
+                return ResponseEntity.ok(commentService.findCommentsByPostId(id));
+            case "commentId" :
+                if (id == null) {
+                    return ResponseEntity.ok(commentRepository
+                        .findAll()
+                        .stream()
+                        .map(CommentService::commentToResponseDto)
+                        .collect(Collectors.toList())
+                    );
+                }
+
+                if (!commentRepository.existsById(id)) {
+                    return ResponseEntity.noContent().build();
+                }
+                return ResponseEntity.ok(Collections.singletonList(
+                    commentService.findCommentsByCommentId(id)));
+            default:
+                break;
+        }
+
+        return ResponseEntity.internalServerError().build();
     }
 
     @PostMapping("/comment")
-    public Comment postComment(Comment comment) {
-        Comment com = comment;
+    public ResponseEntity<CommentResponseDto> postComment(CommentRequestDto requestDto) {
+        if (requestDto == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        return comService.save(com);
+        CommentResponseDto responseDto = commentService.saveCommentRequestDto(requestDto);
+
+        if (responseDto == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(responseDto);
     }
 
     @PatchMapping("/comment")
-    public Comment patchComment(Comment comment) {
-        return comService.updateComment(comment.getId(), comment.getText());
+    public ResponseEntity<CommentResponseDto> patchComment(CommentRequestDto requestDto) {
+        if (requestDto == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(
+            commentService.updateComment(requestDto.getId(), requestDto.getText()));
     }
 
     @DeleteMapping("/comment")
-    public String deleteComment(Long commentId) {
-        return comService.deleteComment(commentId);
+    public ResponseEntity<CommentResponseDto> deleteComment(Long commentId) {
+        if (!commentRepository.existsById(commentId)) {
+            return ResponseEntity.noContent().build();
+        }
+
+        commentRepository.deleteById(commentId);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/comment/reply")
-    public List<Comment> getReplyComments(Long parentId) {
-        return comService.findCommentsByParentId(parentId);
+    public ResponseEntity<List<CommentResponseDto>> getReplyComments(Long parentId) {
+        return ResponseEntity.ok(commentService.findCommentsByParentId(parentId));
     }
 
     @GetMapping("/comment/user")
-    public List<Comment> getUserComment(Long userId) {
-        return comService.findCommentsByUserId(userId);
+    public ResponseEntity<List<CommentResponseDto>> getUserComment(Long userId) {
+        return ResponseEntity.ok(commentService.findCommentsByUserId(userId));
     }
 
     @PostMapping("/comment/dummy")
     @Operation(summary = "Creating Dummy Comment which given amount", description = "Dummy Comment")
-    public List<Comment> postDummyComment(int amount) {
-        List<Comment> list = new ArrayList<>();
+    public ResponseEntity<List<CommentResponseDto>> postDummyComment(int amount) {
+        List<CommentResponseDto> list = new ArrayList<>();
 
         for (long i = 0; i < amount; i++) {
-            Comment comment = Comment.builder()
+            CommentRequestDto requestDto = CommentRequestDto.builder()
                 .userId(i)
                 .text("dummy comment " + i)
-                .postId((long) (1.0 - Math.random()) * amount)
-                .pCommentId(i)
-                .createdBy("dummy")
-                .modifiedBy("dummy")
+                .postId((long) ((1.0 - Math.random()) * Math.max(3, amount / 5)))
+                .pCommentId((long) ((1.0 - Math.random()) * Math.max(3, amount / 5)))
+                .status(CommentState.CREATED.toString())
                 .build();
 
             if (i == 0) {
-                comment = comment.toBuilder()
-                    .postId(1L)
-                    .build();
+                requestDto.setPostId(2L);
             }
 
             if (i % 2 == 0) {
-                comment = comment.toBuilder()
-                    .userId(1L)
-                    .build();
+                requestDto.setUserId(1L);
             }
-            list.add(comment);
+            list.add(commentService.saveCommentRequestDto(requestDto));
         }
-        list = commentRepository.saveAllAndFlush(list);
 
-        return list;
+        return ResponseEntity.ok(list);
     }
 }
