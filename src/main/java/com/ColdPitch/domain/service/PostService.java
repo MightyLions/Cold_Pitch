@@ -20,32 +20,37 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     @Transactional
-    public PostResponseDto createPost(String userName, PostRequestDto requestDto) {
-        User user = userRepository.findByName(userName);
+    public PostResponseDto createPost(String userEmail, PostRequestDto requestDto) {
+        User user = userRepository.findByEmail(userEmail);
         Post post = Post.toEntity(requestDto.getTitle(), requestDto.getText(), requestDto.getCategory(), user.getId(), PostState.OPEN);
         postRepository.save(post);
-        return convertDto(post, userName);
+        return convertDto(post, userEmail);
     }
 
     @Transactional
-    public PostResponseDto updatePost(String userName, PostRequestDto requestDto) {
-        User user = userRepository.findByName(userName);
+    public PostResponseDto updatePost(String userEmail, PostRequestDto requestDto) {
+        User user = userRepository.findByEmail(userEmail);
+        // 게시 유저와 유저가 같으면 권한 부여
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
         post.setTitle(requestDto.getTitle());
         post.setText(requestDto.getText());
         post.setCategory(requestDto.getCategory());
-        return convertDto(post, userName);
+
+        return convertDto(post, userEmail);
     }
 
     @Transactional
-    public String deletePost(String userName, PostRequestDto requestDto) {
-        postRepository.deleteById(requestDto.getId());
-        return "post deleted successfully";
+    public PostResponseDto postStateChange(String userEmail, Long postId, String state) {
+        // 게시 유저와 유저가 같으면 권한 부여
+        Post post = postRepository.findById(postId).orElseThrow();
+        post.setStatus(PostState.valueOf(state));
+        return state.equals("DELETED") ? null : convertDto(post, userEmail) ;
     }
 
-    public PostResponseDto getPost(String userName, Long postId) {
+    public PostResponseDto getPost(String userEmail, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
-        return convertDto(post, userName);
+        User user = userRepository.findByEmail(userEmail);
+        return convertDto(post, user.getName());
     }
 
     public PostResponseDto convertDto(Post post, String userName) {
