@@ -4,6 +4,7 @@ import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
+import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.RefreshTokenService;
 import com.ColdPitch.domain.service.UserService;
@@ -74,7 +75,7 @@ class UserAuthApiControllerTest {
     public void loginSuccessTest() throws Exception {
         //given 유저 저장
         UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
-        User user = userService.signup(userRequestDto);
+        userService.signup(userRequestDto);
 
 
         //when
@@ -111,7 +112,7 @@ class UserAuthApiControllerTest {
     @DisplayName("유저 로그아웃 테스트")
     public void logoutTest() throws Exception {
         //given
-        User user = userService.signup(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
+        UserResponseDto user = userService.signup(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
         Assertions.assertThat(userService.findUserByEmail(user.getEmail()).getNickname()).isEqualTo(user.getNickname());
 
         LoginDto loginDto = new LoginDto("email@naver.com", "password");
