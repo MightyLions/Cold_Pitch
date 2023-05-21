@@ -1,4 +1,4 @@
-package com.ColdPitch.domain.utils;
+package com.ColdPitch.utils;
 
 import java.util.Random;
 

@@ -1,6 +1,6 @@
 package com.ColdPitch.domain.repository;
 
-import static com.ColdPitch.domain.utils.RandomUtil.getRandom;
+import static com.ColdPitch.utils.RandomUtil.getRandom;
 
 import com.ColdPitch.domain.entity.Comment;
 import java.util.ArrayList;
