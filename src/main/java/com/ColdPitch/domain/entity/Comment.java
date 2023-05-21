@@ -31,6 +31,9 @@ public class Comment extends BaseEntity {
     @Column(name = "p_comment_id")
     private Long pCommentId;
 
+    @Column(nullable = false)
+    private String status;
+
     public void setText(String text) {
         this.text = text;
     }

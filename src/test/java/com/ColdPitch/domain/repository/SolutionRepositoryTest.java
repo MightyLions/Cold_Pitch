@@ -1,7 +1,7 @@
 package com.ColdPitch.domain.repository;
 
-import static com.ColdPitch.domain.utils.RandomUtil.getRandom;
-import static com.ColdPitch.domain.utils.RandomUtil.getRandomPercentage;
+import static com.ColdPitch.utils.RandomUtil.getRandom;
+import static com.ColdPitch.utils.RandomUtil.getRandomPercentage;
 
 import com.ColdPitch.domain.entity.Solution;
 import java.util.ArrayList;
@@ -9,18 +9,17 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Slf4j
 @TestInstance(Lifecycle.PER_CLASS)
 public class SolutionRepositoryTest {
-
     @Autowired
     private SolutionRepository solutionRepository;
     List<Solution> solutionList;
@@ -60,7 +59,7 @@ public class SolutionRepositoryTest {
 
     @Test
     void selectTest() {
-        Solution sol = solutionRepository.findById(1L).orElse(null);
+        Solution sol = solutionRepository.findById(SELECTED_ID).orElse(null);
 
         log.info(sol.toString());
     }
@@ -85,7 +84,7 @@ public class SolutionRepositoryTest {
 
     @Test
     void updateTest() {
-        Solution sol = solutionRepository.findById(1L).orElse(null);
+        Solution sol = solutionRepository.findById(UPDATED_UD).orElse(null);
 
         sol = sol.toBuilder()
             .reaction("updated reaction")
@@ -103,5 +102,13 @@ public class SolutionRepositoryTest {
         List<Solution> list = solutionRepository.findAll();
 
         list.forEach(solution -> {log.info(solution.toString());});
+    }
+
+    @Test
+    @DisplayName("SolutionRepository QueryDSL\ngetAllByUserId()")
+    void getAllByUserId() {
+        List<Solution> list = solutionRepository.getAllByUserId(USER_ID);
+
+        list.forEach(solution -> log.info(solution.toString()));
     }
 }
