@@ -4,6 +4,7 @@ import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
+import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.jwt.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -40,9 +41,10 @@ class UserServiceTest {
         UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
 
         // when
-        User savedUser = userService.signup(userRequestDto);
+        userService.signup(userRequestDto);
 
         //then
+        User savedUser = userService.findUserByEmail(userRequestDto.getEmail());
         assertThat(savedUser.getEmail()).isEqualTo("email@naver.com");
         assertThat(savedUser.getPhoneNumber()).isEqualTo("010-7558-2452");
         assertThat(savedUser.getUserType().name()).isEqualTo("USER");
@@ -56,7 +58,7 @@ class UserServiceTest {
     public void loginTestsuite() {
         //given
         UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
-        User signup = userService.signup(userRequestDto);
+        userService.signup(userRequestDto);
 
         //when
         LoginDto loginDto = new LoginDto("email@naver.com", "password");
@@ -71,7 +73,7 @@ class UserServiceTest {
     public void loginFailTestsuite() {
         //given
         UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
-        User signup = userService.signup(userRequestDto);
+        userService.signup(userRequestDto);
 
         //when
         LoginDto loginDto = new LoginDto("email@naver.com", "pass");
@@ -86,15 +88,15 @@ class UserServiceTest {
     public void logoutTestsuite() {
         //given
         UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
-        User signup = userService.signup(userRequestDto);
+        userService.signup(userRequestDto);
         LoginDto loginDto = new LoginDto("email@naver.com", "password");
         TokenDto login = userService.login(loginDto);
 
         //when
-        userService.logout(signup);
+        userService.logout(userRequestDto.getEmail());
 
         //then ( 생성된 토큰의 유효성을 확인한다. )
-        assertThat(refreshTokenService.findKey(signup.getEmail())).isEqualTo(java.util.Optional.empty());
+        assertThat(refreshTokenService.findKey(userRequestDto.getEmail())).isEqualTo(java.util.Optional.empty());
     }
 
     private boolean checkPassword(String password, String exPassword) {
