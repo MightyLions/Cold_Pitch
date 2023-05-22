@@ -62,6 +62,7 @@ public class PostService {
         return convertDto(post, user.getName(), getLikeDislike(user.getId(),postId));
     }
 
+    @Transactional
     public PostResponseDto likePost(String userEmail,Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail);
@@ -86,6 +87,7 @@ public class PostService {
         return convertDto(post, user.getName(),LikeState.LIKE);
     }
     // PostResponseDto에 좋아요 싫어요 찾아서 있는지 추가해주기
+    @Transactional
     public PostResponseDto dislikePost(String userEmail,Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail);

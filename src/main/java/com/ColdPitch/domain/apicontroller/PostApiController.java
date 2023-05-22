@@ -43,7 +43,7 @@ public class PostApiController {
             .body(postService.postStateChange(authentication.getName(), postId, status));
     }
 
-    @GetMapping
+    @GetMapping("{postId}")
     @Operation(summary = "게시글 조회")
     public ResponseEntity<PostResponseDto> getPost(@ApiIgnore Authentication authentication,
         @PathVariable Long postId) {
@@ -66,4 +66,5 @@ public class PostApiController {
         return ResponseEntity.status(200)
             .body(postService.dislikePost(authentication.getName(), postId));
     }
+
 }
