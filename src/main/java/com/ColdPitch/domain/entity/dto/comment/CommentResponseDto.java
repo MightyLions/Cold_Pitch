@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.entity.dto.comment;
 
+import com.ColdPitch.domain.entity.comment.CommentState;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public class CommentResponseDto {
     private Long pCommentId;
 
     @NotNull
-    private String status;
+    private CommentState status;
 
     private LocalDateTime createAt;
     private String createBy;

@@ -9,7 +9,6 @@ import com.ColdPitch.utils.SecurityUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +29,7 @@ public class CommentService {
             .userId(requestDto.getUserId())
             .text(requestDto.getText())
             .pCommentId(requestDto.getPCommentId())
-            // @TODO Comment status를 CommentState Enum을 사용해서 구현하기
-            .status(requestDto.getStatus())
+            .status(CommentState.OPEN)
             .build();
 
         comment = commentRepository.saveAndFlush(comment);
@@ -50,7 +48,6 @@ public class CommentService {
             .userId(comment.getUserId())
             .text(comment.getText())
             .pCommentId(comment.getPCommentId())
-            //  @Todo CommentResponseDto status를 CommentState Enum을 사용해서 구현하기
             .status(comment.getStatus())
             .createAt(comment.getCreateAt())
             .createBy(comment.getCreatedBy())
@@ -107,6 +104,7 @@ public class CommentService {
     public CommentResponseDto updateComment(Long id, String updatedText) {
         Comment entity = commentRepository.findById(id).orElse(null);
 
+        assert entity != null;
         entity.setText(updatedText);
 
         return commentToResponseDto(commentRepository.saveAndFlush(entity));
@@ -123,7 +121,7 @@ public class CommentService {
             return false;
         }
 
-        comment.setStatus(state.toString());
+        comment.setStatus(state);
         comment = commentRepository.saveAndFlush(comment);
 
         if (comment.getStatus().equals(state.toString())) {

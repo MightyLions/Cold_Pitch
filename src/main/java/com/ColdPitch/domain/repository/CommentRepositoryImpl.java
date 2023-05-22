@@ -3,14 +3,10 @@ package com.ColdPitch.domain.repository;
 import com.ColdPitch.domain.entity.Comment;
 import com.ColdPitch.domain.entity.QComment;
 import com.ColdPitch.domain.entity.comment.CommentState;
-import com.ColdPitch.utils.SecurityUtil;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
@@ -26,7 +22,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return queryFactory
             .selectFrom(QComment.comment)
             .where(QComment.comment.postId.eq(postId))
-            .where(QComment.comment.status.ne(CommentState.DELETED.toString()))
+            .where(QComment.comment.status.ne(CommentState.DELETED))
             .fetch();
     }
 
@@ -45,7 +41,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return queryFactory
             .selectFrom(QComment.comment)
             .where(QComment.comment.pCommentId.eq(pCommentId))
-            .where(QComment.comment.status.ne(CommentState.DELETED.toString()))
+            .where(QComment.comment.status.ne(CommentState.DELETED))
             .fetch();
     }
 
@@ -64,7 +60,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return queryFactory
             .selectFrom(QComment.comment)
             .where(QComment.comment.userId.eq(userId))
-            .where(QComment.comment.status.ne(CommentState.DELETED.toString()))
+            .where(QComment.comment.status.ne(CommentState.DELETED))
             .fetch();
     }
 
@@ -82,7 +78,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     public List<Comment> findAllForUser() {
         return queryFactory
             .selectFrom(QComment.comment)
-            .where(QComment.comment.status.ne(CommentState.DELETED.toString()))
+            .where(QComment.comment.status.ne(CommentState.DELETED))
             .fetch();
     }
 
@@ -100,7 +96,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return queryFactory
             .selectFrom(QComment.comment)
             .where(QComment.comment.id.eq(id))
-            .where(QComment.comment.status.ne(CommentState.DELETED.toString()))
+            .where(QComment.comment.status.ne(CommentState.DELETED))
             .fetch()
             .stream()
             .findAny()

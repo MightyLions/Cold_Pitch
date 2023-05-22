@@ -4,8 +4,6 @@ import com.ColdPitch.domain.entity.Solution;
 import com.ColdPitch.domain.entity.dto.solution.SolutionRequestDto;
 import com.ColdPitch.domain.entity.dto.solution.SolutionResponseDto;
 import com.ColdPitch.domain.repository.SolutionRepository;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +23,7 @@ public class SolutionService {
             .reaction(dto.getReaction())
             .positivePercentage(dto.getPositivePercentage())
             .negativePercentage(dto.getNegativePercentage())
+            .status(dto.getStatus())
             .build();
 
         solution = solutionRepository.saveAndFlush(solution);
@@ -46,6 +45,7 @@ public class SolutionService {
             .reaction(solution.getReaction())
             .positivePercentage(solution.getPositivePercentage())
             .negativePercentage(solution.getNegativePercentage())
+            .status(solution.getStatus())
             .createAt(solution.getCreateAt())
             .createBy(solution.getCreatedBy())
             .modifiedAt(solution.getModifiedAt())

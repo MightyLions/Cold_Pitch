@@ -5,7 +5,6 @@ import static com.ColdPitch.utils.RandomUtil.getRandom;
 import com.ColdPitch.domain.entity.Comment;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

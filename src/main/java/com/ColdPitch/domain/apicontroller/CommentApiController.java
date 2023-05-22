@@ -41,7 +41,7 @@ public class CommentApiController {
                     return ResponseEntity.ok(commentRepository
                         .findAll()
                         .stream()
-                        .filter(comment -> !comment.getStatus().equals(CommentState.DELETED.toString()))
+                        .filter(comment -> !comment.getStatus().equals(CommentState.DELETED))
                         .map(CommentService::commentToResponseDto)
                         .collect(Collectors.toList())
                     );
@@ -116,7 +116,7 @@ public class CommentApiController {
                 .text("dummy comment " + i)
                 .postId((long) Math.max(1, (1.0 - Math.random()) * Math.max(3, amount / 5)))
                 .pCommentId((long) Math.max(1, (1.0 - Math.random()) * Math.max(3, amount / 5)))
-                .status(CommentState.CREATED.toString())
+                .status(CommentState.OPEN)
                 .build();
 
             if (i == 0) {
