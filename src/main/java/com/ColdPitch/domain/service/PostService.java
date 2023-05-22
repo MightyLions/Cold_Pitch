@@ -6,6 +6,7 @@ import com.ColdPitch.domain.entity.Post;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
 import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
+import com.ColdPitch.domain.entity.post.LikeState;
 import com.ColdPitch.domain.entity.post.PostState;
 import com.ColdPitch.domain.repository.DislikeRepository;
 import com.ColdPitch.domain.repository.LikeRepository;
@@ -32,7 +33,7 @@ public class PostService {
         User user = userRepository.findByEmail(userEmail);
         Post post = Post.toEntity(requestDto.getTitle(), requestDto.getText(), requestDto.getCategory(), user.getId(), PostState.OPEN);
         postRepository.save(post);
-        return convertDto(post, user.getName());
+        return convertDto(post, user.getName(),LikeState.UNSELECTED);
     }
 
     @Transactional
@@ -43,7 +44,7 @@ public class PostService {
         post.setTitle(requestDto.getTitle());
         post.setText(requestDto.getText());
         post.setCategory(requestDto.getCategory());
-        return convertDto(post, user.getName());
+        return convertDto(post, user.getName(),getLikeDislike(user.getId(),post.getId()));
     }
 
     @Transactional
@@ -52,16 +53,14 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail);
         post.setStatus(PostState.valueOf(state));
-        return state.equals("DELETED") ? null : convertDto(post, user.getName()) ;
+        return state.equals("DELETED") ? null : convertDto(post, user.getName(),getLikeDislike(user.getId(),postId)) ;
     }
 
     public PostResponseDto getPost(String userEmail, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail);
-        return convertDto(post, user.getName());
+        return convertDto(post, user.getName(), getLikeDislike(user.getId(),postId));
     }
-
-
 
     public PostResponseDto likePost(String userEmail,Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
@@ -84,7 +83,7 @@ public class PostService {
             post.plusLike();
         }
 
-        return convertDto(post, user.getName());
+        return convertDto(post, user.getName(),LikeState.LIKE);
     }
     // PostResponseDto에 좋아요 싫어요 찾아서 있는지 추가해주기
     public PostResponseDto dislikePost(String userEmail,Long postId) {
@@ -108,11 +107,16 @@ public class PostService {
             dislikeRepository.save(dislike);
             post.plusDislike();
         }
-        return convertDto(post, user.getName());
+        return convertDto(post, user.getName(), LikeState.DISLIKE);
     }
 
+    public LikeState getLikeDislike(Long postId, Long userId) {
+        Optional<Like> like = likeRepository.findByUserIdAndPostId(userId, postId);
+        Optional<Dislike> dislike = dislikeRepository.findByUserIdAndPostId(userId, postId);
+        return like.isPresent() ? LikeState.LIKE : (dislike.isPresent() ? LikeState.DISLIKE : LikeState.UNSELECTED);
+    }
 
-    public PostResponseDto convertDto(Post post, String userName) {
+    public PostResponseDto convertDto(Post post, String userName, LikeState userChoice) {
         return PostResponseDto.builder()
             .id(post.getId())
             .title(post.getTitle())
@@ -122,6 +126,9 @@ public class PostService {
             .createAt(post.getCreateAt())
             .modifyAt(post.getModifiedAt())
             .status(post.getStatus())
+            .likeCnt(post.getLikeCnt())
+            .dislikeCnt(post.getDislikeCnt())
+            .userChoice(userChoice)
             .build();
     }
 }
