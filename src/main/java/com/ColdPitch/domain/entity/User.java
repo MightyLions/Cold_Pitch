@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.entity;
 
+import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
 import lombok.AccessLevel;
@@ -22,7 +23,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     private boolean userSocial;// 확장성
@@ -30,7 +31,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -61,5 +62,16 @@ public class User extends BaseEntity {
                 ", curState=" + curState +
                 super.toString() +
                 '}';
+    }
+
+    //유저 수정 부분
+    public void updateProfile(UserRequestDto userRequestDto) {
+        this.name = userRequestDto.getName();
+        this.nickname = userRequestDto.getNickname();
+        this.phoneNumber = userRequestDto.getPhoneNumber();
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 }

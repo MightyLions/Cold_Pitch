@@ -18,8 +18,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -95,4 +101,33 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    @Transactional
+    public UserResponseDto updateProfile(@ApiIgnore String userEmail, UserRequestDto userRequestDto) {
+        //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
+        User user = userRepository.findOneWithAuthoritiesByEmail(userEmail).orElseThrow();
+        user.updateProfile(userRequestDto);
+        user.updatePassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        return UserResponseDto.of(user);
+    }
+
+    public List<UserResponseDto> findAllUser() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserResponseDto::of)
+                .collect(Collectors.toList());
+
+    }
+
+    public UserResponseDto findByNickName(String nickname) {
+        Optional<User> find = userRepository.findByNickname(nickname);
+        if (find.isPresent()) {
+            return UserResponseDto.of(find.get());
+        }
+        throw new RequestRejectedException("없는 nickname 입니다");
+    }
+
+    @Transactional
+    public void deleteByEmail(String email) {
+        userRepository.deleteByEmail(email);
+    }
 }
