@@ -47,8 +47,9 @@ public class UserAuthApiController {
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "리프레시 토큰 삭제")
-    public void logout(@ApiIgnore Authentication authentication) {
+    public ResponseEntity<Void> logout(@ApiIgnore Authentication authentication) {
         userService.logout(authentication.getName());
+        return ResponseEntity.status(200).build();
     }
 
     @PostMapping("/reissue")
