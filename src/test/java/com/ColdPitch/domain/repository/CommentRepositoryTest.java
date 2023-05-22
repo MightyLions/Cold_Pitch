@@ -3,6 +3,7 @@ package com.ColdPitch.domain.repository;
 import static com.ColdPitch.utils.RandomUtil.getRandom;
 
 import com.ColdPitch.domain.entity.Comment;
+import com.ColdPitch.domain.entity.comment.CommentState;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class CommentRepositoryTest {
                 .postId(getRandom(repeatCount))
                 .userId(getRandom(repeatCount))
                 .text("comment " + i)
+                .status(CommentState.OPEN)
                 .build();
 
             if (i == 0) {
@@ -67,6 +69,7 @@ public class CommentRepositoryTest {
                 .postId(getRandom(repeatCount))
                 .userId(getRandom(repeatCount))
                 .text("comment " + i)
+                .status(CommentState.OPEN)
                 .build();
 
             commentList.add(commentRepository.saveAndFlush(entity));
