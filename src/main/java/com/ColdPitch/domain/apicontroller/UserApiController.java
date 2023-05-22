@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.apicontroller;
 
+import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
@@ -18,9 +19,25 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/user")
 public class UserApiController {
     private final UserService userService;
+
+    @GetMapping
+    @Operation(summary = "유저 전체 조회 ( 이후에 ADMIN 권한으로 열기)" )
+    public ResponseEntity<List<UserResponseDto>> findAllUser() {
+        List<UserResponseDto> list = userService.findAllUser();
+        return ResponseEntity.status(200).body(list);
+    }
+
+
+    @GetMapping("/{nickname}")
+    @Operation(summary = "특정 유저 조회")
+    public ResponseEntity<UserResponseDto> findMyProfile(@PathVariable("nickname") String nickname) {
+        UserResponseDto findUser = userService.findByNickName(nickname);
+        return ResponseEntity.status(200).body(findUser);
+    }
+
 
     @GetMapping("/dummy")
     @Operation(summary = "USER 더미데이터 생성", description = "default USER, 원하는 경우 ADMIN 입력")
