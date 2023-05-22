@@ -1,6 +1,5 @@
 package com.ColdPitch.domain.apicontroller;
 
-import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
@@ -24,20 +23,23 @@ public class UserApiController {
     private final UserService userService;
 
     @GetMapping
-    @Operation(summary = "유저 전체 조회 ( 이후에 ADMIN 권한으로 열기)" )
+    @Operation(summary = "유저 전체 조회 ( 이후에 ADMIN 권한으로 열기)")
     public ResponseEntity<List<UserResponseDto>> findAllUser() {
-        List<UserResponseDto> list = userService.findAllUser();
-        return ResponseEntity.status(200).body(list);
+        return ResponseEntity.status(200).body(userService.findAllUser());
     }
 
 
     @GetMapping("/{nickname}")
     @Operation(summary = "특정 유저 조회")
     public ResponseEntity<UserResponseDto> findMyProfile(@PathVariable("nickname") String nickname) {
-        UserResponseDto findUser = userService.findByNickName(nickname);
-        return ResponseEntity.status(200).body(findUser);
+        return ResponseEntity.status(200).body(userService.findByNickName(nickname));
     }
 
+    @PatchMapping("/{nickname}")
+    @Operation(summary = "유저 수정", description = "유저 이름, 전화번호, 닉네임, password 변경 기능")
+    public ResponseEntity<UserResponseDto> updateProfile(@PathVariable("nickname") String nickname, @RequestBody UserRequestDto userRequestDto) {
+        return ResponseEntity.status(200).body(userService.updateProfile(nickname, userRequestDto));
+    }
 
     @GetMapping("/dummy")
     @Operation(summary = "USER 더미데이터 생성", description = "default USER, 원하는 경우 ADMIN 입력")

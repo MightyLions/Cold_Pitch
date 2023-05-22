@@ -100,6 +100,15 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    @Transactional
+    public UserResponseDto updateProfile(String nickname,UserRequestDto userRequestDto) {
+        //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
+        User user = userRepository.findByNickname(nickname).orElseThrow();
+        user.updateProfile(userRequestDto);
+        user.updatePassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        return UserResponseDto.of(user);
+    }
+
     public List<UserResponseDto> findAllUser() {
         return userRepository.findAll()
                 .stream()
