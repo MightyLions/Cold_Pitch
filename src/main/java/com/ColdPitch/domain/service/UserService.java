@@ -127,7 +127,8 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteByEmail(String email) {
+    public void deleteUser(String email) {
+        logout(email); //리프레시 토큰을 삭제한다.
         userRepository.deleteByEmail(email);
     }
 }

@@ -43,6 +43,13 @@ public class UserApiController {
         return ResponseEntity.status(200).body(userService.updateProfile(authentication.getName(), userRequestDto));
     }
 
+    @DeleteMapping
+    @Operation(summary = "유저 탈퇴")
+    public ResponseEntity<Void> deleteUser(@ApiIgnore Authentication authentication) {
+        userService.deleteUser(authentication.getName());
+        return ResponseEntity.status(200).build();
+    }
+
     @GetMapping("/dummy")
     @Operation(summary = "USER 더미데이터 생성", description = "default USER, 원하는 경우 ADMIN 입력")
     public ResponseEntity<List<UserResponseDto>> makeDummyUser(@RequestParam(defaultValue = "USER", name = "userType(Default : USER)") String userType, @RequestParam(defaultValue = "5", name = "size(Default : 5)") int size) {
@@ -59,7 +66,7 @@ public class UserApiController {
     @Operation(summary = "USER 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyUserToken() {
         UserRequestDto urd = new UserRequestDto("testNick", "testName", "testPass", "testEamil@naver.com", "010-1234-1234", "USER");
-        userService.deleteByEmail(urd.getEmail());
+        userService.deleteUser(urd.getEmail());
         userService.signup(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
@@ -69,7 +76,7 @@ public class UserApiController {
     @Operation(summary = "ADMIN 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyAdminToken() {
         UserRequestDto urd = new UserRequestDto("testANick", "testAName", "testAPass", "testAEamil@naver.com", "010-5678-5678", "ADMIN");
-        userService.deleteByEmail(urd.getEmail());
+        userService.deleteUser(urd.getEmail());
         userService.signup(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
