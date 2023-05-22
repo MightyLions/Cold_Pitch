@@ -59,6 +59,10 @@ public class Solution extends BaseEntity {
         this.feedback = feedback;
     }
 
+    public void setStatus(SolutionState status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Solution {" +

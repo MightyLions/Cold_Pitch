@@ -4,6 +4,7 @@ import static com.ColdPitch.utils.RandomUtil.getRandom;
 import static com.ColdPitch.utils.RandomUtil.getRandomPercentage;
 
 import com.ColdPitch.domain.entity.Solution;
+import com.ColdPitch.domain.entity.solution.SolutionState;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,7 @@ public class SolutionRepositoryTest {
             .positivePercentage(String.format("%.9f", 1 - randomVal).substring(0, 10))
             .reaction("test reaction")
             .feedback("feedback")
+            .status(SolutionState.OPEN)
             .userId(USER_ID)
             .build();
 
@@ -107,7 +109,7 @@ public class SolutionRepositoryTest {
     @Test
     @DisplayName("SolutionRepository QueryDSL\ngetAllByUserId()")
     void getAllByUserId() {
-        List<Solution> list = solutionRepository.getAllByUserId(USER_ID);
+        List<Solution> list = solutionRepository.findAllByUserId(USER_ID);
 
         list.forEach(solution -> log.info(solution.toString()));
     }
