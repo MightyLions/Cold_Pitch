@@ -64,7 +64,7 @@ class UserAuthApiControllerTest {
                 .andExpect(jsonPath("nickname").value("nickname"))
                 .andExpect(jsonPath("email").value("email@naver.com"));
         //then
-        User find = userRepository.findByEmail("email@naver.com");
+        User find = userRepository.findByEmail("email@naver.com").orElseThrow();
         assertTrue(passwordEncoder.matches("password", find.getPassword()));
         assertThat(find.getNickname()).isEqualTo("nickname");
 
