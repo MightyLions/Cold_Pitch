@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Optional;
@@ -101,9 +102,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateProfile(String nickname,UserRequestDto userRequestDto) {
+    public UserResponseDto updateProfile(@ApiIgnore String userEmail, UserRequestDto userRequestDto) {
         //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
-        User user = userRepository.findByNickname(nickname).orElseThrow();
+        User user = userRepository.findOneWithAuthoritiesByEmail(userEmail).orElseThrow();
         user.updateProfile(userRequestDto);
         user.updatePassword(passwordEncoder.encode(userRequestDto.getPassword()));
         return UserResponseDto.of(user);
@@ -123,5 +124,10 @@ public class UserService {
             return UserResponseDto.of(find.get());
         }
         throw new RequestRejectedException("없는 nickname 입니다");
+    }
+
+    @Transactional
+    public void deleteByEmail(String email) {
+        userRepository.deleteByEmail(email);
     }
 }
