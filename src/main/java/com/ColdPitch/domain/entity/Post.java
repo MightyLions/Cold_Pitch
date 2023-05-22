@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.entity;
 
+import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,13 +42,13 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = true)
+    @Column
     private Long boardId;
 
-    @Column
+    @Column(nullable = false)
     private int likeCnt;
 
-    @Column
+    @Column(nullable = false)
     private int dislikeCnt;
 
     public void setTitle(String title) {
@@ -95,7 +96,6 @@ public class Post extends BaseEntity {
             ", " + super.toString() +
             '}';
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -117,6 +117,12 @@ public class Post extends BaseEntity {
             .userId(userId)
             .status(status)
             .build();
+    }
+
+    public void updatePost(PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.text = requestDto.getText();
+        this.category = requestDto.getCategory();
     }
 
 }

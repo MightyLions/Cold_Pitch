@@ -43,9 +43,7 @@ public class PostService {
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         // 게시 유저와 유저가 같으면 권한 부여
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
-        post.setTitle(requestDto.getTitle());
-        post.setText(requestDto.getText());
-        post.setCategory(requestDto.getCategory());
+        post.updatePost(requestDto);
         return convertDto(post, user.getName(), getLikeDislike(user.getId(), post.getId()));
     }
 
