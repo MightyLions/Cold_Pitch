@@ -48,13 +48,12 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto postStateChange(String userEmail, Long postId, String state) {
+    public PostResponseDto postStateChange(String userEmail, Long postId, PostState state) {
         // 게시 유저와 유저가 같으면 권한 부여
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
-        post.setStatus(PostState.valueOf(state));
-        return state.equals("DELETED") ? null
-            : convertDto(post, user.getName(), getLikeDislike(user.getId(), postId));
+        post.setStatus(state);
+        return convertDto(post, user.getName(), getLikeDislike(user.getId(), postId));
     }
 
     public PostResponseDto getPost(String userEmail, Long postId) {

@@ -2,6 +2,7 @@ package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
 import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
+import com.ColdPitch.domain.entity.post.PostState;
 import com.ColdPitch.domain.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class PostApiController {
     @PatchMapping("/{postId}/{status}")
     @Operation(summary = "게시글 상태변경")
     public ResponseEntity<PostResponseDto> changeStatus(@ApiIgnore Authentication authentication,
-        @PathVariable Long postId, @PathVariable String status) {
+        @PathVariable Long postId, @PathVariable PostState status) {
         return ResponseEntity.status(200)
             .body(postService.postStateChange(authentication.getName(), postId, status));
     }
