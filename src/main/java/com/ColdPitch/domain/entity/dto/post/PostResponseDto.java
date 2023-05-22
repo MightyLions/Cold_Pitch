@@ -1,9 +1,9 @@
 package com.ColdPitch.domain.entity.dto.post;
 
+import com.ColdPitch.domain.entity.post.Category;
 import com.ColdPitch.domain.entity.post.LikeState;
 import com.ColdPitch.domain.entity.post.PostState;
 import java.time.LocalDateTime;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class PostResponseDto {
     private String title;
     private String text;
     private String userName;
-    private String category;
+    private Category category;
     private PostState status;
     private LocalDateTime createAt;
     private LocalDateTime modifyAt;

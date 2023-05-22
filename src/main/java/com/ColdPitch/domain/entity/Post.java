@@ -1,6 +1,7 @@
 package com.ColdPitch.domain.entity;
 
 import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
+import com.ColdPitch.domain.entity.post.Category;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ public class Post extends BaseEntity {
     private PostState status;
 
     @Column(nullable = false)
-    private String category;
+    private Category category;
 
     @Column(nullable = false)
     private Long userId;
@@ -63,7 +64,7 @@ public class Post extends BaseEntity {
         this.status = status;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -108,7 +109,7 @@ public class Post extends BaseEntity {
         return Objects.equals(id, post.getId());
     }
 
-    public static Post toEntity(String title, String text, String category, Long userId,
+    public static Post toEntity(String title, String text, Category category, Long userId,
         PostState status) {
         return Post.builder()
             .title(title)
