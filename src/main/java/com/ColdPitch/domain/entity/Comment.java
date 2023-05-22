@@ -42,6 +42,10 @@ public class Comment extends BaseEntity {
         this.pCommentId = pCommentId;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

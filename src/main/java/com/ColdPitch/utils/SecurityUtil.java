@@ -1,9 +1,11 @@
 package com.ColdPitch.utils;
 
 
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -29,5 +31,47 @@ public class SecurityUtil {
             userEmail = (String) authentication.getPrincipal();
         }
         return Optional.ofNullable(userEmail);
+    }
+
+    /**
+     * 현재 SecurityContext에 있는 유저의 권한 컬렉션을 리턴
+     *
+     * @return
+     * UserDetails
+     * 유저의 권한 컬렉션을 리턴
+     */
+    public static Optional<Collection<? extends GrantedAuthority>> getCurrentUserAuthorities() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            log.info("Secutiry context의 정보가 없음");
+            return Optional.empty();
+        }
+
+        return Optional.of(authentication.getAuthorities());
+    }
+
+    /**
+     * 현재 주어진 role과 SecurityContext에 있는 유저를 비교하여 Boolean값 리턴
+     * @param role
+     * 유저의 역할
+     * @return
+     * 동일할 경우 true, 그외의 경우에는 false
+     */
+    public static boolean checkCurrentUserRole(String role) {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            log.info("Secutiry context의 정보가 없음");
+            return false;
+        }
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        for (GrantedAuthority authority : authorities) {
+            if (authority.getAuthority().equals(role)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
