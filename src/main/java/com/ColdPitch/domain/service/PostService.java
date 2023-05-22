@@ -32,10 +32,10 @@ public class PostService {
     @Transactional
     public PostResponseDto createPost(String userEmail, PostRequestDto requestDto) {
         User user = userRepository.findByEmail(userEmail).orElseThrow();
-        Post post = Post.toEntity(requestDto.getTitle(), requestDto.getText(),
-            requestDto.getCategory(), user.getId(), PostState.OPEN);
+        requestDto.setStatus(PostState.OPEN);
+        Post post = Post.toEntity(requestDto,user.getId());
         postRepository.save(post);
-        return convertDto(post, user.getName(), LikeState.UNSELECTED);
+        return PostResponseDto.of(post, user, LikeState.UNSELECTED);
     }
 
     @Transactional
@@ -44,7 +44,7 @@ public class PostService {
         // 게시 유저와 유저가 같으면 권한 부여
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
         post.updatePost(requestDto);
-        return convertDto(post, user.getName(), getLikeDislike(user.getId(), post.getId()));
+        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), post.getId()));
     }
 
     @Transactional
@@ -53,13 +53,13 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         post.setStatus(state);
-        return convertDto(post, user.getName(), getLikeDislike(user.getId(), postId));
+        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
     }
 
     public PostResponseDto getPost(String userEmail, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
-        return convertDto(post, user.getName(), getLikeDislike(user.getId(), postId));
+        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
     }
 
     @Transactional
@@ -67,8 +67,7 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         // 이미 싫어요 누른 게시물은 좋아요 불가능
-        Optional<Dislike> originDislike = dislikeRepository.findByUserIdAndPostId(user.getId(),
-            postId);
+        Optional<Dislike> originDislike = dislikeRepository.findByUserIdAndPostId(user.getId(), postId);
         if (originDislike.isPresent()) { // 예외처리 때 변경
             log.info("싫어요를 선택한 게시물에는 좋아요를 선택할 수 없습니다.");
             return null;
@@ -84,7 +83,7 @@ public class PostService {
             likeRepository.save(like);
             post.plusLike();
         }
-        return convertDto(post, user.getName(), getLikeDislike(user.getId(), postId));
+        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
     }
 
     // PostResponseDto에 좋아요 싫어요 찾아서 있는지 추가해주기
@@ -111,7 +110,7 @@ public class PostService {
             dislikeRepository.save(dislike);
             post.plusDislike();
         }
-        return convertDto(post, user.getName(), getLikeDislike(user.getId(), postId));
+        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
     }
 
     @Transactional
@@ -123,19 +122,4 @@ public class PostService {
             : (dislike.isPresent() ? LikeState.DISLIKE : LikeState.UNSELECTED);
     }
 
-    public PostResponseDto convertDto(Post post, String userName, LikeState userChoice) {
-        return PostResponseDto.builder()
-            .id(post.getId())
-            .title(post.getTitle())
-            .text(post.getText())
-            .userName(userName)
-            .category(post.getCategory())
-            .createAt(post.getCreateAt())
-            .modifyAt(post.getModifiedAt())
-            .status(post.getStatus())
-            .likeCnt(post.getLikeCnt())
-            .dislikeCnt(post.getDislikeCnt())
-            .userChoice(userChoice)
-            .build();
-    }
 }

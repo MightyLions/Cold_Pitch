@@ -109,14 +109,13 @@ public class Post extends BaseEntity {
         return Objects.equals(id, post.getId());
     }
 
-    public static Post toEntity(String title, String text, Category category, Long userId,
-        PostState status) {
+    public static Post toEntity(PostRequestDto requestDto,Long userId) {
         return Post.builder()
-            .title(title)
-            .text(text)
-            .category(category)
+            .title(requestDto.getTitle())
+            .text(requestDto.getText())
+            .category(requestDto.getCategory())
             .userId(userId)
-            .status(status)
+            .status(requestDto.getStatus())
             .build();
     }
 
