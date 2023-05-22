@@ -19,4 +19,8 @@ public class PostResponseDto {
     private PostState status;
     private LocalDateTime createAt;
     private LocalDateTime modifyAt;
+    // 좋아요 관련
+    private boolean likeCnt;
+    private boolean dislikeCnt;
+    private String userChoice;
 }
