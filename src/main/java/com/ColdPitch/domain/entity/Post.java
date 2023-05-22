@@ -19,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "post")
-public class Post extends BaseEntity{
+public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +44,12 @@ public class Post extends BaseEntity{
     @Column(nullable = true)
     private Long boardId;
 
+    @Column
+    private int likeCnt;
+
+    @Column
+    private int dislikeCnt;
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -58,6 +64,22 @@ public class Post extends BaseEntity{
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public void plusLike() {
+        this.likeCnt++;
+    }
+
+    public void minusLike() {
+        this.likeCnt = Math.max(this.likeCnt - 1, 0);
+    }
+
+    public void plusDislike() {
+        this.dislikeCnt++;
+    }
+
+    public void minusDislike() {
+        this.dislikeCnt = Math.max(this.dislikeCnt - 1, 0);
     }
 
     @Override
@@ -86,14 +108,15 @@ public class Post extends BaseEntity{
         return Objects.equals(id, post.getId());
     }
 
-    public static Post toEntity(String title, String text, String category, Long userId, PostState status) {
+    public static Post toEntity(String title, String text, String category, Long userId,
+        PostState status) {
         return Post.builder()
-                .title(title)
-                .text(text)
-                .category(category)
-                .userId(userId)
-                .status(status)
-                .build();
+            .title(title)
+            .text(text)
+            .category(category)
+            .userId(userId)
+            .status(status)
+            .build();
     }
 
 }
