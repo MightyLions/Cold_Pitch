@@ -4,7 +4,8 @@ import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
-import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
+import com.ColdPitch.domain.entity.user.CurState;
+import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.jwt.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,6 +30,8 @@ class UserServiceTest {
 
     @Autowired
     UserService userService;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -97,6 +102,37 @@ class UserServiceTest {
 
         //then ( 생성된 토큰의 유효성을 확인한다. )
         assertThat(refreshTokenService.findKey(userRequestDto.getEmail())).isEqualTo(java.util.Optional.empty());
+    }
+
+    @Test
+    @DisplayName("유저 탈퇴를 확인한다.")
+    public void deletedTestsuite() {
+        //given
+        UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
+        userService.signup(userRequestDto);
+
+        //when
+        userService.deleteUser(userRequestDto.getEmail());
+
+        //then
+        List<User> users = userRepository.findUserByEmailIncludeDeletedUser(userRequestDto.getEmail()).orElseThrow();
+        assertThat(users.size()).isEqualTo(1);
+        assertThat(users.get(0).getCurState()).isEqualTo(CurState.DELETED); //컬럼이 삭제인지 확인
+        assertThat(refreshTokenService.findKey(userRequestDto.getEmail())).isEmpty();//refreshtoken 삭제 확인
+    }
+
+    @Test
+    @DisplayName("유저 탈퇴시 조회를 확인한다.")
+    public void deletedSelectTestsuite() {
+        //given
+        UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
+        userService.signup(userRequestDto);
+
+        //when
+        userService.deleteUser(userRequestDto.getEmail());
+
+        //then
+        assertThat(userRepository.findByEmail(userRequestDto.getEmail())).isEmpty();//조회시 없음을 확인
     }
 
     private boolean checkPassword(String password, String exPassword) {
