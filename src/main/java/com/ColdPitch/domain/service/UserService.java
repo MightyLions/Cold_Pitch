@@ -128,6 +128,11 @@ public class UserService {
 
     @Transactional
     public void deleteUser(String email) {
+        //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
+        List<User> users = userRepository.findUserByEmailIncludeDeletedUser(email).orElseThrow();
+        if (!users.isEmpty() && users.get(0).getCurState()==CurState.DELETED) {
+            throw new RequestRejectedException("이미 탈퇴한 회원입니다.");
+        }
         logout(email); //리프레시 토큰을 삭제한다.
         userRepository.deleteByEmail(email);
     }

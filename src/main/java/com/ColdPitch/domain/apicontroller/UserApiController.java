@@ -4,6 +4,7 @@ import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
+import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.UserService;
 import com.ColdPitch.utils.RandomUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping("/api/v1/user")
 public class UserApiController {
     private final UserService userService;
+    private final UserRepository userRepository; //더미네이터 생성으로 인해 잠시 추가 나중에 삭제할것임
 
     @GetMapping
     @Operation(summary = "유저 전체 조회 ( 이후에 ADMIN 권한으로 열기)")
@@ -66,7 +68,7 @@ public class UserApiController {
     @Operation(summary = "USER 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyUserToken() {
         UserRequestDto urd = new UserRequestDto("testNick", "testName", "testPass", "testEamil@naver.com", "010-1234-1234", "USER");
-        userService.deleteUser(urd.getEmail());
+        userRepository.deleteByEmail(urd.getEmail());
         userService.signup(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
@@ -76,7 +78,7 @@ public class UserApiController {
     @Operation(summary = "ADMIN 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyAdminToken() {
         UserRequestDto urd = new UserRequestDto("testANick", "testAName", "testAPass", "testAEamil@naver.com", "010-5678-5678", "ADMIN");
-        userService.deleteUser(urd.getEmail());
+        userRepository.deleteByEmail(urd.getEmail());
         userService.signup(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
