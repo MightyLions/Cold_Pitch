@@ -7,7 +7,7 @@ server:
 #Spring Settings
 spring:
   profiles:
-    default: production
+    active: production
   config:
     activate:
       on-profile: production

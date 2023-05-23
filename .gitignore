@@ -45,3 +45,6 @@ intellij-java-google-style.xml
 
 ### jwt ###
 /src/main/resources/secret.properties
+
+### file ###
+/temp
