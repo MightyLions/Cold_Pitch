@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@RestController
+@RestController("/api/v1")
 @RequiredArgsConstructor
 public class CompanyRegistrationController {
     private final CompanyRegistrationService companyRegistrationService;

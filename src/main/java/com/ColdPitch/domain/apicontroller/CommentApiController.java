@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController("/api/v1")
 @RequiredArgsConstructor
 @Transactional
 public class CommentApiController {
