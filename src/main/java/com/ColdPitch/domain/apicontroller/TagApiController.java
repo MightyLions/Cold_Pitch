@@ -30,6 +30,4 @@ public class TagApiController {
         Tag createdTag = tagService.createTag(tag);
         return ResponseEntity.ok(createdTag);
     }
-
-
 }
