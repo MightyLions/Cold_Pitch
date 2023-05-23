@@ -52,12 +52,12 @@ public class UserService {
     public UserResponseDto signUpCompany(CompanyRequestDto companyRequestDto) {
         //TODO 유저 이메일, 닉네임 중복 확인 ( 이메일 형식, 전화번호 형식 확인 부분도 추가해야함)
         UserRequestDto userRequestDto = companyRequestDto.getUserRequestDto();
-        User user = makeUser(userRequestDto);
+        User user = userRepository.save(makeUser(userRequestDto));
 
         //실제 존재하는 기업 회원인지 검증하는 로직
         CompanyRegistration companyRegistration = companyRegistrationService.validateAndSaveCompanyRegistration(companyRequestDto.getCompanyRegistrationDto(), user);
         user.registerCompany(companyRegistration);
-        return UserResponseDto.of(userRepository.save(user));
+        return UserResponseDto.of(user);
     }
 
     @Transactional

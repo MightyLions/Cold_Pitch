@@ -51,7 +51,7 @@ public class CompanyRegistration extends BaseEntity {
     @Column(name = "company_address", nullable = false)
     private String companyAddress;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 

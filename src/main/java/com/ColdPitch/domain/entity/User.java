@@ -41,7 +41,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY)
     private CompanyRegistration companyRegistration;
 
     @Enumerated(EnumType.STRING)
@@ -50,7 +50,6 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-
     private CurState curState;
 
     @Override
