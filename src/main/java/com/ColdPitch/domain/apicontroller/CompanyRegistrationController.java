@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/company")
 public class CompanyRegistrationController {
     private final CompanyRegistrationService companyRegistrationService;
 
     @PostMapping("/validate")
-    public ResponseEntity<CompanyRegistrationDto> validate(@Valid @RequestBody CompanyRegistrationDto companyRegistrationDto, BindingResult result) {
+    public ResponseEntity<CompanyRegistrationDto> validate(@RequestBody CompanyRegistrationDto companyRegistrationDto, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
