@@ -68,7 +68,7 @@ public class PostService {
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
-    public List<PostResponseDto> getAllPost() {
+    public List<PostResponseDto> findAllPosts() {
         List<Post> postList = postRepository.findAll();
         List<PostResponseDto> responseDtos = new ArrayList<>();
         for (Post post : postList) {

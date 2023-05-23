@@ -69,11 +69,11 @@ public class PostApiController {
             .body(postService.dislikePost(authentication.getName(), postId));
     }
 
-    @GetMapping("/allPost")
+    @GetMapping("/all")
     @Operation(summary = "전체 게시글 조회")
-    public ResponseEntity<List<PostResponseDto>> getAllPost() {
+    public ResponseEntity<List<PostResponseDto>> findAll() {
         return ResponseEntity.status(200)
-            .body(postService.getAllPost());
+            .body(postService.findAllPosts());
     }
 
 }
