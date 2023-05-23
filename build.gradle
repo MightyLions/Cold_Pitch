@@ -67,6 +67,12 @@ dependencies {
     //swager
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+
+	//okhttp 사업자등록정보 검증
+	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+	implementation 'com.google.code.gson:gson:2.8.9'
+
 }
 
 tasks.named('test') {
