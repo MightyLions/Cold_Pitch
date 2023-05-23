@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.entity.dto.solution;
 
+import com.ColdPitch.domain.entity.solution.SolutionState;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,8 @@ public class SolutionRequestDto {
 
     @NotNull
     private String reaction;
+
+    private SolutionState status;
 
     @NotNull
     @JsonProperty("positivePercentage")
