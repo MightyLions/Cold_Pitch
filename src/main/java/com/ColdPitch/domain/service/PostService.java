@@ -67,49 +67,43 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         // 이미 싫어요 누른 게시물은 좋아요 불가능
-        Optional<Dislike> originDislike = dislikeRepository.findByUserIdAndPostId(user.getId(), postId);
-        if (originDislike.isPresent()) { // 예외처리 때 변경
-            log.info("싫어요를 선택한 게시물에는 좋아요를 선택할 수 없습니다.");
-            return null;
-        }
+        dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v -> {
+            log.info("싫어요를 선택한 게시물에는 좋아요를 선택할 수 없습니다."); // 익셉션 던지기
+        });
         // 이미 좋아요 누른 게시물은 좋아요 취소
-        Optional<Like> originLike = likeRepository.findByUserIdAndPostId(user.getId(), postId);
-        if (originLike.isPresent()) {
-            likeRepository.deleteById(originLike.get().getId());
-            post.minusLike();
-        } else {
-            // 아직 아무 버튼도 누르지 않은 게시물
-            Like like = Like.builder().userId(user.getId()).postId(postId).build();
-            likeRepository.save(like);
-            post.plusLike();
-        }
+        likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresentOrElse(
+            like -> {
+                likeRepository.deleteById(like.getId());
+                post.minusLike();
+            }, () -> {
+                Like like = Like.builder().userId(user.getId()).postId(postId).build();
+                likeRepository.save(like);
+                post.plusLike();
+            }
+        );
         return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
     }
 
-    // PostResponseDto에 좋아요 싫어요 찾아서 있는지 추가해주기
     @Transactional
     public PostResponseDto dislikePost(String userEmail, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
 
         // 이미 좋어요 누른 게시물은 싫어요 불가능
-        Optional<Like> originLike = likeRepository.findByUserIdAndPostId(user.getId(), postId);
-        if (originLike.isPresent()) { // 예외처리 때 변경
-            log.info("좋아요를 선택한 게시물에는 싫어요를 선택할 수 없습니다.");
-            return null;
-        }
+        likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v->{
+            log.info("좋아요를 선택한 게시물에는 싫어요를 선택할 수 없습니다."); // 익셉션 던지기
+        });
         // 이미 싫어요를 누른 게시물은 싫어요 취소
-        Optional<Dislike> originDislike = dislikeRepository.findByUserIdAndPostId(user.getId(),
-            postId);
-        if (originDislike.isPresent()) {
-            dislikeRepository.deleteById(originDislike.get().getId());
-            post.minusDislike();
-        } else {
-            // 아직 아무 버튼도 누르지 않은 게시물
-            Dislike dislike = Dislike.builder().userId(user.getId()).postId(postId).build();
-            dislikeRepository.save(dislike);
-            post.plusDislike();
-        }
+        dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresentOrElse(
+            dislike -> {
+                dislikeRepository.deleteById(dislike.getId());
+                post.minusDislike();
+            }, () -> {
+                Dislike dislike = Dislike.builder().userId(user.getId()).postId(postId).build();
+                dislikeRepository.save(dislike);
+                post.plusDislike();
+            }
+        );
         return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
     }
 
@@ -117,7 +111,6 @@ public class PostService {
     public LikeState getLikeDislike(Long userId, Long postId) {
         Optional<Like> like = likeRepository.findByUserIdAndPostId(userId, postId);
         Optional<Dislike> dislike = dislikeRepository.findByUserIdAndPostId(userId, postId);
-        log.info(like.toString() + " " + dislike.toString());
         return like.isPresent() ? LikeState.LIKE
             : (dislike.isPresent() ? LikeState.DISLIKE : LikeState.UNSELECTED);
     }
