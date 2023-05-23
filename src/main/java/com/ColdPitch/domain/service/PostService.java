@@ -12,6 +12,8 @@ import com.ColdPitch.domain.repository.DislikeRepository;
 import com.ColdPitch.domain.repository.LikeRepository;
 import com.ColdPitch.domain.repository.PostRepository;
 import com.ColdPitch.domain.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +37,7 @@ public class PostService {
         requestDto.setStatus(PostState.OPEN);
         Post post = Post.toEntity(requestDto,user.getId());
         postRepository.save(post);
-        return PostResponseDto.of(post, user, LikeState.UNSELECTED);
+        return PostResponseDto.of(post, LikeState.UNSELECTED);
     }
 
     @Transactional
@@ -44,7 +46,7 @@ public class PostService {
         // 게시 유저와 유저가 같으면 권한 부여
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
         post.updatePost(requestDto);
-        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), post.getId()));
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), post.getId()));
     }
 
     @Transactional
@@ -53,13 +55,22 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         post.setStatus(state);
-        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
     public PostResponseDto getPost(String userEmail, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
-        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
+    }
+
+    public List<PostResponseDto> getAllPost() {
+        List<Post> postList = postRepository.findAll();
+        List<PostResponseDto> responseDtos = new ArrayList<>();
+        for (Post post : postList) {
+            responseDtos.add(PostResponseDto.of(post,null));
+        }
+        return responseDtos;
     }
 
     @Transactional
@@ -81,7 +92,7 @@ public class PostService {
                 post.plusLike();
             }
         );
-        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
     @Transactional
@@ -104,7 +115,7 @@ public class PostService {
                 post.plusDislike();
             }
         );
-        return PostResponseDto.of(post, user, getLikeDislike(user.getId(), postId));
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
     @Transactional

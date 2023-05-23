@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 @Data
 @AllArgsConstructor
@@ -30,12 +31,12 @@ public class PostResponseDto {
     private int dislikeCnt;
     private LikeState userChoice;
 
-    public static PostResponseDto of(Post post, User user, LikeState userChoice) {
+    public static PostResponseDto of(Post post, @Nullable LikeState userChoice) {
         return PostResponseDto.builder()
             .id(post.getId())
             .title(post.getTitle())
             .text(post.getText())
-            .userName(user.getName())
+            .userName(post.getUserId().toString()) // 임시
             .category(post.getCategory())
             .createAt(post.getCreateAt())
             .modifyAt(post.getModifiedAt())
