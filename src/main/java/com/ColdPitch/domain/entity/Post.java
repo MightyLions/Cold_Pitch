@@ -5,9 +5,12 @@ import com.ColdPitch.domain.entity.post.Category;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.ColdPitch.domain.entity.post.PostState;
@@ -40,8 +43,6 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Category category;
 
-    @Column(nullable = false)
-    private Long userId;
 
     @Column
     private Long boardId;
@@ -51,6 +52,10 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false)
     private int dislikeCnt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public void setTitle(String title) {
         this.title = title;
@@ -92,7 +97,7 @@ public class Post extends BaseEntity {
             ", text='" + text + '\'' +
             ", status='" + status + '\'' +
             ", category='" + category + '\'' +
-            ", userId=" + userId +
+            ", userId=" + user.toString() +
             ", boardId=" + boardId +
             ", " + super.toString() +
             '}';
@@ -109,12 +114,12 @@ public class Post extends BaseEntity {
         return Objects.equals(id, post.getId());
     }
 
-    public static Post toEntity(PostRequestDto requestDto,Long userId) {
+    public static Post toEntity(PostRequestDto requestDto, User user) {
         return Post.builder()
             .title(requestDto.getTitle())
             .text(requestDto.getText())
             .category(requestDto.getCategory())
-            .userId(userId)
+            .user(user)
             .status(requestDto.getStatus())
             .build();
     }

@@ -35,7 +35,7 @@ public class PostService {
     public PostResponseDto createPost(String userEmail, PostRequestDto requestDto) {
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         requestDto.setStatus(PostState.OPEN);
-        Post post = Post.toEntity(requestDto,user.getId());
+        Post post = Post.toEntity(requestDto,user);
         postRepository.save(post);
         return PostResponseDto.of(post, LikeState.UNSELECTED);
     }
@@ -43,17 +43,21 @@ public class PostService {
     @Transactional
     public PostResponseDto updatePost(String userEmail, PostRequestDto requestDto) {
         User user = userRepository.findByEmail(userEmail).orElseThrow();
-        // 게시 유저와 유저가 같으면 권한 부여
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
+        if (!post.getUser().getId().equals(user.getId())) {
+            log.info("유저 불일치"); // 변경 필요
+        }
         post.updatePost(requestDto);
         return PostResponseDto.of(post, getLikeDislike(user.getId(), post.getId()));
     }
 
     @Transactional
     public PostResponseDto postStateChange(String userEmail, Long postId, PostState state) {
-        // 게시 유저와 유저가 같으면 권한 부여
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
+        if (post.getCreatedBy().equals(user.toString())) {
+            log.info("유저 일치"); // 변경 필요
+        }
         post.setStatus(state);
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
@@ -77,11 +81,9 @@ public class PostService {
     public PostResponseDto likePost(String userEmail, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
-        // 이미 싫어요 누른 게시물은 좋아요 불가능
         dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v -> {
             log.info("싫어요를 선택한 게시물에는 좋아요를 선택할 수 없습니다."); // 익셉션 던지기
         });
-        // 이미 좋아요 누른 게시물은 좋아요 취소
         likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresentOrElse(
             like -> {
                 likeRepository.deleteById(like.getId());
@@ -99,12 +101,9 @@ public class PostService {
     public PostResponseDto dislikePost(String userEmail, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
-
-        // 이미 좋어요 누른 게시물은 싫어요 불가능
         likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v->{
             log.info("좋아요를 선택한 게시물에는 싫어요를 선택할 수 없습니다."); // 익셉션 던지기
         });
-        // 이미 싫어요를 누른 게시물은 싫어요 취소
         dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresentOrElse(
             dislike -> {
                 dislikeRepository.deleteById(dislike.getId());

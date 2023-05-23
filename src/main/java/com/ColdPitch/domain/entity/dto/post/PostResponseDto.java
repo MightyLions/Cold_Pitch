@@ -36,7 +36,7 @@ public class PostResponseDto {
             .id(post.getId())
             .title(post.getTitle())
             .text(post.getText())
-            .userName(post.getUserId().toString()) // 임시
+            .userName(post.getUser().getName())
             .category(post.getCategory())
             .createAt(post.getCreateAt())
             .modifyAt(post.getModifiedAt())
