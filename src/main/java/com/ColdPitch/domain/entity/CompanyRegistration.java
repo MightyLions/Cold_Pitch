@@ -51,6 +51,10 @@ public class CompanyRegistration extends BaseEntity {
     @Column(name = "company_address", nullable = false)
     private String companyAddress;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Override
     public String toString() {
         return "CompanyRegistration {" +

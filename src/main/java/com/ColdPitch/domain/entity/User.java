@@ -41,7 +41,8 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
-    //companyRegisrationNumber
+    @OneToOne(mappedBy = "user")
+    private CompanyRegistration companyRegistration;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -77,5 +78,9 @@ public class User extends BaseEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void registerCompany(CompanyRegistration companyRegistration) {
+        this.companyRegistration = companyRegistration;
     }
 }
