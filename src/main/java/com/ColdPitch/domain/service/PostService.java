@@ -44,7 +44,7 @@ public class PostService {
     public PostResponseDto updatePost(String userEmail, PostRequestDto requestDto) {
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
-        if (!post.getUser().getId().equals(user.getId())) {
+        if (!post.getCreatedBy().equals(user.getName())) {
             log.info("유저 불일치"); // 변경 필요
         }
         post.updatePost(requestDto);
@@ -55,8 +55,8 @@ public class PostService {
     public PostResponseDto postStateChange(String userEmail, Long postId, PostState state) {
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
-        if (post.getCreatedBy().equals(user.toString())) {
-            log.info("유저 일치"); // 변경 필요
+        if (post.getCreatedBy().equals(user.getName())) {
+            log.info("유저 일치"); // 변경 필요가
         }
         post.setStatus(state);
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
