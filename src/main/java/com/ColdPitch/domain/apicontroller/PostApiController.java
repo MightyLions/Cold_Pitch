@@ -2,8 +2,10 @@ package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
 import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
+import com.ColdPitch.domain.entity.post.PostState;
 import com.ColdPitch.domain.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +40,7 @@ public class PostApiController {
     @PatchMapping("/{postId}/{status}")
     @Operation(summary = "게시글 상태변경")
     public ResponseEntity<PostResponseDto> changeStatus(@ApiIgnore Authentication authentication,
-        @PathVariable Long postId, @PathVariable String status) {
+        @PathVariable Long postId, @PathVariable PostState status) {
         return ResponseEntity.status(200)
             .body(postService.postStateChange(authentication.getName(), postId, status));
     }
@@ -67,4 +69,13 @@ public class PostApiController {
             .body(postService.dislikePost(authentication.getName(), postId));
     }
 
+    @GetMapping("/all")
+    @Operation(summary = "전체 게시글 조회")
+    public ResponseEntity<List<PostResponseDto>> findAll() {
+        return ResponseEntity.status(200)
+            .body(postService.findAllPosts());
+    }
+
 }
+
+

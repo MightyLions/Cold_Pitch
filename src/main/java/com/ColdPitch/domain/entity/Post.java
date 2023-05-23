@@ -1,11 +1,17 @@
 package com.ColdPitch.domain.entity;
 
+import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
+import com.ColdPitch.domain.entity.post.Category;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.ColdPitch.domain.entity.post.PostState;
@@ -36,19 +42,21 @@ public class Post extends BaseEntity {
     private PostState status;
 
     @Column(nullable = false)
-    private String category;
+    private Category category;
 
-    @Column(nullable = false)
-    private Long userId;
 
-    @Column(nullable = true)
+    @Column
     private Long boardId;
 
-    @Column
+    @Column(nullable = false)
     private int likeCnt;
 
-    @Column
+    @Column(nullable = false)
     private int dislikeCnt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_post_created_user"))
+    private User user;
 
     public void setTitle(String title) {
         this.title = title;
@@ -62,7 +70,7 @@ public class Post extends BaseEntity {
         this.status = status;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -90,12 +98,11 @@ public class Post extends BaseEntity {
             ", text='" + text + '\'' +
             ", status='" + status + '\'' +
             ", category='" + category + '\'' +
-            ", userId=" + userId +
+            ", userId=" + user.toString() +
             ", boardId=" + boardId +
             ", " + super.toString() +
             '}';
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -108,15 +115,20 @@ public class Post extends BaseEntity {
         return Objects.equals(id, post.getId());
     }
 
-    public static Post toEntity(String title, String text, String category, Long userId,
-        PostState status) {
+    public static Post toEntity(PostRequestDto requestDto, User user) {
         return Post.builder()
-            .title(title)
-            .text(text)
-            .category(category)
-            .userId(userId)
-            .status(status)
+            .title(requestDto.getTitle())
+            .text(requestDto.getText())
+            .category(requestDto.getCategory())
+            .user(user)
+            .status(requestDto.getStatus())
             .build();
+    }
+
+    public void updatePost(PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.text = requestDto.getText();
+        this.category = requestDto.getCategory();
     }
 
 }
