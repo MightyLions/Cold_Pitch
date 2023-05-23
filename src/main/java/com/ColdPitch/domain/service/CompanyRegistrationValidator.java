@@ -3,6 +3,7 @@ package com.ColdPitch.domain.service;
 import com.ColdPitch.config.security.JwtConfig;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationValidationDto;
+import com.ColdPitch.utils.ServerUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -34,7 +35,7 @@ public class CompanyRegistrationValidator {
         RequestBody body = RequestBody.create(mediaType, json);
         Request request = new Request.Builder()
                 .header("Access-Control-Request-Method", "POST")
-                .header("Origin", "http://localhost:8080")
+                .header("Origin", ServerUtil.getCurrentBaseUrl())
                 .url(API_URL + jwtConfig.getServiceKey())
                 .post(body)
                 .build();
