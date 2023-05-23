@@ -3,7 +3,10 @@ package com.ColdPitch.domain.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ColdPitch.domain.entity.Post;
+import com.ColdPitch.domain.entity.User;
+import com.ColdPitch.domain.entity.post.Category;
 import com.ColdPitch.domain.entity.post.PostState;
+import com.ColdPitch.domain.entity.user.UserType;
 import java.util.List;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +28,10 @@ public class PostRepositoryTest {
             .title("firstTitle")
             .text("firstText")
             .status(PostState.OPEN)
-            .category("firstCategory")
-            .userId((long) 1)
+            .category(Category.DATA)
             .build();
         postRepository.save(post);
+
     }
 
     @AfterEach
@@ -43,8 +46,7 @@ public class PostRepositoryTest {
             .title("testTitle")
             .text("testText")
             .status(PostState.OPEN)
-            .category("testCategory")
-            .userId((long) 2)
+            .category(Category.BIO)
             .build();
 
         postRepository.save(post);
@@ -59,7 +61,7 @@ public class PostRepositoryTest {
         Post post = postRepository.findAll().get(0);
         post.setTitle("updatedTitle");
         post.setText("updatedText");
-        post.setCategory("updatedCategory");
+        post.setCategory(Category.DATA);
         post.setStatus(PostState.CLOSED);
         postRepository.save(post);
 
