@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.entity;
 
+import com.ColdPitch.domain.entity.comment.CommentState;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,8 @@ public class Comment extends BaseEntity {
     private Long pCommentId;
 
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private CommentState status;
 
     public void setText(String text) {
         this.text = text;
@@ -40,6 +42,10 @@ public class Comment extends BaseEntity {
 
     public void setpCommentId(Long pCommentId) {
         this.pCommentId = pCommentId;
+    }
+
+    public void setStatus(CommentState status) {
+        this.status = status;
     }
 
     @Override

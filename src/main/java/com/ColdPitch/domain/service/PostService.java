@@ -1,68 +1,128 @@
 package com.ColdPitch.domain.service;
 
+import com.ColdPitch.domain.entity.Dislike;
+import com.ColdPitch.domain.entity.Like;
 import com.ColdPitch.domain.entity.Post;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
 import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
+import com.ColdPitch.domain.entity.post.LikeState;
 import com.ColdPitch.domain.entity.post.PostState;
+import com.ColdPitch.domain.repository.DislikeRepository;
+import com.ColdPitch.domain.repository.LikeRepository;
 import com.ColdPitch.domain.repository.PostRepository;
 import com.ColdPitch.domain.repository.UserRepository;
-import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
+    private final DislikeRepository dislikeRepository;
+
     @Transactional
     public PostResponseDto createPost(String userEmail, PostRequestDto requestDto) {
-        User user = userRepository.findByEmail(userEmail);
-        Post post = Post.toEntity(requestDto.getTitle(), requestDto.getText(), requestDto.getCategory(), user.getId(), PostState.OPEN);
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        requestDto.setStatus(PostState.OPEN);
+        Post post = Post.toEntity(requestDto,user);
         postRepository.save(post);
-        return convertDto(post, userEmail);
+        return PostResponseDto.of(post, LikeState.UNSELECTED);
     }
 
     @Transactional
     public PostResponseDto updatePost(String userEmail, PostRequestDto requestDto) {
-        User user = userRepository.findByEmail(userEmail);
-        // 게시 유저와 유저가 같으면 권한 부여
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
-        post.setTitle(requestDto.getTitle());
-        post.setText(requestDto.getText());
-        post.setCategory(requestDto.getCategory());
-
-        return convertDto(post, userEmail);
+        if (!post.getCreatedBy().equals(user.getName())) {
+            log.info("유저 불일치"); // 변경 필요
+        }
+        post.updatePost(requestDto);
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), post.getId()));
     }
 
     @Transactional
-    public PostResponseDto postStateChange(String userEmail, Long postId, String state) {
-        // 게시 유저와 유저가 같으면 권한 부여
+    public PostResponseDto postStateChange(String userEmail, Long postId, PostState state) {
         Post post = postRepository.findById(postId).orElseThrow();
-        post.setStatus(PostState.valueOf(state));
-        return state.equals("DELETED") ? null : convertDto(post, userEmail) ;
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        if (post.getCreatedBy().equals(user.getName())) {
+            log.info("유저 일치"); // 변경 필요가
+        }
+        post.setStatus(state);
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
     public PostResponseDto getPost(String userEmail, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
-        User user = userRepository.findByEmail(userEmail);
-        return convertDto(post, user.getName());
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
-    public PostResponseDto convertDto(Post post, String userName) {
-        return PostResponseDto.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .text(post.getText())
-                .userName(userName)
-                .category(post.getCategory())
-                .createAt(post.getCreateAt())
-                .modifyAt(post.getModifiedAt())
-                .status(post.getStatus())
-                .build();
+    public List<PostResponseDto> findAllPosts() {
+        List<Post> postList = postRepository.findAll();
+        List<PostResponseDto> responseDtos = new ArrayList<>();
+        for (Post post : postList) {
+            responseDtos.add(PostResponseDto.of(post,null));
+        }
+        return responseDtos;
     }
+
+    @Transactional
+    public PostResponseDto likePost(String userEmail, Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow();
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v -> {
+            log.info("싫어요를 선택한 게시물에는 좋아요를 선택할 수 없습니다."); // 익셉션 던지기
+        });
+        likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresentOrElse(
+            like -> {
+                likeRepository.deleteById(like.getId());
+                post.minusLike();
+            }, () -> {
+                Like like = Like.builder().userId(user.getId()).postId(postId).build();
+                likeRepository.save(like);
+                post.plusLike();
+            }
+        );
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
+    }
+
+    @Transactional
+    public PostResponseDto dislikePost(String userEmail, Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow();
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v->{
+            log.info("좋아요를 선택한 게시물에는 싫어요를 선택할 수 없습니다."); // 익셉션 던지기
+        });
+        dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresentOrElse(
+            dislike -> {
+                dislikeRepository.deleteById(dislike.getId());
+                post.minusDislike();
+            }, () -> {
+                Dislike dislike = Dislike.builder().userId(user.getId()).postId(postId).build();
+                dislikeRepository.save(dislike);
+                post.plusDislike();
+            }
+        );
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
+    }
+
+    @Transactional
+    public LikeState getLikeDislike(Long userId, Long postId) {
+        Optional<Like> like = likeRepository.findByUserIdAndPostId(userId, postId);
+        Optional<Dislike> dislike = dislikeRepository.findByUserIdAndPostId(userId, postId);
+        return like.isPresent() ? LikeState.LIKE
+            : (dislike.isPresent() ? LikeState.DISLIKE : LikeState.UNSELECTED);
+    }
+
 }

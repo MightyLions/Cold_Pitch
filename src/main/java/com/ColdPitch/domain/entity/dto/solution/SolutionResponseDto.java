@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.entity.dto.solution;
 
+import com.ColdPitch.domain.entity.solution.SolutionState;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import java.time.LocalDateTime;
@@ -30,6 +31,9 @@ public class SolutionResponseDto {
     @JsonProperty("userId")
     @NotNull
     private Long userId;
+
+    @NotNull
+    private SolutionState status;
 
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;

@@ -4,5 +4,8 @@ import com.ColdPitch.domain.entity.Solution;
 import java.util.List;
 
 public interface SolutionRepositoryCustom {
-    List<Solution> getAllByUserId(Long userId);
+    List<Solution> findByUserIdForUser(Long id);
+    List<Solution> findAllByUserId(Long userId);
+    Solution findByIdForUser(Long id);
+    List<Solution> findAllForUser();
 }

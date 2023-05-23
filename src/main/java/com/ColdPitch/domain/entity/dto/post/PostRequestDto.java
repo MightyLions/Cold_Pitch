@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.entity.dto.post;
 
+import com.ColdPitch.domain.entity.post.Category;
 import com.ColdPitch.domain.entity.post.PostState;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ public class PostRequestDto {
     @NotNull
     private String text;
     @NotNull
-    private String category;
+    private Category category;
 }
 
 // status는 따로 API를 분리
