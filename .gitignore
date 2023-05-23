@@ -46,5 +46,8 @@ intellij-java-google-style.xml
 ### jwt ###
 /src/main/resources/secret.properties
 
+### cloud ###
+/src/main/resources/application-s3.yml
+
 ### file ###
 /temp
