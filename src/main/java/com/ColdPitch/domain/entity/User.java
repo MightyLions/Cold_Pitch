@@ -80,6 +80,7 @@ public class User extends BaseEntity {
         this.password = newPassword;
     }
 
+    //연관관게 메서드
     public void registerCompany(CompanyRegistration companyRegistration) {
         this.companyRegistration = companyRegistration;
     }

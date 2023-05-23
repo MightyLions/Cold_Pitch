@@ -56,7 +56,7 @@ class UserAuthApiControllerTest {
         String requestBody = objectMapper.writeValueAsString(userRequestDto);
 
         //when
-        mockMvc.perform(post("/api/v1/auth/signup")
+        mockMvc.perform(post("/api/v1/auth/user/signup")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(requestBody))
                 .andExpect(status().isOk())
@@ -75,7 +75,7 @@ class UserAuthApiControllerTest {
     public void loginSuccessTest() throws Exception {
         //given 유저 저장
         UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
-        userService.signup(userRequestDto);
+        userService.signUpUser(userRequestDto);
 
 
         //when
@@ -112,7 +112,7 @@ class UserAuthApiControllerTest {
     @DisplayName("유저 로그아웃 테스트")
     public void logoutTest() throws Exception {
         //given
-        UserResponseDto user = userService.signup(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
+        UserResponseDto user = userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
         Assertions.assertThat(userService.findUserByEmail(user.getEmail()).getNickname()).isEqualTo(user.getNickname());
 
         LoginDto loginDto = new LoginDto("email@naver.com", "password");
