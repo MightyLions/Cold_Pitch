@@ -41,6 +41,7 @@ public class SolutionRepositoryTest {
                 .positivePercentage(String.format("%.9f", 1 - randomVal).substring(0, 10))
                 .feedback("feedback " + i)
                 .reaction("reaction " + i)
+                .status(SolutionState.OPEN)
                 .userId(getRandom(REPEATED_COUNT))
                 .build();
 
