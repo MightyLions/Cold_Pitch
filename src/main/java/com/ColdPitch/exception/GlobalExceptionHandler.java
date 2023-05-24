@@ -36,6 +36,6 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> handlerException(Exception e) {
         log.error("Exception : " + e.getMessage());
 
-        return null;
+        return ResponseEntity.status(500).body("에러코드 정의해줘...");
     }
 }
