@@ -7,16 +7,15 @@ import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.service.UserService;
+import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,8 +48,8 @@ public class UserAuthApiController {
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "리프레시 토큰 삭제")
-    public ResponseEntity<Void> logout(@ApiIgnore Authentication authentication) {
-        userService.logout(authentication.getName());
+    public ResponseEntity<Void> logout() {
+        userService.logout(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new));
         return ResponseEntity.status(200).build();
     }
 
