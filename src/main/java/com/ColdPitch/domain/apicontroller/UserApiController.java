@@ -58,7 +58,7 @@ public class UserApiController {
         List<UserResponseDto> list = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             long rand = RandomUtil.getRandom(Integer.MAX_VALUE);
-            list.add(userService.signup(new UserRequestDto("nick" + rand, "name" + rand, "password" + rand, "eamil" + rand, "phone" + rand, userType)));
+            list.add(userService.signUpUser(new UserRequestDto("nick" + rand, "name" + rand, "password" + rand, "eamil" + rand, "phone" + rand, userType)));
         }
         return ResponseEntity.status(200).body(list);
     }
@@ -69,7 +69,7 @@ public class UserApiController {
     public ResponseEntity<String> makeDummyUserToken() {
         UserRequestDto urd = new UserRequestDto("testNick", "testName", "testPass", "testEamil@naver.com", "010-1234-1234", "USER");
         userRepository.deleteByEmail(urd.getEmail());
-        userService.signup(urd);
+        userService.signUpUser(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
     }
@@ -79,7 +79,7 @@ public class UserApiController {
     public ResponseEntity<String> makeDummyAdminToken() {
         UserRequestDto urd = new UserRequestDto("testANick", "testAName", "testAPass", "testAEamil@naver.com", "010-5678-5678", "ADMIN");
         userRepository.deleteByEmail(urd.getEmail());
-        userService.signup(urd);
+        userService.signUpUser(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
     }

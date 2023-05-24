@@ -2,10 +2,10 @@ package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.jwt.TokenRequestDto;
+import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
-import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +25,17 @@ import springfox.documentation.annotations.ApiIgnore;
 public class UserAuthApiController {
     private final UserService userService;
 
-    @PostMapping(value = "/signup")
-    @Operation(summary = "회원가입", description = "회원 가입 API")
-    public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto userRequestDto) {
-        UserResponseDto userResponseDto = userService.signup(userRequestDto);
+    @PostMapping(value = "/user/signup")
+    @Operation(summary = "유저 회원가입", description = "유저 회원 가입 API")
+    public ResponseEntity<UserResponseDto> userSignup(@RequestBody UserRequestDto userRequestDto) {
+        UserResponseDto userResponseDto = userService.signUpUser(userRequestDto);
+        return ResponseEntity.status(200).body(userResponseDto);
+    }
 
-        if (UserType.of(userRequestDto.getUserType()) == UserType.BUSINESS) {
-            //TODO 기업회원인 경우에만 레지스트레이션 저장할 부분 추가
-        }
-
+    @PostMapping(value = "/business/signup")
+    @Operation(summary = "기업 회원가입", description = "기업 회원 가입 API")
+    public ResponseEntity<UserResponseDto> businessSignup(@RequestBody CompanyRequestDto companyRequestDto) {
+        UserResponseDto userResponseDto = userService.signUpCompany(companyRequestDto);
         return ResponseEntity.status(200).body(userResponseDto);
     }
 
@@ -57,5 +59,4 @@ public class UserAuthApiController {
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
     }
-
 }
