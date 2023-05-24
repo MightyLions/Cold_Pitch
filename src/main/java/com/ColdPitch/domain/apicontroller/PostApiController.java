@@ -9,9 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
 @RestController
@@ -23,50 +21,44 @@ public class PostApiController {
 
     @PostMapping
     @Operation(summary = "게시글 등록")
-    public ResponseEntity<PostResponseDto> createPost(@ApiIgnore Authentication authentication,
-        @RequestBody PostRequestDto postRequestDto) {
+    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200)
-            .body(postService.createPost(authentication.getName(), postRequestDto));
+            .body(postService.createPost(postRequestDto));
     }
 
     @PatchMapping
     @Operation(summary = "게시글 수정")
-    public ResponseEntity<PostResponseDto> updatePost(@ApiIgnore Authentication authentication,
-        @RequestBody PostRequestDto postRequestDto) {
+    public ResponseEntity<PostResponseDto> updatePost(@RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200)
-            .body(postService.updatePost(authentication.getName(), postRequestDto));
+            .body(postService.updatePost(postRequestDto));
     }
 
     @PatchMapping("/{postId}/{status}")
     @Operation(summary = "게시글 상태변경")
-    public ResponseEntity<PostResponseDto> changeStatus(@ApiIgnore Authentication authentication,
-        @PathVariable Long postId, @PathVariable PostState status) {
+    public ResponseEntity<PostResponseDto> changeStatus(@PathVariable Long postId, @PathVariable PostState status) {
         return ResponseEntity.status(200)
-            .body(postService.postStateChange(authentication.getName(), postId, status));
+            .body(postService.postStateChange(postId, status));
     }
 
     @GetMapping("{postId}")
     @Operation(summary = "게시글 조회")
-    public ResponseEntity<PostResponseDto> getPost(@ApiIgnore Authentication authentication,
-        @PathVariable Long postId) {
+    public ResponseEntity<PostResponseDto> getPost(@PathVariable Long postId) {
         return ResponseEntity.status(200)
-            .body(postService.getPost(authentication.getName(), postId));
+            .body(postService.findPost(postId));
     }
 
     @PostMapping("/{postId}/like")
     @Operation(summary = "게시글 좋아요")
-    public ResponseEntity<PostResponseDto> likePost(@ApiIgnore Authentication authentication,
-        @PathVariable Long postId) {
+    public ResponseEntity<PostResponseDto> likePost(@PathVariable Long postId) {
         return ResponseEntity.status(200)
-            .body(postService.likePost(authentication.getName(), postId));
+            .body(postService.likePost(postId));
     }
 
     @PostMapping("/{postId}/dislike")
     @Operation(summary = "게시글 싫어요")
-    public ResponseEntity<PostResponseDto> dislikePost(@ApiIgnore Authentication authentication,
-        @PathVariable Long postId) {
+    public ResponseEntity<PostResponseDto> dislikePost(@PathVariable Long postId) {
         return ResponseEntity.status(200)
-            .body(postService.dislikePost(authentication.getName(), postId));
+            .body(postService.dislikePost(postId));
     }
 
     @GetMapping("/all")

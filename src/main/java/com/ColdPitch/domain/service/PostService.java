@@ -15,6 +15,8 @@ import com.ColdPitch.domain.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.ColdPitch.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,8 @@ public class PostService {
     private final DislikeRepository dislikeRepository;
 
     @Transactional
-    public PostResponseDto createPost(String userEmail, PostRequestDto requestDto) {
+    public PostResponseDto createPost(PostRequestDto requestDto) {
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         requestDto.setStatus(PostState.OPEN);
         Post post = Post.toEntity(requestDto,user);
@@ -41,7 +44,8 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto updatePost(String userEmail, PostRequestDto requestDto) {
+    public PostResponseDto updatePost(PostRequestDto requestDto) {
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
         if (!post.getCreatedBy().equals(user.getName())) {
@@ -52,7 +56,8 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto postStateChange(String userEmail, Long postId, PostState state) {
+    public PostResponseDto postStateChange(Long postId, PostState state) {
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         if (post.getCreatedBy().equals(user.getName())) {
@@ -62,23 +67,31 @@ public class PostService {
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
-    public PostResponseDto getPost(String userEmail, Long postId) {
+    public PostResponseDto findPost(Long postId) {
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 익셉션 필요
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
     public List<PostResponseDto> findAllPosts() {
-        List<Post> postList = postRepository.findAll();
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 익셉션 처리
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        List<Post> postList = SecurityUtil.checkCurrentUserRole("ADMIN")
+            ? postRepository.findAllForAdmin()
+            : postRepository.findAllForUser(user.getId());
+
         List<PostResponseDto> responseDtos = new ArrayList<>();
         for (Post post : postList) {
             responseDtos.add(PostResponseDto.of(post,null));
         }
+
         return responseDtos;
     }
 
     @Transactional
-    public PostResponseDto likePost(String userEmail, Long postId) {
+    public PostResponseDto likePost(Long postId) {
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v -> {
@@ -98,7 +111,8 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto dislikePost(String userEmail, Long postId) {
+    public PostResponseDto dislikePost(Long postId) {
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 유저 validtion 필요
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v->{
