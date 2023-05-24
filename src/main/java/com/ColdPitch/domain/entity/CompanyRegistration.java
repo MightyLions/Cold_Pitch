@@ -54,6 +54,10 @@ public class CompanyRegistration extends BaseEntity {
     //기업 소개
     @Column(name = "company_description", nullable = false)
     private String companyDescription;
+  
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Override
     public String toString() {

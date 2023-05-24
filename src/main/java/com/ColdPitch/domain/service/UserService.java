@@ -1,9 +1,11 @@
 package com.ColdPitch.domain.service;
 
+import com.ColdPitch.domain.entity.CompanyRegistration;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.jwt.RefreshToken;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.jwt.TokenRequestDto;
+import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
@@ -37,23 +39,25 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-
+    private final CompanyRegistrationService companyRegistrationService;
 
     @Transactional
-    public UserResponseDto signup(UserRequestDto userRequestDto) {
+    public UserResponseDto signUpUser(UserRequestDto userRoleDto) {
         //TODO 유저 이메일, 닉네임 중복 확인 ( 이메일 형식, 전화번호 형식 확인 부분도 추가해야함)
-
-        User user = User.builder()
-                .name(userRequestDto.getName())
-                .nickname(userRequestDto.getNickname())
-                .password(passwordEncoder.encode(userRequestDto.getPassword()))
-                .email(userRequestDto.getEmail())
-                .phoneNumber(userRequestDto.getPhoneNumber())
-                .userType(UserType.of(userRequestDto.getUserType()))
-                .curState(CurState.LIVE)
-                .nickname(userRequestDto.getNickname()).build();
-
+        User user = makeUser(userRoleDto);
         return UserResponseDto.of(userRepository.save(user));
+    }
+
+    @Transactional
+    public UserResponseDto signUpCompany(CompanyRequestDto companyRequestDto) {
+        //TODO 유저 이메일, 닉네임 중복 확인 ( 이메일 형식, 전화번호 형식 확인 부분도 추가해야함)
+        UserRequestDto userRequestDto = companyRequestDto.getUserRequestDto();
+        User user = userRepository.save(makeUser(userRequestDto));
+
+        //실제 존재하는 기업 회원인지 검증하는 로직
+        CompanyRegistration companyRegistration = companyRegistrationService.validateAndSaveCompanyRegistration(companyRequestDto.getCompanyRegistrationDto(), user);
+        user.registerCompany(companyRegistration);
+        return UserResponseDto.of(user);
     }
 
     @Transactional
@@ -130,10 +134,22 @@ public class UserService {
     public void deleteUser(String email) {
         //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
         List<User> users = userRepository.findUserByEmailIncludeDeletedUser(email).orElseThrow();
-        if (!users.isEmpty() && users.get(0).getCurState()==CurState.DELETED) {
+        if (!users.isEmpty() && users.get(0).getCurState() == CurState.DELETED) {
             throw new RequestRejectedException("이미 탈퇴한 회원입니다.");
         }
         logout(email); //리프레시 토큰을 삭제한다.
         userRepository.deleteByEmail(email);
+    }
+
+    private User makeUser(UserRequestDto userRequestDto) {
+        return User.builder()
+                .name(userRequestDto.getName())
+                .nickname(userRequestDto.getNickname())
+                .password(passwordEncoder.encode(userRequestDto.getPassword()))
+                .email(userRequestDto.getEmail())
+                .phoneNumber(userRequestDto.getPhoneNumber())
+                .userType(UserType.of(userRequestDto.getUserType()))
+                .curState(CurState.LIVE)
+                .nickname(userRequestDto.getNickname()).build();
     }
 }
