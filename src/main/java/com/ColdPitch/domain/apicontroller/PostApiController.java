@@ -44,7 +44,7 @@ public class PostApiController {
     @Operation(summary = "게시글 조회")
     public ResponseEntity<PostResponseDto> getPost(@PathVariable Long postId) {
         return ResponseEntity.status(200)
-            .body(postService.getPost(postId));
+            .body(postService.findPost(postId));
     }
 
     @PostMapping("/{postId}/like")

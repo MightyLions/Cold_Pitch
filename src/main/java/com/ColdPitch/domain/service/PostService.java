@@ -35,7 +35,7 @@ public class PostService {
 
     @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().get();
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         requestDto.setStatus(PostState.OPEN);
         Post post = Post.toEntity(requestDto,user);
@@ -45,7 +45,7 @@ public class PostService {
 
     @Transactional
     public PostResponseDto updatePost(PostRequestDto requestDto) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().get();
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         Post post = postRepository.findById(requestDto.getId()).orElseThrow();
         if (!post.getCreatedBy().equals(user.getName())) {
@@ -57,7 +57,7 @@ public class PostService {
 
     @Transactional
     public PostResponseDto postStateChange(Long postId, PostState state) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().get();
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         if (post.getCreatedBy().equals(user.getName())) {
@@ -67,25 +67,31 @@ public class PostService {
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
-    public PostResponseDto getPost(Long postId) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().get();
+    public PostResponseDto findPost(Long postId) {
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 익셉션 필요
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
     public List<PostResponseDto> findAllPosts() {
-        List<Post> postList = postRepository.findAll();
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 익셉션 처리
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        List<Post> postList = SecurityUtil.checkCurrentUserRole("ADMIN")
+            ? postRepository.findAllForAdmin()
+            : postRepository.findAllForUser(user.getId());
+
         List<PostResponseDto> responseDtos = new ArrayList<>();
         for (Post post : postList) {
             responseDtos.add(PostResponseDto.of(post,null));
         }
+
         return responseDtos;
     }
 
     @Transactional
     public PostResponseDto likePost(Long postId) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().get();
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v -> {
@@ -106,7 +112,7 @@ public class PostService {
 
     @Transactional
     public PostResponseDto dislikePost(Long postId) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().get(); // 유저 validtion 필요
+        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 유저 validtion 필요
         Post post = postRepository.findById(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v->{
