@@ -58,6 +58,7 @@ public class CompanyRegistrationService {
                 .b_sector(dto.getB_sector())
                 .b_type(dto.getB_type())
                 .companyAddress(dto.getCompanyAddress())
+                .companyDescription(dto.getCompanyDescription())
                 .build();
     }
 
