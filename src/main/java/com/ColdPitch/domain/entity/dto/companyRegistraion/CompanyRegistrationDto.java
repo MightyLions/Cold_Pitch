@@ -36,6 +36,9 @@ public class CompanyRegistrationDto {
     @JsonProperty("company_address")
     private String companyAddress;
 
+    @JsonProperty("company_description")
+    private String companyDescription;
+
     @JsonProperty("valid")
     private String valid;
 
