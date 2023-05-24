@@ -7,13 +7,12 @@ import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.UserService;
 import com.ColdPitch.utils.RandomUtil;
+import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +40,14 @@ public class UserApiController {
 
     @PatchMapping
     @Operation(summary = "유저 수정", description = "유저 이름, 전화번호, 닉네임, password 변경 기능")
-    public ResponseEntity<UserResponseDto> updateProfile(@ApiIgnore Authentication authentication, @RequestBody UserRequestDto userRequestDto) {
-        return ResponseEntity.status(200).body(userService.updateProfile(authentication.getName(), userRequestDto));
+    public ResponseEntity<UserResponseDto> updateProfile(@RequestBody UserRequestDto userRequestDto) {
+        return ResponseEntity.status(200).body(userService.updateProfile(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new), userRequestDto));
     }
 
     @DeleteMapping
     @Operation(summary = "유저 탈퇴")
-    public ResponseEntity<Void> deleteUser(@ApiIgnore Authentication authentication) {
-        userService.deleteUser(authentication.getName());
+    public ResponseEntity<Void> deleteUser() {
+        userService.deleteUser(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new));
         return ResponseEntity.status(200).build();
     }
 
