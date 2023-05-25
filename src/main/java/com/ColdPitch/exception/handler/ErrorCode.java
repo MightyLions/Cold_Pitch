@@ -30,6 +30,7 @@ public enum ErrorCode {
     POST_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다"),
 
     // Comment
+    COMMENT_USER_COMMENT_NOT_EXISTS(HttpStatus.NO_CONTENT, "주어진 유저 ID로 등록된 댓글이 없습니다."),
     COMMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "존재하지 않는 댓글입니다"),
     COMMENT_REGISTRATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "댓글을 등록하던 중 오류가 발생했습니다"),
     COMMENT_UPDATE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "댓글을 업데이트하던 중 오류가 발생했습니다"),
