@@ -163,6 +163,9 @@ public class UserService {
                 .phoneNumber(userRequestDto.getPhoneNumber())
                 .userType(UserType.of(userRequestDto.getUserType()))
                 .curState(CurState.LIVE)
+                .posts(new ArrayList<>())
+                .userTags(new ArrayList<>())
+                .companyRegistration(null)
                 .nickname(userRequestDto.getNickname()).build();
     }
 
@@ -177,17 +180,17 @@ public class UserService {
 
         List<Post> posts = new ArrayList<>();
 
-        for(Like like : likes) {
+        for (Like like : likes) {
             posts.add(postRepository.findById(like.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + like.getPostId())));
         }
 
-        for(Dislike dislike : dislikes) {
+        for (Dislike dislike : dislikes) {
             posts.add(postRepository.findById(dislike.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + dislike.getPostId())));
         }
 
-        for(CommentResponseDto comment : comments) {
+        for (CommentResponseDto comment : comments) {
             posts.add(postRepository.findById(comment.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + comment.getPostId())));
         }
@@ -201,7 +204,7 @@ public class UserService {
 
         return postResponses;
     }
-  
+
     public List<PostResponseDto> findMyWritePost(String email) {
         User user = userRepository.findOneWithAuthoritiesByEmail(email).orElseThrow();
         return user.getPosts().stream().map(o -> PostResponseDto.of(o, null)).collect(Collectors.toList());

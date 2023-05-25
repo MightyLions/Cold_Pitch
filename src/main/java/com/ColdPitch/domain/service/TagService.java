@@ -6,6 +6,7 @@ import com.ColdPitch.domain.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,11 @@ public class TagService {
     }
 
     public Tag createTag(TagRequestDto tagRequestDto) {
-        return tagRepository.save(Tag.builder().tagName(tagRequestDto.getTagName()).description(tagRequestDto.getDescription()).build());
+        return tagRepository.save(Tag.builder()
+                .tagName(tagRequestDto.getTagName())
+                .description(tagRequestDto.getDescription())
+                .userTags(new ArrayList<>())
+                .build());
     }
 
     public Tag findTagByTagNameOrThrowException(String name) {
