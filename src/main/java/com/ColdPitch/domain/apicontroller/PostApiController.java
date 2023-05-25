@@ -24,8 +24,7 @@ public class PostApiController {
     @Operation(summary = "게시글 등록")
     public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200)
-            .body(postService.createPost(
-                    SecurityUtil.getCurrentUserEmail().orElseThrow(),postRequestDto));
+            .body(postService.createPost(postRequestDto));
     }
 
     @PatchMapping

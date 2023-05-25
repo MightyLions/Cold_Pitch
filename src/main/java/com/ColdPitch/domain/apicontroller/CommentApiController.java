@@ -8,8 +8,6 @@ import com.ColdPitch.domain.repository.CommentRepository;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.CommentService;
 import com.ColdPitch.exception.CommentException;
-import com.ColdPitch.exception.CustomException;
-import com.ColdPitch.exception.UserNotFoundException;
 import com.ColdPitch.exception.handler.ErrorCode;
 import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
