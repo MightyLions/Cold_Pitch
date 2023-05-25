@@ -37,9 +37,9 @@ public class PostApiController {
 
     @PatchMapping("/{postId}/{status}")
     @Operation(summary = "게시글 상태변경")
-    public ResponseEntity<PostResponseDto> changeStatus(@PathVariable Long postId, @PathVariable PostState status) {
+    public ResponseEntity<PostResponseDto> changeStatus(@RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200)
-            .body(postService.postStateChange(postId, status));
+            .body(postService.postStateChange(postRequestDto));
     }
 
     @GetMapping("{postId}")

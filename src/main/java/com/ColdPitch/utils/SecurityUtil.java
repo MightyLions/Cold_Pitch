@@ -30,6 +30,8 @@ public class SecurityUtil {
         } else if (authentication.getPrincipal() instanceof String) {
             userEmail = (String) authentication.getPrincipal();
         }
+
+        log.info(userEmail);
         return Optional.ofNullable(userEmail);
     }
 
