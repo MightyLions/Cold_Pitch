@@ -3,10 +3,15 @@ package com.ColdPitch.domain.apicontroller;
 import com.ColdPitch.domain.entity.comment.CommentState;
 import com.ColdPitch.domain.entity.dto.comment.CommentRequestDto;
 import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
+import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.repository.CommentRepository;
+import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.CommentService;
+import com.ColdPitch.exception.CommentException;
 import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.UserNotFoundException;
 import com.ColdPitch.exception.handler.ErrorCode;
+import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentApiController {
     private final CommentService commentService;
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/comment")
     @Transactional(readOnly = true)
@@ -40,7 +46,7 @@ public class CommentApiController {
         switch (type) {
             case "postId" :
                 return ResponseEntity.ok(commentService.findCommentsByPostId(id));
-            case "commentId" :
+            case "id" :
                 if (id == null) {
                     return ResponseEntity.ok(commentRepository
                         .findAll()
@@ -71,6 +77,19 @@ public class CommentApiController {
             return ResponseEntity.badRequest().build();
         }
 
+        if (!SecurityUtil.checkCurrentUserRole("ADMIN")) {
+            if (!userRepository.existsById(requestDto.getUserId())) {
+                throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND);
+            }
+            UserResponseDto userResponseDto = UserResponseDto
+                .of(userRepository.findByEmail
+                        (SecurityUtil.getCurrentUserEmail().orElse(null))
+                    .orElseThrow(() -> new UserNotFoundException(ErrorCode.INTERNAL_SERVER_ERROR)));
+            if (!userResponseDto.getId().equals(requestDto.getUserId())) {
+                throw new UserNotFoundException(ErrorCode.USER_NOT_MATCH);
+            }
+        }
+
         CommentResponseDto responseDto = commentService.saveCommentRequestDto(requestDto);
 
         if (responseDto == null) {
@@ -84,6 +103,19 @@ public class CommentApiController {
     public ResponseEntity<CommentResponseDto> patchComment(CommentRequestDto requestDto) {
         if (requestDto == null) {
             return ResponseEntity.badRequest().build();
+        }
+
+        if (!SecurityUtil.checkCurrentUserRole("ADMIN")) {
+            if (!userRepository.existsById(requestDto.getUserId())) {
+                throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND);
+            }
+            UserResponseDto userResponseDto = UserResponseDto
+                .of(userRepository.findByEmail
+                        (SecurityUtil.getCurrentUserEmail().orElse(null))
+                    .orElseThrow(() -> new CommentException(ErrorCode.COMMENT_AUTHOR_NOT_MATCH)));
+            if (!userResponseDto.getId().equals(requestDto.getUserId())) {
+                throw new UserNotFoundException(ErrorCode.USER_NOT_MATCH);
+            }
         }
 
         return ResponseEntity.ok(

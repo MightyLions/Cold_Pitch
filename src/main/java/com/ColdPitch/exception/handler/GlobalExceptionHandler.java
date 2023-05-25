@@ -1,11 +1,13 @@
 package com.ColdPitch.exception.handler;
 
 import com.ColdPitch.exception.AuthNotFoundException;
+import com.ColdPitch.exception.CommentException;
 import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.exception.DislikeAlreadySelectedException;
 import com.ColdPitch.exception.LikeAlreadySelectedException;
 import com.ColdPitch.exception.PostNotExistsException;
 import com.ColdPitch.exception.UnauthorizedAccesException;
+import com.ColdPitch.exception.UserNotFoundException;
 import com.ColdPitch.exception.handler.ErrorResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -19,12 +21,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(Exception.class)
-    protected ResponseEntity<?> handlerException(Exception e) {
-        log.error("Exception : " + e.getMessage());
-        return ResponseEntity.status(500).body("에러코드 정의해줘...");
-    }
 
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<?> handlerCustomException(CustomException e) {
@@ -80,5 +76,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("Exception: " + e.getErrorCode().getMessage());
         ErrorResponse response = new ErrorResponse(e.getErrorCode());
         return new ResponseEntity<> (response, e.getErrorCode().getStatus());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    protected ResponseEntity<?> UserNotFoundException(UserNotFoundException e) {
+        log.error("Exception: " + e.getErrorCode().getMessage());
+        ErrorResponse response = new ErrorResponse(e.getErrorCode());
+        return new ResponseEntity<>(response, e.getErrorCode().getStatus());
+    }
+
+    @ExceptionHandler(CommentException.class)
+    protected ResponseEntity<?> CommentException(UserNotFoundException e) {
+        log.error("Exception: " + e.getErrorCode().getMessage());
+        ErrorResponse response = new ErrorResponse(e.getErrorCode());
+        return new ResponseEntity<>(response, e.getErrorCode().getStatus());
+    }
+
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<?> handlerException(Exception e) {
+        log.error("Exception : " + e.getMessage());
+        return ResponseEntity.status(500).body("에러코드 정의해줘...");
     }
 }

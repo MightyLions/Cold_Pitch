@@ -1,13 +1,16 @@
 package com.ColdPitch.domain.service;
 
+import com.ColdPitch.domain.entity.Comment;
 import com.ColdPitch.domain.entity.Dislike;
 import com.ColdPitch.domain.entity.Like;
 import com.ColdPitch.domain.entity.Post;
 import com.ColdPitch.domain.entity.User;
+import com.ColdPitch.domain.entity.comment.CommentState;
 import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
 import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
 import com.ColdPitch.domain.entity.post.LikeState;
 import com.ColdPitch.domain.entity.post.PostState;
+import com.ColdPitch.domain.repository.CommentRepository;
 import com.ColdPitch.domain.repository.DislikeRepository;
 import com.ColdPitch.domain.repository.LikeRepository;
 import com.ColdPitch.domain.repository.PostRepository;
@@ -39,6 +42,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final DislikeRepository dislikeRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto) {
@@ -61,6 +65,15 @@ public class PostService {
         User user = getUserFromAuth();
         Post post = getPostByAuth(requestDto.getId(), user.getName());
         post.setStatus(requestDto.getStatus());
+        if (requestDto.getStatus() == PostState.DELETED) {
+            List<Comment> comments = post.getComments();
+            for (int i = 0; i < comments.size(); i++) {
+                Comment comment = comments.get(i);
+                comment.setStatus(CommentState.DELETED);
+                comment = commentRepository.saveAndFlush(comment);
+                comments.set(i, comment);
+            }
+        }
         return PostResponseDto.of(post, getLikeDislike(user.getId(), post.getId()));
     }
 

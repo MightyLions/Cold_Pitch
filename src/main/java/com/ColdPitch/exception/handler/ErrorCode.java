@@ -19,6 +19,8 @@ public enum ErrorCode {
 
     // User
     EMAIL_NOT_EXISTS(HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다"),
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다"),
+    USER_NOT_MATCH(HttpStatus.INTERNAL_SERVER_ERROR, "유저 정보가 일치하지 않습니다"),
 
     // Post
     POST_NOT_EXISTS(HttpStatus.BAD_REQUEST, "존재하지 않는 게시글입니다"),
@@ -33,6 +35,7 @@ public enum ErrorCode {
     COMMENT_UPDATE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "댓글을 업데이트하던 중 오류가 발생했습니다"),
     COMMENT_DELETE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "댓글을 삭제하던 중 오류가 발생했습니다"),
     COMMENT_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다"),
+    COMMENT_AUTHOR_NOT_MATCH(HttpStatus.FORBIDDEN, "댓글을 등록한 유저가 아닙니다"),
 
 
     // Like
