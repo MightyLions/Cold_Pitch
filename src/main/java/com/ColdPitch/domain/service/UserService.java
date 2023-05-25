@@ -195,4 +195,9 @@ public class UserService {
 
         return postResponses;
     }
+  
+    public List<PostResponseDto> findMyWritePost(String email) {
+        User user = userRepository.findOneWithAuthoritiesByEmail(email).orElseThrow();
+        return user.getPosts().stream().map(o -> PostResponseDto.of(o, null)).collect(Collectors.toList());
+    }
 }

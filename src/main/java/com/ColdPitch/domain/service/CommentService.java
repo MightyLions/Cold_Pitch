@@ -5,6 +5,9 @@ import com.ColdPitch.domain.entity.comment.CommentState;
 import com.ColdPitch.domain.entity.dto.comment.CommentRequestDto;
 import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
 import com.ColdPitch.domain.repository.CommentRepository;
+import com.ColdPitch.domain.repository.PostRepository;
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.ErrorCode;
 import com.ColdPitch.utils.SecurityUtil;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,18 +45,7 @@ public class CommentService {
             return null;
         }
 
-        return CommentResponseDto.builder()
-            .id(comment.getId())
-            .postId(comment.getPostId())
-            .userId(comment.getUserId())
-            .text(comment.getText())
-            .pCommentId(comment.getPCommentId())
-            .status(comment.getStatus())
-            .createAt(comment.getCreateAt())
-            .createBy(comment.getCreatedBy())
-            .modifiedAt(comment.getModifiedAt())
-            .modifiedBy(comment.getModifiedBy())
-            .build();
+        return CommentResponseDto.of(comment);
     }
 
     @Transactional(readOnly = true)
