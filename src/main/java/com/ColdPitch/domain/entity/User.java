@@ -46,6 +46,9 @@ public class User extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private CompanyRegistration companyRegistration;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.ALL)
+    private List<UserTag> userTags;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserType userType;
