@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -46,8 +47,6 @@ public class User extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private CompanyRegistration companyRegistration;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.ALL)
-    private List<UserTag> userTags;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -57,6 +56,11 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private CurState curState;
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserTag> userTags;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "user")//외래키를 가진쪽 연관관계의 주인
     private List<Post> posts = new ArrayList<>();
 

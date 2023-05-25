@@ -18,11 +18,9 @@ public class UserTag extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "tag_id")
     private Tag tag;
 
 

@@ -14,6 +14,7 @@ import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.*;
 import com.ColdPitch.jwt.TokenProvider;
+import com.ColdPitch.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -110,6 +111,11 @@ public class UserService {
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow();
+    }
+
+    //현재 시큐리티 컨텍스에 있는 유저정보와 권환 정보를 준다
+    public Optional<User> getMemberWithAuthorities() {
+        return SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findOneWithAuthoritiesByEmail);
     }
 
     @Transactional
