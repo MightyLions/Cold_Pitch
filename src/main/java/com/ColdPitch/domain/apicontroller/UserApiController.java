@@ -92,5 +92,10 @@ public class UserApiController {
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
     }
 
-
+    @GetMapping("/user/evaluated-posts")
+    public ResponseEntity<List<PostResponseDto>> getEvaluatedPostsByUser() {
+        List<PostResponseDto> posts = userService.getEvaluatedPostsByUser(
+                SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new));
+        return ResponseEntity.status(200).body(posts);
+    }
 }
