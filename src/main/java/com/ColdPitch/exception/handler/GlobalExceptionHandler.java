@@ -1,5 +1,6 @@
 package com.ColdPitch.exception.handler;
 
+import com.ColdPitch.exception.CustomException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.NoSuchElementException;
