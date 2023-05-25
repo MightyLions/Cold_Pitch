@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.apicontroller;
 
+import com.ColdPitch.domain.entity.Post;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
@@ -83,5 +84,9 @@ public class UserApiController {
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
     }
 
-
+    @GetMapping("/user/evaluated-posts")
+    public ResponseEntity<List<Post>> getEvaluatedPostsByUser() {
+        List<Post> posts = userService.getEvaluatedPostsByUser(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new));
+        return ResponseEntity.status(200).body(posts);
+    }
 }
