@@ -1,7 +1,6 @@
 package com.ColdPitch.domain.service;
 
-import com.ColdPitch.domain.entity.CompanyRegistration;
-import com.ColdPitch.domain.entity.User;
+import com.ColdPitch.domain.entity.*;
 import com.ColdPitch.domain.entity.dto.jwt.RefreshToken;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.jwt.TokenRequestDto;
@@ -11,8 +10,7 @@ import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
-import com.ColdPitch.domain.repository.RefreshTokenRepository;
-import com.ColdPitch.domain.repository.UserRepository;
+import com.ColdPitch.domain.repository.*;
 import com.ColdPitch.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,6 +40,10 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final CompanyRegistrationService companyRegistrationService;
+    private final LikeRepository likeRepository;
+    private final DislikeRepository dislikeRepository;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     public UserResponseDto signUpUser(UserRequestDto userRoleDto) {
@@ -151,5 +155,37 @@ public class UserService {
                 .userType(UserType.of(userRequestDto.getUserType()))
                 .curState(CurState.LIVE)
                 .nickname(userRequestDto.getNickname()).build();
+    }
+
+    public List<Post> getEvaluatedPostsByUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
+        Long userId = user.getId();
+
+        List<Like> likes = likeRepository.findByUserId(userId).orElse(new ArrayList<>());
+        List<Dislike> dislikes = dislikeRepository.findByUserId(userId).orElse(new ArrayList<>());
+        List<Comment> comments = commentRepository.findByUserId(userId).orElse(new ArrayList<>());
+
+        List<Post> posts = new ArrayList<>();
+
+        for(Like like : likes) {
+            posts.add(postRepository.findById(like.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + like.getPostId())));
+        }
+
+        for(Dislike dislike : dislikes) {
+            posts.add(postRepository.findById(dislike.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + dislike.getPostId())));
+        }
+
+        for(Comment comment : comments) {
+            posts.add(postRepository.findById(comment.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + comment.getPostId())));
+        }
+
+        // 게시글 작성 시간별로 내림차순으로 정렬 (최신글이 제일 위에 오도록)
+        posts.sort(Comparator.comparing(Post::getCreatedAt).reversed());
+
+        return posts;
     }
 }
