@@ -1,9 +1,11 @@
 package com.ColdPitch.domain.service;
 
 import com.ColdPitch.domain.entity.*;
+import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
 import com.ColdPitch.domain.entity.dto.jwt.RefreshToken;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.jwt.TokenRequestDto;
+import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
 import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
@@ -40,9 +42,10 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final CompanyRegistrationService companyRegistrationService;
+    private final CommentService commentService;
+    private final PostService postService;
     private final LikeRepository likeRepository;
     private final DislikeRepository dislikeRepository;
-    private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
     @Transactional
@@ -157,14 +160,14 @@ public class UserService {
                 .nickname(userRequestDto.getNickname()).build();
     }
 
-    public List<Post> getEvaluatedPostsByUser(String email) {
+    public List<PostResponseDto> getEvaluatedPostsByUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
         Long userId = user.getId();
 
         List<Like> likes = likeRepository.findByUserId(userId).orElse(new ArrayList<>());
         List<Dislike> dislikes = dislikeRepository.findByUserId(userId).orElse(new ArrayList<>());
-        List<Comment> comments = commentRepository.findByUserId(userId).orElse(new ArrayList<>());
+        List<CommentResponseDto> comments = commentService.findCommentsByUserId(userId);
 
         List<Post> posts = new ArrayList<>();
 
@@ -178,14 +181,18 @@ public class UserService {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + dislike.getPostId())));
         }
 
-        for(Comment comment : comments) {
+        for(CommentResponseDto comment : comments) {
             posts.add(postRepository.findById(comment.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + comment.getPostId())));
         }
 
-        // 게시글 작성 시간별로 내림차순으로 정렬 (최신글이 제일 위에 오도록)
-        posts.sort(Comparator.comparing(Post::getCreatedAt).reversed());
+        List<PostResponseDto> postResponses = posts.stream()
+                .map(post -> PostResponseDto.of(post, postService.getLikeDislike(userId, post.getId())))
+                .collect(Collectors.toList());
 
-        return posts;
+        // 게시글 작성 시간별로 내림차순으로 정렬 (최신글이 제일 위에 오도록)
+        postResponses.sort(Comparator.comparing(PostResponseDto::getCreateAt).reversed());
+
+        return postResponses;
     }
 }
