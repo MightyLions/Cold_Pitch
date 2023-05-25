@@ -5,9 +5,11 @@ import com.ColdPitch.domain.entity.post.PostState;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class PostRequestDto {
     private Long id;
     private PostState status;
