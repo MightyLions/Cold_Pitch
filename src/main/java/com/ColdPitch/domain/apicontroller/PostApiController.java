@@ -4,6 +4,7 @@ import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
 import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
 import com.ColdPitch.domain.entity.post.PostState;
 import com.ColdPitch.domain.service.PostService;
+import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,8 @@ public class PostApiController {
     @Operation(summary = "게시글 등록")
     public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200)
-            .body(postService.createPost(postRequestDto));
+            .body(postService.createPost(
+                    SecurityUtil.getCurrentUserEmail().orElseThrow(),postRequestDto));
     }
 
     @PatchMapping

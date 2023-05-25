@@ -2,22 +2,12 @@ package com.ColdPitch.domain.entity;
 
 import com.ColdPitch.domain.entity.dto.post.PostRequestDto;
 import com.ColdPitch.domain.entity.post.Category;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ConstraintMode;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 
 import com.ColdPitch.domain.entity.post.PostState;
 import lombok.AccessLevel;
@@ -61,7 +51,7 @@ public class Post extends BaseEntity {
     private int dislikeCnt;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_post_created_user"))
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY)

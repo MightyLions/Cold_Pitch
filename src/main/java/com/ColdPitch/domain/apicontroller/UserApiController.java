@@ -1,6 +1,7 @@
 package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
+import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,6 +31,12 @@ public class UserApiController {
     @Operation(summary = "유저 전체 조회 ( 이후에 ADMIN 권한으로 열기)")
     public ResponseEntity<List<UserResponseDto>> findAllUser() {
         return ResponseEntity.status(200).body(userService.findAllUser());
+    }
+
+    @GetMapping("/{nickname}/posts")
+    @Operation(summary = "유저가 작성한 글 전체 조회 ")
+    public ResponseEntity<List<PostResponseDto>> findMyPost(@PathVariable String nickname) {
+        return ResponseEntity.status(200).body(userService.findMyWritePost(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new)));
     }
 
 
@@ -62,7 +70,7 @@ public class UserApiController {
         return ResponseEntity.status(200).body(list);
     }
 
-
+    @Transactional
     @GetMapping("/testUserToken")
     @Operation(summary = "USER 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyUserToken() {
@@ -73,6 +81,7 @@ public class UserApiController {
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
     }
 
+    @Transactional
     @GetMapping("/testAdminToken")
     @Operation(summary = "ADMIN 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyAdminToken() {

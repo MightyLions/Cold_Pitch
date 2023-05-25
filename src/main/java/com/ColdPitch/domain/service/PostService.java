@@ -45,11 +45,13 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto) {
-        User user = getUserFromAuth();
+    public PostResponseDto createPost(String userEmail,PostRequestDto requestDto) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
         requestDto.setStatus(PostState.OPEN);
         Post post = Post.toEntity(requestDto,user);
-        return PostResponseDto.of(postRepository.save(post), LikeState.UNSELECTED);
+        user.addPost(post);
+        postRepository.save(post);
+        return PostResponseDto.of(post, LikeState.UNSELECTED);
     }
 
     @Transactional
