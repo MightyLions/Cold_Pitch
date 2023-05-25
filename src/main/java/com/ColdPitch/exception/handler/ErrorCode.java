@@ -1,4 +1,4 @@
-package com.ColdPitch.exception;
+package com.ColdPitch.exception.handler;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -32,7 +32,13 @@ public enum ErrorCode {
     COMMENT_REGISTRATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "댓글을 등록하던 중 오류가 발생했습니다"),
     COMMENT_UPDATE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "댓글을 업데이트하던 중 오류가 발생했습니다"),
     COMMENT_DELETE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "댓글을 삭제하던 중 오류가 발생했습니다"),
-    COMMENT_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다");
+    COMMENT_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다"),
+
+
+    // Like
+    LIKE_ALREADY_SELECTED(HttpStatus.BAD_REQUEST,"이미 좋아요를 누른 게시물입니다."),
+    DISLIKE_ALREADY_SELECTED(HttpStatus.BAD_REQUEST,"이미 싫어요를 누른 게시물입니다.");
+
 
     private final HttpStatus status;
     private final String message;

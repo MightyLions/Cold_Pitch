@@ -1,5 +1,6 @@
 package com.ColdPitch.exception;
 
+import com.ColdPitch.exception.handler.ErrorCode;
 import lombok.Getter;
 
 @Getter

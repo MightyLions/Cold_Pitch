@@ -12,6 +12,13 @@ import com.ColdPitch.domain.repository.DislikeRepository;
 import com.ColdPitch.domain.repository.LikeRepository;
 import com.ColdPitch.domain.repository.PostRepository;
 import com.ColdPitch.domain.repository.UserRepository;
+import com.ColdPitch.exception.handler.ErrorCode;
+import com.ColdPitch.exception.AuthNotFoundException;
+import com.ColdPitch.exception.UserNotFoundException;
+import com.ColdPitch.exception.DislikeAlreadySelectedException;
+import com.ColdPitch.exception.LikeAlreadySelectedException;
+import com.ColdPitch.exception.UnauthorizedAccesException;
+import com.ColdPitch.exception.PostNotExistsException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,48 +42,42 @@ public class PostService {
 
     @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        User user = getUserFromAuth();
         requestDto.setStatus(PostState.OPEN);
         Post post = Post.toEntity(requestDto,user);
-        postRepository.save(post);
-        return PostResponseDto.of(post, LikeState.UNSELECTED);
+        return PostResponseDto.of(postRepository.save(post), LikeState.UNSELECTED);
     }
 
     @Transactional
     public PostResponseDto updatePost(PostRequestDto requestDto) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
-        Post post = postRepository.findByIdForAdmin(requestDto.getId()).orElseThrow();
-        if (!post.getCreatedBy().equals(user.getName())) {
-            log.info("유저 불일치"); // 변경 필요
-        }
+        User user = getUserFromAuth();
+        Post post = getPostByAuth(requestDto.getId(), user.getName());
         post.updatePost(requestDto);
         return PostResponseDto.of(post, getLikeDislike(user.getId(), post.getId()));
     }
 
     @Transactional
-    public PostResponseDto postStateChange(Long postId, PostState state) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
-        Post post = postRepository.findByIdForAdmin(postId).orElseThrow();
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
-        if (post.getCreatedBy().equals(user.getName())) {
-            log.info("유저 일치"); // 변경 필요가
-        }
-        post.setStatus(state);
-        return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
+    public PostResponseDto postStateChange(PostRequestDto requestDto) {
+        User user = getUserFromAuth();
+        Post post = getPostByAuth(requestDto.getId(), user.getName());
+        post.setStatus(requestDto.getStatus());
+        return PostResponseDto.of(post, getLikeDislike(user.getId(), post.getId()));
     }
 
     public PostResponseDto findPost(Long postId) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 익셉션 필요
-        Post post = postRepository.findByIdForAdmin(postId).orElseThrow();
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        User user = getUserFromAuth();
+        Optional<Post> OptionalPost = SecurityUtil.checkCurrentUserRole("ADMIN")
+            ? postRepository.findByIdForAdmin(user.getId())
+            : postRepository.findByIdForUser(user.getId());
+
+        Post post = OptionalPost.orElseThrow(
+            () -> new PostNotExistsException(ErrorCode.POST_NOT_EXISTS));
+
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
     public List<PostResponseDto> findAllPosts() {
-        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 익셉션 처리
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        User user = getUserFromAuth();
         List<Post> postList = SecurityUtil.checkCurrentUserRole("ADMIN")
             ? postRepository.findAllForAdmin()
             : postRepository.findAllForUser(user.getId());
@@ -85,17 +86,15 @@ public class PostService {
         for (Post post : postList) {
             responseDtos.add(PostResponseDto.of(post,null));
         }
-
         return responseDtos;
     }
 
     @Transactional
     public PostResponseDto likePost(Long postId) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
-        Post post = postRepository.findByIdForAdmin(postId).orElseThrow();
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        User user = getUserFromAuth();
+        Post post = getPostByAuth(postId, user.getName());
         dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v -> {
-            log.info("싫어요를 선택한 게시물에는 좋아요를 선택할 수 없습니다."); // 익셉션 던지기
+            throw new LikeAlreadySelectedException(ErrorCode.LIKE_ALREADY_SELECTED);
         });
         likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresentOrElse(
             like -> {
@@ -112,11 +111,10 @@ public class PostService {
 
     @Transactional
     public PostResponseDto dislikePost(Long postId) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 유저 validtion 필요
-        Post post = postRepository.findByIdForAdmin(postId).orElseThrow();
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        User user = getUserFromAuth();
+        Post post = getPostByAuth(postId, user.getName());
         likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v->{
-            log.info("좋아요를 선택한 게시물에는 싫어요를 선택할 수 없습니다."); // 익셉션 던지기
+            throw new DislikeAlreadySelectedException(ErrorCode.DISLIKE_ALREADY_SELECTED);
         });
         dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresentOrElse(
             dislike -> {
@@ -131,7 +129,6 @@ public class PostService {
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
 
-    @Transactional
     public LikeState getLikeDislike(Long userId, Long postId) {
         Optional<Like> like = likeRepository.findByUserIdAndPostId(userId, postId);
         Optional<Dislike> dislike = dislikeRepository.findByUserIdAndPostId(userId, postId);
@@ -139,4 +136,25 @@ public class PostService {
             : (dislike.isPresent() ? LikeState.DISLIKE : LikeState.UNSELECTED);
     }
 
+    public User getUserFromAuth() {
+        return userRepository.findByEmail(
+                SecurityUtil.getCurrentUserEmail()
+                    .orElseThrow(() -> new AuthNotFoundException(ErrorCode.FORBIDDEN)))
+            .orElseThrow(() -> new UserNotFoundException(ErrorCode.EMAIL_NOT_EXISTS));
+    }
+
+    public Post getPostByAuth(Long postId, String userName) {
+        Optional<Post> OptionalPost = SecurityUtil.checkCurrentUserRole("ADMIN")
+            ? postRepository.findByIdForAdmin(postId)
+            : postRepository.findByIdForUser(postId);
+
+        Post post = OptionalPost.orElseThrow(
+            () -> new PostNotExistsException(ErrorCode.POST_NOT_EXISTS)); // 게시글이 존재하지 않는 익셉션 발생
+
+        if (!post.getCreatedBy().equals(userName) && SecurityUtil.checkCurrentUserRole("USER")) {
+            throw new UnauthorizedAccesException(ErrorCode.FORBIDDEN);
+        } // Admin이 아닌 유저가 자신의 것이 아닌 게시글을 수정할 때 익셉션 발생
+
+        return post;
+    }
 }

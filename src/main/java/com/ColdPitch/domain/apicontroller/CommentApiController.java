@@ -6,7 +6,7 @@ import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
 import com.ColdPitch.domain.repository.CommentRepository;
 import com.ColdPitch.domain.service.CommentService;
 import com.ColdPitch.exception.CustomException;
-import com.ColdPitch.exception.ErrorCode;
+import com.ColdPitch.exception.handler.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.ArrayList;
 import java.util.Collections;
