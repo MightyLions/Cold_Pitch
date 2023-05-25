@@ -47,7 +47,7 @@ public class PostService {
     public PostResponseDto updatePost(PostRequestDto requestDto) {
         String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
-        Post post = postRepository.findById(requestDto.getId()).orElseThrow();
+        Post post = postRepository.findByIdForAdmin(requestDto.getId()).orElseThrow();
         if (!post.getCreatedBy().equals(user.getName())) {
             log.info("유저 불일치"); // 변경 필요
         }
@@ -58,7 +58,7 @@ public class PostService {
     @Transactional
     public PostResponseDto postStateChange(Long postId, PostState state) {
         String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postRepository.findByIdForAdmin(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         if (post.getCreatedBy().equals(user.getName())) {
             log.info("유저 일치"); // 변경 필요가
@@ -69,7 +69,7 @@ public class PostService {
 
     public PostResponseDto findPost(Long postId) {
         String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 익셉션 필요
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postRepository.findByIdForAdmin(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         return PostResponseDto.of(post, getLikeDislike(user.getId(), postId));
     }
@@ -92,7 +92,7 @@ public class PostService {
     @Transactional
     public PostResponseDto likePost(Long postId) {
         String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postRepository.findByIdForAdmin(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         dislikeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v -> {
             log.info("싫어요를 선택한 게시물에는 좋아요를 선택할 수 없습니다."); // 익셉션 던지기
@@ -113,7 +113,7 @@ public class PostService {
     @Transactional
     public PostResponseDto dislikePost(Long postId) {
         String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow(); // 유저 validtion 필요
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postRepository.findByIdForAdmin(postId).orElseThrow();
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         likeRepository.findByUserIdAndPostId(user.getId(), postId).ifPresent(v->{
             log.info("좋아요를 선택한 게시물에는 싫어요를 선택할 수 없습니다."); // 익셉션 던지기

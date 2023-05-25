@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
 
+
 import com.ColdPitch.domain.entity.post.PostState;
 import lombok.AccessLevel;
 import lombok.Getter;

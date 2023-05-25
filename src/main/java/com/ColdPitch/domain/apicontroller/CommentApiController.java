@@ -5,6 +5,8 @@ import com.ColdPitch.domain.entity.dto.comment.CommentRequestDto;
 import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
 import com.ColdPitch.domain.repository.CommentRepository;
 import com.ColdPitch.domain.service.CommentService;
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +52,9 @@ public class CommentApiController {
                 }
 
                 if (!commentRepository.existsById(id)) {
-                    return ResponseEntity.noContent().build();
+//                    throw new NoSuchElementException("No Matching Comment Id");
+//                    throw new EmailNotExistsException(ErrorCode.EMAIL_NOT_EXISTS);
+                    throw new CustomException(ErrorCode.COMMENT_BAD_REQUEST);
                 }
                 return ResponseEntity.ok(Collections.singletonList(
                     commentService.findCommentsByCommentId(id)));
