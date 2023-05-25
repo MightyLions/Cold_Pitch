@@ -7,7 +7,7 @@ import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.repository.CommentRepository;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.CommentService;
-import com.ColdPitch.exception.CommentException;
+import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.exception.handler.ErrorCode;
 import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,14 +77,14 @@ public class CommentApiController {
 
         if (!SecurityUtil.checkCurrentUserRole("ADMIN")) {
             if (!userRepository.existsById(requestDto.getUserId())) {
-                throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND);
+                throw new CustomException(ErrorCode.USER_NOT_FOUND);
             }
             UserResponseDto userResponseDto = UserResponseDto
                 .of(userRepository.findByEmail
                         (SecurityUtil.getCurrentUserEmail().orElse(null))
-                    .orElseThrow(() -> new UserNotFoundException(ErrorCode.INTERNAL_SERVER_ERROR)));
+                    .orElseThrow(() -> new CustomException(ErrorCode.INTERNAL_SERVER_ERROR)));
             if (!userResponseDto.getId().equals(requestDto.getUserId())) {
-                throw new UserNotFoundException(ErrorCode.USER_NOT_MATCH);
+                throw new CustomException(ErrorCode.USER_NOT_MATCH);
             }
         }
 
@@ -105,14 +105,14 @@ public class CommentApiController {
 
         if (!SecurityUtil.checkCurrentUserRole("ADMIN")) {
             if (!userRepository.existsById(requestDto.getUserId())) {
-                throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND);
+                throw new CustomException(ErrorCode.USER_NOT_FOUND);
             }
             UserResponseDto userResponseDto = UserResponseDto
                 .of(userRepository.findByEmail
                         (SecurityUtil.getCurrentUserEmail().orElse(null))
-                    .orElseThrow(() -> new CommentException(ErrorCode.COMMENT_AUTHOR_NOT_MATCH)));
+                    .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_AUTHOR_NOT_MATCH)));
             if (!userResponseDto.getId().equals(requestDto.getUserId())) {
-                throw new UserNotFoundException(ErrorCode.USER_NOT_MATCH);
+                throw new CustomException(ErrorCode.USER_NOT_MATCH);
             }
         }
 
