@@ -11,6 +11,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -52,6 +54,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private CurState curState;
 
+    @OneToMany(mappedBy = "user")//외래키를 가진쪽 연관관계의 주인
+    private List<Post> posts = new ArrayList<>();
+
     @Override
     public String toString() {
         return "User{" +
@@ -82,5 +87,11 @@ public class User extends BaseEntity {
     //연관관게 메서드
     public void registerCompany(CompanyRegistration companyRegistration) {
         this.companyRegistration = companyRegistration;
+    }
+
+    public void addPost(Post post) {
+        if (!posts.contains(post)) {
+            this.posts.add(post);
+        }
     }
 }

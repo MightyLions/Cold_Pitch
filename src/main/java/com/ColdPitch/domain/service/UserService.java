@@ -5,6 +5,7 @@ import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.jwt.RefreshToken;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.jwt.TokenRequestDto;
+import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
 import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
@@ -151,5 +152,10 @@ public class UserService {
                 .userType(UserType.of(userRequestDto.getUserType()))
                 .curState(CurState.LIVE)
                 .nickname(userRequestDto.getNickname()).build();
+    }
+
+    public List<PostResponseDto> findMyWritePost(String email) {
+        User user = userRepository.findOneWithAuthoritiesByEmail(email).orElseThrow();
+        return user.getPosts().stream().map(o -> PostResponseDto.of(o, null)).collect(Collectors.toList());
     }
 }

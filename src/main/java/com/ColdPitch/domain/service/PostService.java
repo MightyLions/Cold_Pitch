@@ -34,11 +34,11 @@ public class PostService {
     private final DislikeRepository dislikeRepository;
 
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto) {
-        String userEmail = SecurityUtil.getCurrentUserEmail().orElseThrow();
+    public PostResponseDto createPost(String userEmail,PostRequestDto requestDto) {
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         requestDto.setStatus(PostState.OPEN);
         Post post = Post.toEntity(requestDto,user);
+        user.addPost(post);
         postRepository.save(post);
         return PostResponseDto.of(post, LikeState.UNSELECTED);
     }
