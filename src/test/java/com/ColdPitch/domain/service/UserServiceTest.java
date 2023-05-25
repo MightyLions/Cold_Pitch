@@ -30,15 +30,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class UserServiceTest {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
-    TokenProvider tokenProvider;
+    private TokenProvider tokenProvider;
     @Autowired
-    RefreshTokenService refreshTokenService;
+    private RefreshTokenService refreshTokenService;
     private UserRequestDto userRequestDto;
 
     @BeforeEach
