@@ -34,10 +34,6 @@ public class BaseEntity {
     @LastModifiedBy
     private String modifiedBy;
 
-    public LocalDateTime getCreatedAt() {
-        return createAt;
-    }
-
     @Override
     public String toString() {
         return "createAt=" + createAt +
