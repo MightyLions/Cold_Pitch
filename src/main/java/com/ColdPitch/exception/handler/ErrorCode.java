@@ -41,7 +41,12 @@ public enum ErrorCode {
 
     // Like
     LIKE_ALREADY_SELECTED(HttpStatus.BAD_REQUEST,"이미 좋아요를 누른 게시물입니다."),
-    DISLIKE_ALREADY_SELECTED(HttpStatus.BAD_REQUEST,"이미 싫어요를 누른 게시물입니다.");
+    DISLIKE_ALREADY_SELECTED(HttpStatus.BAD_REQUEST,"이미 싫어요를 누른 게시물입니다."),
+
+    // CompanyRegistration
+    COMPANY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 기업입니다."),
+    COMPANY_EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "외부 요청 API에서 에러가 발생하였습니다."),
+    COMPANY_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
 
 
     private final HttpStatus status;
