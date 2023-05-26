@@ -8,9 +8,12 @@ import com.ColdPitch.domain.repository.CompanyRegistrationRepository;
 import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.exception.handler.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CompanyRegistrationService {
     private final CompanyRegistrationValidator companyRegistrationValidator;
@@ -73,6 +76,7 @@ public class CompanyRegistrationService {
                 .b_sector(dto.getB_sector())
                 .b_type(dto.getB_type())
                 .companyAddress(dto.getCompanyAddress())
+                .companyDescription(dto.getCompanyDescription())
                 .user(user)
                 .build();
     }
