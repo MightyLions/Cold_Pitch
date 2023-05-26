@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.repository;
 
+import com.ColdPitch.domain.entity.Tag;
 import com.ColdPitch.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,21 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
 
     @Query(value = "SELECT * FROM user WHERE email = :email", nativeQuery = true)
     Optional<List<User>> findUserByEmailIncludeDeletedUser(@Param("email") String email); //삭제된 유저 포함해서 email중에 조회
+
+    @Query("SELECT DISTINCT u FROM User u " +
+            "JOIN FETCH u.userTags ut " +
+            "JOIN FETCH ut.tag t " +
+            "JOIN FETCH u.companyRegistration cr " +
+            "WHERE u.userType = 'BUSINESS' AND t IN :findTags")
+    List<User> findCompanyByAllEachTags(@Param("findTags") List<Tag> findTags);
+
+//    @Query("SELECT DISTINCT u FROM User u " +
+//            "JOIN FETCH u.userTags ut " +
+//            "JOIN FETCH ut.tag t " +
+//            "JOIN FETCH u.companyRegistration cr " +
+//            "WHERE u.userType = 'BUSINESS' AND " +
+//            "      (:findTags IS EMPTY OR t IN :findTags)")
+//    List<User> findCompanyByAndTags(@Param("findTags") List<Tag> findTags);
+
+
 }

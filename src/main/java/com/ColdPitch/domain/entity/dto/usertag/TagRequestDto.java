@@ -9,6 +9,6 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserTagRequestDto {
+public class TagRequestDto {
     List<String> userTag;
 }
