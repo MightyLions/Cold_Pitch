@@ -4,10 +4,9 @@ import com.ColdPitch.domain.entity.Tag;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.UserTag;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
-import com.ColdPitch.domain.entity.dto.tag.TagRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
-import com.ColdPitch.domain.entity.dto.usertag.UserTagRequestDto;
+import com.ColdPitch.domain.entity.dto.usertag.TagRequestDto;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.repository.UserTagRepository;
 import com.ColdPitch.domain.service.TagService;
@@ -63,8 +62,8 @@ class UserTagControllerTest {
         //given
         Assertions.assertThat(userService.findUserByEmail(user.getEmail()).getNickname()).isEqualTo(user.getNickname());
         ObjectMapper objectMapper = new ObjectMapper();
-        UserTagRequestDto userTagRequestDto = new UserTagRequestDto(List.of("tag1", "tag2"));
-        String requestBody = objectMapper.writeValueAsString(userTagRequestDto);
+        TagRequestDto TagRequestDto = new TagRequestDto(List.of("tag1", "tag2"));
+        String requestBody = objectMapper.writeValueAsString(TagRequestDto);
 
         //when 회원가입 되지 않은 유저 로그인시에
         mockMvc.perform(post("/api/v1/usertag")
@@ -89,7 +88,7 @@ class UserTagControllerTest {
     @DisplayName("유저 테그조회 테스트")
     public void findTagTest() throws Exception {
         //given
-        userTagService.setTag(new UserTagRequestDto(List.of("tag1", "tag2", "tag3")), user);
+        userTagService.setTag(new TagRequestDto(List.of("tag1", "tag2", "tag3")), user);
 
         //when 회원가입 되지 않은 유저 로그인시에
         mockMvc.perform(get("/api/v1/usertag")
@@ -111,8 +110,8 @@ class UserTagControllerTest {
         userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
         user = userRepository.findByNickname("nickname").orElseThrow();
         login = userService.login(new LoginDto("email@naver.com", "password"));
-        tag1 = tagService.createTag(new TagRequestDto("tag1", "tag1"));
-        tag2 = tagService.createTag(new TagRequestDto("tag2", "tag2"));
-        tag3 = tagService.createTag(new TagRequestDto("tag3", "tag3"));
+        tag1 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag1", "tag1"));
+        tag2 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag2", "tag2"));
+        tag3 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag3", "tag3"));
     }
 }

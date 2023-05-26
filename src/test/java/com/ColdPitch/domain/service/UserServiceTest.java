@@ -75,23 +75,24 @@ class UserServiceTest {
     }
 
 
-    @Test //동작은 하는데 API를 이렇게 테스트 해도 되는지 모르겠다.
+    @Test
     @DisplayName("기업회원 회원가입을 확인한다. ")
     public void signupCompany() {
         //given
+        UserRequestDto companyRequestDto = new UserRequestDto("Bnickname", "Bname", "Bpassword", "Bemail@naver.com", "010-7558-2452", "BUSINESS");
+        CompanyRegistrationDto companyRegistrationDto = new CompanyRegistrationDto("12345678", "20230526", "test", "test", "(주)테스트", "0000000000000", "부동산업", "부동산중개업", "test", "test");
 
         // when
-        CompanyRegistrationDto companyRegistrationDto = new CompanyRegistrationDto("12345678", "20230526", "test", "test", "(주)테스트", "0000000000000", "부동산업", "부동산중개업", "test", "test");
-        userService.signUpCompany(new CompanyRequestDto(userRequestDto, companyRegistrationDto));
+        userService.signUpCompany(new CompanyRequestDto(companyRequestDto, companyRegistrationDto));
 
         //then
-        User savedUser = userService.findUserByEmail(userRequestDto.getEmail());
-        assertThat(savedUser.getEmail()).isEqualTo("email@naver.com");
-        assertThat(savedUser.getPhoneNumber()).isEqualTo("010-7558-2452");
-        assertThat(savedUser.getUserType().name()).isEqualTo("USER");
-        assertThat(savedUser.getNickname()).isEqualTo("nickname");
-        assertThat(savedUser.getName()).isEqualTo("name");
-        assertTrue(checkPassword(savedUser.getPassword(), "password"));
+        User savedUser = userService.findUserByEmail(companyRequestDto.getEmail());
+        assertThat(savedUser.getEmail()).isEqualTo(companyRequestDto.getEmail());
+        assertThat(savedUser.getPhoneNumber()).isEqualTo(companyRequestDto.getPhoneNumber());
+        assertThat(savedUser.getUserType().name()).isEqualTo(companyRequestDto.getUserType());
+        assertThat(savedUser.getNickname()).isEqualTo(companyRequestDto.getNickname());
+        assertThat(savedUser.getName()).isEqualTo(companyRequestDto.getName());
+        assertTrue(checkPassword(savedUser.getPassword(), companyRequestDto.getPassword()));
         assertThat(savedUser.getCompanyRegistration().getB_nm()).isEqualTo(companyRegistrationDto.getB_nm());
     }
 
