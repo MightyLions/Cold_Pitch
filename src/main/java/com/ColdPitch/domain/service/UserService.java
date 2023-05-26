@@ -14,6 +14,7 @@ import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.*;
 import com.ColdPitch.jwt.TokenProvider;
+import com.ColdPitch.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -112,6 +113,11 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow();
     }
 
+    //현재 시큐리티 컨텍스에 있는 유저정보와 권환 정보를 준다
+    public Optional<User> getMemberWithAuthorities() {
+        return SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findOneWithAuthoritiesByEmail);
+    }
+
     @Transactional
     public UserResponseDto updateProfile(@ApiIgnore String userEmail, UserRequestDto userRequestDto) {
         //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
@@ -157,6 +163,9 @@ public class UserService {
                 .phoneNumber(userRequestDto.getPhoneNumber())
                 .userType(UserType.of(userRequestDto.getUserType()))
                 .curState(CurState.LIVE)
+                .posts(new ArrayList<>())
+                .userTags(new ArrayList<>())
+                .companyRegistration(null)
                 .nickname(userRequestDto.getNickname()).build();
     }
 
@@ -171,17 +180,17 @@ public class UserService {
 
         List<Post> posts = new ArrayList<>();
 
-        for(Like like : likes) {
+        for (Like like : likes) {
             posts.add(postRepository.findById(like.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + like.getPostId())));
         }
 
-        for(Dislike dislike : dislikes) {
+        for (Dislike dislike : dislikes) {
             posts.add(postRepository.findById(dislike.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + dislike.getPostId())));
         }
 
-        for(CommentResponseDto comment : comments) {
+        for (CommentResponseDto comment : comments) {
             posts.add(postRepository.findById(comment.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + comment.getPostId())));
         }
@@ -195,7 +204,7 @@ public class UserService {
 
         return postResponses;
     }
-  
+
     public List<PostResponseDto> findMyWritePost(String email) {
         User user = userRepository.findOneWithAuthoritiesByEmail(email).orElseThrow();
         return user.getPosts().stream().map(o -> PostResponseDto.of(o, null)).collect(Collectors.toList());

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -30,6 +31,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(204).body(body);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    protected ResponseEntity<?> handlerLogin(NoSuchElementException e) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("message", e.getMessage());
+        String body = new Gson().toJson(jsonObject);
+
+        return ResponseEntity.status(400).body(body);
+    }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<?> handlerException(Exception e) {
