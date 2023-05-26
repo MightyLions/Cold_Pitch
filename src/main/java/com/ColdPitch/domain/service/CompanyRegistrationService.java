@@ -5,8 +5,9 @@ import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationValidationDto;
 import com.ColdPitch.domain.repository.CompanyRegistrationRepository;
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.handler.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,7 +46,7 @@ public class CompanyRegistrationService {
             CompanyRegistration companyRegistration = convertDtoToEntity(companyRegistrationDto, user);
             return companyRegistrationRepository.save(companyRegistration);
         }
-        throw new RequestRejectedException("존재하지 않는 기업입니다"); //기업 오류
+        throw new CustomException(ErrorCode.COMPANY_NOT_FOUND);
     }
 
     private CompanyRegistration convertDtoToEntity(CompanyRegistrationDto dto) {
