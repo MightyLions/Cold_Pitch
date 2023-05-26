@@ -1,7 +1,9 @@
 package com.ColdPitch.domain.service;
 
 import com.ColdPitch.domain.entity.User;
+import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
+import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.user.CurState;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,8 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
@@ -39,11 +44,16 @@ class UserServiceTest {
     private TokenProvider tokenProvider;
     @Autowired
     private RefreshTokenService refreshTokenService;
+    @MockBean
+    private CompanyRegistrationValidator companyRegistrationValidator;
+
     private UserRequestDto userRequestDto;
 
     @BeforeEach
     void init() {
         userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
+        //벨리데이터 모킹
+        when(companyRegistrationValidator.validateCompanyRegistration(any())).thenReturn(true);
     }
 
     @Test
@@ -65,25 +75,25 @@ class UserServiceTest {
     }
 
 
-//    @Test //동작은 하는데 API를 이렇게 테스트 해도 되는지 모르겠다.
-//    @DisplayName("기업회원 회원가입을 확인한다. ")
-//    public void signupCompany() {
-//        //given
-//
-//        // when
-//        CompanyRegistrationDto companyRegistrationDto = new CompanyRegistrationDto("4658601480", "20190909", "김원경", "", "(주)테스트", "0000000000000", "부동산업", "부동산중개업", "부산광역시 해운대");
-//        userService.signUpCompany(new CompanyRequestDto(userRequestDto, companyRegistrationDto));
-//
-//        //then
-//        User savedUser = userService.findUserByEmail(userRequestDto.getEmail());
-//        assertThat(savedUser.getEmail()).isEqualTo("email@naver.com");
-//        assertThat(savedUser.getPhoneNumber()).isEqualTo("010-7558-2452");
-//        assertThat(savedUser.getUserType().name()).isEqualTo("USER");
-//        assertThat(savedUser.getNickname()).isEqualTo("nickname");
-//        assertThat(savedUser.getName()).isEqualTo("name");
-//        assertTrue(checkPassword(savedUser.getPassword(), "password"));
-//        assertThat(savedUser.getCompanyRegistration().getB_nm()).isEqualTo(companyRegistrationDto.getB_nm());
-//    }
+    @Test //동작은 하는데 API를 이렇게 테스트 해도 되는지 모르겠다.
+    @DisplayName("기업회원 회원가입을 확인한다. ")
+    public void signupCompany() {
+        //given
+
+        // when
+        CompanyRegistrationDto companyRegistrationDto = new CompanyRegistrationDto("12345678", "20230526", "test", "test", "(주)테스트", "0000000000000", "부동산업", "부동산중개업", "test", "test");
+        userService.signUpCompany(new CompanyRequestDto(userRequestDto, companyRegistrationDto));
+
+        //then
+        User savedUser = userService.findUserByEmail(userRequestDto.getEmail());
+        assertThat(savedUser.getEmail()).isEqualTo("email@naver.com");
+        assertThat(savedUser.getPhoneNumber()).isEqualTo("010-7558-2452");
+        assertThat(savedUser.getUserType().name()).isEqualTo("USER");
+        assertThat(savedUser.getNickname()).isEqualTo("nickname");
+        assertThat(savedUser.getName()).isEqualTo("name");
+        assertTrue(checkPassword(savedUser.getPassword(), "password"));
+        assertThat(savedUser.getCompanyRegistration().getB_nm()).isEqualTo(companyRegistrationDto.getB_nm());
+    }
 
     @Test
     @DisplayName("유저 회원 로그인을 성공을 확인한다.")
