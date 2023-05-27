@@ -7,10 +7,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,7 +44,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
-    //companyRegisrationNumber
+    @OneToOne(fetch = FetchType.LAZY)
+    private CompanyRegistration companyRegistration;
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -49,8 +54,15 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-
     private CurState curState;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserTag> userTags;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")//외래키를 가진쪽 연관관계의 주인
+    private List<Post> posts = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -77,5 +89,16 @@ public class User extends BaseEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    //연관관게 메서드
+    public void registerCompany(CompanyRegistration companyRegistration) {
+        this.companyRegistration = companyRegistration;
+    }
+
+    public void addPost(Post post) {
+        if (!posts.contains(post)) {
+            this.posts.add(post);
+        }
     }
 }

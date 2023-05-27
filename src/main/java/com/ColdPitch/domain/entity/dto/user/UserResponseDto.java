@@ -3,11 +3,10 @@ package com.ColdPitch.domain.entity.dto.user;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class UserResponseDto {
@@ -20,6 +19,16 @@ public class UserResponseDto {
     private UserType userType;
     private CurState curState;
 
+    public UserResponseDto(User savedMember) {
+        this.id = savedMember.getId();
+        this.name = savedMember.getName();
+        this.nickname = savedMember.getNickname();
+        this.email = savedMember.getEmail();
+        this.phoneNumber = savedMember.getPhoneNumber();
+        this.userType = savedMember.getUserType();
+        this.curState = savedMember.getCurState();
+    }
+
     public static UserResponseDto of(User savedMember) {
         return UserResponseDto.builder().id(savedMember.getId())
                 .name(savedMember.getName())
@@ -29,5 +38,18 @@ public class UserResponseDto {
                 .userType(savedMember.getUserType())
                 .curState(savedMember.getCurState())
                 .build();
+    }
+
+    @Override
+    public String toString() {
+        return "UserResponseDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", userType=" + userType +
+                ", curState=" + curState +
+                '}';
     }
 }

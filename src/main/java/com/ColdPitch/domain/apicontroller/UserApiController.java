@@ -1,19 +1,20 @@
 package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
+import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.UserService;
 import com.ColdPitch.utils.RandomUtil;
+import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,12 @@ public class UserApiController {
         return ResponseEntity.status(200).body(userService.findAllUser());
     }
 
+    @GetMapping("/{nickname}/posts")
+    @Operation(summary = "유저가 작성한 글 전체 조회 ")
+    public ResponseEntity<List<PostResponseDto>> findMyPost(@PathVariable String nickname) {
+        return ResponseEntity.status(200).body(userService.findMyWritePost(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new)));
+    }
+
 
     @GetMapping("/{nickname}")
     @Operation(summary = "특정 유저 조회")
@@ -41,14 +48,14 @@ public class UserApiController {
 
     @PatchMapping
     @Operation(summary = "유저 수정", description = "유저 이름, 전화번호, 닉네임, password 변경 기능")
-    public ResponseEntity<UserResponseDto> updateProfile(@ApiIgnore Authentication authentication, @RequestBody UserRequestDto userRequestDto) {
-        return ResponseEntity.status(200).body(userService.updateProfile(authentication.getName(), userRequestDto));
+    public ResponseEntity<UserResponseDto> updateProfile(@RequestBody UserRequestDto userRequestDto) {
+        return ResponseEntity.status(200).body(userService.updateProfile(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new), userRequestDto));
     }
 
     @DeleteMapping
     @Operation(summary = "유저 탈퇴")
-    public ResponseEntity<Void> deleteUser(@ApiIgnore Authentication authentication) {
-        userService.deleteUser(authentication.getName());
+    public ResponseEntity<Void> deleteUser() {
+        userService.deleteUser(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new));
         return ResponseEntity.status(200).build();
     }
 
@@ -58,31 +65,37 @@ public class UserApiController {
         List<UserResponseDto> list = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             long rand = RandomUtil.getRandom(Integer.MAX_VALUE);
-            list.add(userService.signup(new UserRequestDto("nick" + rand, "name" + rand, "password" + rand, "eamil" + rand, "phone" + rand, userType)));
+            list.add(userService.signUpUser(new UserRequestDto("nick" + rand, "name" + rand, "password" + rand, "eamil" + rand, "phone" + rand, userType)));
         }
         return ResponseEntity.status(200).body(list);
     }
 
-
+    @Transactional
     @GetMapping("/testUserToken")
     @Operation(summary = "USER 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyUserToken() {
         UserRequestDto urd = new UserRequestDto("testNick", "testName", "testPass", "testEamil@naver.com", "010-1234-1234", "USER");
         userRepository.deleteByEmail(urd.getEmail());
-        userService.signup(urd);
+        userService.signUpUser(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
     }
 
+    @Transactional
     @GetMapping("/testAdminToken")
     @Operation(summary = "ADMIN 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyAdminToken() {
         UserRequestDto urd = new UserRequestDto("testANick", "testAName", "testAPass", "testAEamil@naver.com", "010-5678-5678", "ADMIN");
         userRepository.deleteByEmail(urd.getEmail());
-        userService.signup(urd);
+        userService.signUpUser(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
         return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
     }
 
-
+    @GetMapping("/user/evaluated-posts")
+    public ResponseEntity<List<PostResponseDto>> getEvaluatedPostsByUser() {
+        List<PostResponseDto> posts = userService.getEvaluatedPostsByUser(
+                SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new));
+        return ResponseEntity.status(200).body(posts);
+    }
 }

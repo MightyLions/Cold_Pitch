@@ -2,8 +2,10 @@ package com.ColdPitch.domain.entity;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,6 +23,10 @@ public class Tag extends BaseEntity {
 
     @Column(nullable = false)
     private String description;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<UserTag> userTags;
 
     @Override
     public String toString() {

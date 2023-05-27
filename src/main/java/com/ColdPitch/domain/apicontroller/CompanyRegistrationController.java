@@ -2,6 +2,8 @@ package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
 import com.ColdPitch.domain.service.CompanyRegistrationService;
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.handler.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,13 +22,13 @@ public class CompanyRegistrationController {
     @PostMapping("/validate")
     public ResponseEntity<CompanyRegistrationDto> validate(@RequestBody CompanyRegistrationDto companyRegistrationDto, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            throw new CustomException(ErrorCode.POST_BAD_REQUEST);
         }
 
         boolean isValid = companyRegistrationService.validateAndSaveCompanyRegistration(companyRegistrationDto);
 
         if (!isValid) {
-            return ResponseEntity.badRequest().build();
+            throw new CustomException(ErrorCode.COMPANY_NOT_FOUND);
         }
 
         return ResponseEntity.ok(companyRegistrationDto);

@@ -61,8 +61,8 @@ class UserControllerTest {
 
     @BeforeEach
     public void initUser() {
-        userService.signup(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
-        userService.signup(new UserRequestDto("Anickname", "Aname", "Apassword", "Aemail@naver.com", "010-7558-2444", "ADMIN"));
+        userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
+        userService.signUpUser(new UserRequestDto("Anickname", "Aname", "Apassword", "Aemail@naver.com", "010-7558-2444", "ADMIN"));
 
         user1 = userRepository.findByNickname("nickname").orElseThrow();
         admin1 = userRepository.findByNickname("Anickname").orElseThrow();

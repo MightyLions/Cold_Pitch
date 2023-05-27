@@ -3,6 +3,8 @@ package com.ColdPitch.domain.service;
 import com.ColdPitch.config.security.JwtConfig;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationValidationDto;
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.handler.ErrorCode;
 import com.ColdPitch.utils.ServerUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -42,7 +44,7 @@ public class CompanyRegistrationValidator {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new RuntimeException("API request failed with status code: " + response.code());
+                throw new CustomException(ErrorCode.COMPANY_EXTERNAL_API_ERROR);
             }
 
             String responseBody = response.body().string();
@@ -57,7 +59,7 @@ public class CompanyRegistrationValidator {
             }
             return false;
         } catch (IOException e) {
-            throw new RuntimeException("API request failed with exception: " + e.getMessage());
+            throw new CustomException(ErrorCode.COMPANY_EXTERNAL_API_ERROR);
         }
     }
 }

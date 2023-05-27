@@ -5,6 +5,8 @@ import com.ColdPitch.domain.entity.comment.CommentState;
 import com.ColdPitch.domain.entity.dto.comment.CommentRequestDto;
 import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
 import com.ColdPitch.domain.repository.CommentRepository;
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.handler.ErrorCode;
 import com.ColdPitch.utils.SecurityUtil;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,18 +44,7 @@ public class CommentService {
             return null;
         }
 
-        return CommentResponseDto.builder()
-            .id(comment.getId())
-            .postId(comment.getPostId())
-            .userId(comment.getUserId())
-            .text(comment.getText())
-            .pCommentId(comment.getPCommentId())
-            .status(comment.getStatus())
-            .createAt(comment.getCreateAt())
-            .createBy(comment.getCreatedBy())
-            .modifiedAt(comment.getModifiedAt())
-            .modifiedBy(comment.getModifiedBy())
-            .build();
+        return CommentResponseDto.of(comment);
     }
 
     @Transactional(readOnly = true)
@@ -74,7 +65,8 @@ public class CommentService {
     @Transactional(readOnly = true)
     public CommentResponseDto findCommentsByCommentId(Long commentId) {
         if (SecurityUtil.checkCurrentUserRole("ADMIN")) {
-            return commentToResponseDto(commentRepository.findById(commentId).orElse(null));
+            return commentToResponseDto(commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_EXISTS)));
         }
 
         return commentToResponseDto(commentRepository.findByIdForUser(commentId));
@@ -150,6 +142,10 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentResponseDto> findCommentsByUserId(Long userId) {
+        if (commentRepository.findAllByUserIdForAdmin(userId).isEmpty()) {
+            throw new CustomException(ErrorCode.COMMENT_BAD_REQUEST);
+        }
+
         if (SecurityUtil.checkCurrentUserRole("ADMIN")) {
             return commentRepository
                 .findAllByUserIdForAdmin(userId)
