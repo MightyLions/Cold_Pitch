@@ -18,31 +18,32 @@ spring:
     url: jdbc:mysql://localhost:3306/coldPitch_db
     username: root
     password: qwer1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-      location: ./temp/file
+      location: /files
   #  datasource:
 #    url: jdbc:mysql://dbcoldpitch.cwjrnu5w51np.ap-northeast-2.rds.amazonaws.com:3306/dbcoldpitch
 #    username: root
 #    password: qwer0509!
 
-
   #jpa Settings
   jpa:
     database: mysql
-    show-sql: true
-    generate-ddl: false
     # hibernate Settings
     hibernate:
       naming:
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      # 스키마만 만들고 추후 변경필요!! none으로 변경해야함
       ddl-auto: create
       dialect: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        show_sql: true
     open-in-view: true
 
 # logging level settings

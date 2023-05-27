@@ -1,4 +1,4 @@
-package com.ColdPitch.domain.entity.support;
+package com.ColdPitch.domain.repository.support;
 
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Expression;
@@ -42,8 +42,9 @@ public abstract class Querydsl4RepositorySupport {
         EntityPath path = resolver.createPath(entityInformation.getJavaType());
 
         this.entityManager = entityManager;
-        this.querydsl = new Querydsl(entityManager, new
-                PathBuilder<>(path.getType(), path.getMetadata()));
+        this.querydsl = new Querydsl(entityManager
+                , new PathBuilder<>(path.getType()
+                , path.getMetadata()));
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 

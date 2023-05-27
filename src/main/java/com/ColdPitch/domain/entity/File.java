@@ -3,19 +3,22 @@ package com.ColdPitch.domain.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Getter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class File extends BaseEntity{
+public class File extends BaseEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "file_id", nullable = false)
+    @Column(name = "file_id")
+    @Setter(AccessLevel.PRIVATE)
     private Long id;
 
     @Column(nullable = false)
@@ -28,6 +31,7 @@ public class File extends BaseEntity{
     private Long size;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private FileStatus status;
 
     @Override
