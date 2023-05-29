@@ -53,7 +53,7 @@ public class CommentResponseDto {
             .userId(comment.getUserId())
             .postId(comment.getPostId())
             .text(comment.getText())
-            .pCommentId(comment.getPCommentId())
+            .pCommentId(comment.getPId())
             .status(comment.getStatus())
             .createAt(comment.getCreateAt())
             .createBy(comment.getCreatedBy())

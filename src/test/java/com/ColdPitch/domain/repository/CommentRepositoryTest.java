@@ -46,7 +46,7 @@ public class CommentRepositoryTest {
             }
 
             if (i % 2 == 0) {
-                entity = entity.toBuilder().userId(USER_ID).pCommentId(PARENT_COMMENT_ID).build();
+                entity = entity.toBuilder().userId(USER_ID).pId(PARENT_COMMENT_ID).build();
             }
 
             entity = commentRepository.saveAndFlush(entity);

@@ -45,6 +45,7 @@ public class User extends BaseEntity {
     private String phoneNumber;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private CompanyRegistration companyRegistration;
 
 
