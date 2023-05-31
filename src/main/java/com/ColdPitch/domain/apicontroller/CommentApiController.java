@@ -47,7 +47,7 @@ public class CommentApiController {
         @RequestParam(name = "CommentRequestType", required = true) CommentRequestType type) {
         switch (type) {
             case POST_ID :
-                return ResponseEntity.ok(commentService.findCommentsByPostId(id));
+                return ResponseEntity.ok(commentService.findListByPostId(id));
             case COMMENT_ID :
                 if (id == null) {
                     return ResponseEntity.ok(commentRepository

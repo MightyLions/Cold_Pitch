@@ -48,6 +48,13 @@ dependencies {
     implementation "com.querydsl:querydsl-collections:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt"
 
+	//aws
+//	implementation 'org.springframework.cloud:spring-cloud-starter-config:2.2.6.RELEASE'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config:2.2.6.RELEASE'
+
+
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
@@ -94,6 +101,9 @@ sourceSets {
 }
 
 configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
     querydsl.extendsFrom compileClasspath
 }
 

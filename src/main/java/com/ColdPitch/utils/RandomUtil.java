@@ -10,9 +10,7 @@ public class RandomUtil {
      * @return 1부터 end 이하까지의 범위
      */
     public static long getRandom(int end) {
-        Random random = new Random();
-
-        long res = (long) random.nextInt(end);
+        long res = (long) new Random().nextInt(end);
 
         return res == 0 ? 1L : res;
     }

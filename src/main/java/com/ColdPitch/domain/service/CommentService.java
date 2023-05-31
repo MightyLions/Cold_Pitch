@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional()
+@Transactional(readOnly = true)
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -30,7 +30,7 @@ public class CommentService {
             .postId(requestDto.getPostId())
             .userId(requestDto.getUserId())
             .text(requestDto.getText())
-            .pCommentId(requestDto.getPCommentId())
+            .pId(requestDto.getPCommentId())
             .status(CommentState.OPEN)
             .build();
 
@@ -47,7 +47,7 @@ public class CommentService {
         return CommentResponseDto.of(comment);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<CommentResponseDto> findAll() {
         if (SecurityUtil.checkCurrentUserRole("ADMIN")) {
             return commentRepository.findAllForAdmin()
@@ -62,7 +62,7 @@ public class CommentService {
             .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public CommentResponseDto findCommentsByCommentId(Long commentId) {
         if (SecurityUtil.checkCurrentUserRole("ADMIN")) {
             return commentToResponseDto(commentRepository.findById(commentId)
@@ -72,8 +72,8 @@ public class CommentService {
         return commentToResponseDto(commentRepository.findByIdForUser(commentId));
     }
 
-    @Transactional(readOnly = true)
-    public List<CommentResponseDto> findCommentsByPostId(Long postId) {
+    @Transactional
+    public List<CommentResponseDto> findListByPostId(Long postId) {
         if (SecurityUtil.checkCurrentUserRole("ADMIN")) {
             return commentRepository
                 .findAllByPostIdForAdmin(postId)
@@ -123,7 +123,6 @@ public class CommentService {
         return false;
     }
 
-    @Transactional(readOnly = true)
     public List<CommentResponseDto> findCommentsByParentId(Long parentId) {
         if (SecurityUtil.checkCurrentUserRole("ADMIN")) {
             return commentRepository
@@ -140,7 +139,6 @@ public class CommentService {
             .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<CommentResponseDto> findCommentsByUserId(Long userId) {
         if (commentRepository.findAllByUserIdForAdmin(userId).isEmpty()) {
             throw new CustomException(ErrorCode.COMMENT_BAD_REQUEST);

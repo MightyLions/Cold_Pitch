@@ -3,71 +3,55 @@ package com.ColdPitch.domain.repository;
 import com.ColdPitch.domain.entity.QSolution;
 import com.ColdPitch.domain.entity.Solution;
 import com.ColdPitch.domain.entity.solution.SolutionState;
+import com.ColdPitch.domain.repository.support.Querydsl4RepositorySupport;
 import com.ColdPitch.utils.SecurityUtil;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
-@Transactional
-public class SolutionRepositoryImpl implements SolutionRepositoryCustom {
+import static com.ColdPitch.domain.entity.QSolution.*;
 
-    private final JPAQueryFactory queryFactory;
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Solution> findByUserIdForUser(Long id) {
-        if (SecurityUtil.checkCurrentUserRole("ADMIN")) {
-            return queryFactory
-                .selectFrom(QSolution.solution)
-                .where(QSolution.solution.id.eq(id))
-                .fetch();
-        }
-
-        return queryFactory
-            .selectFrom(QSolution.solution)
-            .where(QSolution.solution.id.eq(id))
-            .where(QSolution.solution.status.ne(SolutionState.DELETE))
-            .fetch();
+@Transactional(readOnly = true)
+@Repository
+public class SolutionRepositoryImpl extends Querydsl4RepositorySupport implements SolutionRepositoryCustom {
+    public SolutionRepositoryImpl() {
+        super(Solution.class);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<Solution> findAllByUserId(Long userId) {
-        if (SecurityUtil.checkCurrentUserRole("ADMIN")) {
-            return queryFactory
-                .selectFrom(QSolution.solution)
-                .where(QSolution.solution.userId.eq(userId))
+        return selectFrom(solution)
+                .where(solution.userId.eq(userId))
+                .where(enableDelete())
                 .fetch();
-        }
-
-        return queryFactory
-            .selectFrom(QSolution.solution)
-            .where(QSolution.solution.userId.eq(userId))
-            .where(QSolution.solution.status.ne(SolutionState.DELETE))
-            .fetch();
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public Solution findByIdForUser(Long id) {
-        return queryFactory
-            .selectFrom(QSolution.solution)
-            .where(QSolution.solution.id.eq(id))
-            .where(QSolution.solution.status.ne(SolutionState.DELETE))
-            .fetch()
-            .stream()
-            .findFirst()
-            .orElse(null);
+        return selectFrom(solution)
+                .where(solution.id.eq(id))
+                .where(enableDelete())
+                .fetchOne();
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<Solution> findAllForUser() {
-        return queryFactory
-            .selectFrom(QSolution.solution)
-            .where(QSolution.solution.status.ne(SolutionState.DELETE))
+        return selectFrom(solution)
+            .where(solution.status.ne(SolutionState.DELETE))
             .fetch();
+    }
+
+    private static BooleanExpression enableDelete() {
+        return isAdmin() ? null : solution.status.ne(SolutionState.DELETE) ;
+    }
+
+    private static boolean isAdmin() {
+        return SecurityUtil.checkCurrentUserRole("ADMIN");
     }
 }

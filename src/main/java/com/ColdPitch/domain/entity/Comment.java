@@ -20,28 +20,28 @@ public class Comment extends BaseEntity {
     @Column(name = "comment_id")
     private Long id;
 
+    @Column(name = "p_comment_id")
+    private Long pId;
+
+    @Column(nullable = false)
+    private String text;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CommentState status;
+
     @Column(nullable = false)
     private Long userId;
 
     @Column(nullable = false)
     private Long postId;
 
-    @Column(nullable = false)
-    private String text;
-
-    @Column(name = "p_comment_id")
-    private Long pCommentId;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CommentState status;
-
     public void setText(String text) {
         this.text = text;
     }
 
-    public void setpCommentId(Long pCommentId) {
-        this.pCommentId = pCommentId;
+    public void setpId(Long pId) {
+        this.pId = pId;
     }
 
     public void setStatus(CommentState status) {

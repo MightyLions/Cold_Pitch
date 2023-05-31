@@ -55,8 +55,10 @@ public class CompanyRegistration extends BaseEntity {
     @Column(name = "company_description", nullable = false)
     private String companyDescription;
   
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @OneToOne(fetch = FetchType.LAZY
+            , cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id"
+            , foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
     @Override
