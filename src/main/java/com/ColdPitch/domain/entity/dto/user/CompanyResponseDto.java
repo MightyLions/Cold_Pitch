@@ -12,7 +12,7 @@ public class CompanyResponseDto extends UserResponseDto {
     private String p_nm;
     private String b_nm;
     private String b_type;
-    private String address;
+    private String b_adr;
     private String description;
 
     public CompanyResponseDto(User savedMember) {
@@ -22,7 +22,7 @@ public class CompanyResponseDto extends UserResponseDto {
         this.p_nm = savedMember.getCompanyRegistration().getP_nm();
         this.b_nm = savedMember.getCompanyRegistration().getB_nm();
         this.b_type = savedMember.getCompanyRegistration().getB_type();
-        this.address = savedMember.getCompanyRegistration().getCompanyAddress();
+        this.b_adr = savedMember.getCompanyRegistration().getB_adr();
         this.description = savedMember.getCompanyRegistration().getCompanyDescription();
     }
 
@@ -35,7 +35,7 @@ public class CompanyResponseDto extends UserResponseDto {
                 ", p_nm='" + p_nm + '\'' +
                 ", b_nm='" + b_nm + '\'' +
                 ", b_type='" + b_type + '\'' +
-                ", address='" + address + '\'' +
+                ", address='" + b_adr + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }
