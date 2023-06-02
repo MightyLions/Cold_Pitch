@@ -61,7 +61,7 @@ public class CompanyRegistrationService {
                 .corp_no(dto.getCorp_no())
                 .b_sector(dto.getB_sector())
                 .b_type(dto.getB_type())
-                .companyAddress(dto.getCompanyAddress())
+                .b_adr(dto.getB_adr())
                 .companyDescription(dto.getCompanyDescription())
                 .build();
     }
@@ -75,7 +75,7 @@ public class CompanyRegistrationService {
                 .corp_no(dto.getCorp_no())
                 .b_sector(dto.getB_sector())
                 .b_type(dto.getB_type())
-                .companyAddress(dto.getCompanyAddress())
+                .b_adr(dto.getB_adr())
                 .companyDescription(dto.getCompanyDescription())
                 .user(user)
                 .build();
