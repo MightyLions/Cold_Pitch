@@ -69,6 +69,8 @@ public class Comment extends BaseEntity {
                 ", userId=" + userId +
                 ", postId=" + postId +
                 ", text='" + text + '\'' +
+                ", pId= '" + pId + '\'' +
+                ", status = '" + status + '\'' +
                 ", " + super.toString() +
                 "}";
     }

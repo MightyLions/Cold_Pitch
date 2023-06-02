@@ -40,7 +40,7 @@ public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements
     @Transactional(readOnly = true)
     public List<Comment> findAllByParentId(Long pCommentId) {
         return selectFrom(comment)
-            .where(comment.pCommentId.eq(pCommentId))
+            .where(comment.pId.eq(pCommentId))
             .where(comment.status.ne(CommentState.DELETED))
             .fetch();
     }
@@ -49,7 +49,7 @@ public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements
     @Transactional(readOnly = true)
     public List<Comment> findAllByParentIdForAdmin(Long pCommentId) {
         return selectFrom(comment)
-            .where(comment.pCommentId.eq(pCommentId))
+            .where(comment.pId.eq(pCommentId))
             .fetch();
     }
 
