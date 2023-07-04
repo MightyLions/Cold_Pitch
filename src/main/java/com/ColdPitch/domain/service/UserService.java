@@ -13,6 +13,7 @@ import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.*;
+import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.jwt.TokenProvider;
 import com.ColdPitch.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springfox.documentation.annotations.ApiIgnore;
@@ -31,6 +31,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.ColdPitch.exception.handler.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -83,18 +85,17 @@ public class UserService {
         return tokenDto;
     }
 
-
     @Transactional
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
         if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            throw new RuntimeException("유효하지 않은 Refresh Token 입니다.");
+            throw new CustomException(USER_INVALID_REFRESH_TOKEN);
         }
 
         Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName()).orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName()).orElseThrow(() -> new CustomException(USER_NOT_ACTIVE));
 
         if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
-            throw new RuntimeException("토큰의 정보가 유저 정보가 일치하지 않습니다.");
+            throw new CustomException(USER_INVALID_USER_REFRESH_TOKEN);
         }
 
         //새로운 토큰 발급
@@ -140,7 +141,7 @@ public class UserService {
         if (find.isPresent()) {
             return UserResponseDto.of(find.get());
         }
-        throw new RequestRejectedException("없는 nickname 입니다");
+        throw new CustomException(USER_NICKNAME_NOT_FOUND);
     }
 
     @Transactional
@@ -148,7 +149,7 @@ public class UserService {
         //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
         List<User> users = userRepository.findUserByEmailIncludeDeletedUser(email).orElseThrow();
         if (!users.isEmpty() && users.get(0).getCurState() == CurState.DELETED) {
-            throw new RequestRejectedException("이미 탈퇴한 회원입니다.");
+            throw new CustomException(USER_ALREADY_WITHDRAWN);
         }
         logout(email); //리프레시 토큰을 삭제한다.
         userRepository.deleteByEmail(email);

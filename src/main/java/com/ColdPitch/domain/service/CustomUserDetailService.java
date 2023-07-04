@@ -1,15 +1,15 @@
 package com.ColdPitch.domain.service;
 
-import com.ColdPitch.domain.entity.user.CurState;
+import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.repository.UserRepository;
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.handler.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.ColdPitch.domain.entity.User;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -24,7 +24,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         return userRepository.findOneWithAuthoritiesByEmail(email)
                 .map(this::createUser)
-                .orElseThrow(() -> new UsernameNotFoundException(email + " -> 데이터 베이스에서 찾을수 없습니다"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NICKNAME_NOT_FOUND));
     }
 
     private org.springframework.security.core.userdetails.User createUser(User user) {
