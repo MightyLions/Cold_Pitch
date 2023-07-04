@@ -2,6 +2,8 @@ package com.ColdPitch.jwt;
 
 import com.ColdPitch.config.security.JwtConfig;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.handler.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -67,7 +69,7 @@ public class TokenProvider implements InitializingBean {
         Claims claims = parseClaims(accessToken);
 
         if (claims.get(AUTHORITIES_KEY) == null) {
-            throw new RuntimeException("권한이 없는 토큰 입니다");
+            throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
         //권한이 있는 경우
