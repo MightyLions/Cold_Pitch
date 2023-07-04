@@ -4,8 +4,8 @@ import com.ColdPitch.domain.entity.Tag;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.UserTag;
 import com.ColdPitch.domain.entity.dto.user.CompanyResponseDto;
-import com.ColdPitch.domain.entity.dto.usertag.TagResponseDto;
 import com.ColdPitch.domain.entity.dto.usertag.TagRequestDto;
+import com.ColdPitch.domain.entity.dto.usertag.TagResponseDto;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.repository.UserTagRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class UserTagService {
 
     @Transactional
     public void initUserTag(User user) {
-        for (int i=user.getUserTags().size()-1;0<=i;i--) {
+        for (int i = user.getUserTags().size() - 1; 0 <= i; i--) {
             UserTag userTag = user.getUserTags().get(i);
             userTag.delete();
             userTagRepository.delete(userTag);
@@ -56,7 +56,7 @@ public class UserTagService {
         return userRepository.findCompanyByAllEachTags(findTags).stream().map(CompanyResponseDto::new).collect(Collectors.toList());
     }
 
-    //태그를 만족하는 모든 회사(and)
+    //태그를 만족하는 모든 회사(and) 개발중인기능
 //    public List<CompanyResponseDto> findCompanyByAndTags(TagRequestDto TagRequestDto) {
 //        List<Tag> findTags = getTags(TagRequestDto);
 //

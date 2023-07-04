@@ -2,6 +2,7 @@ package com.ColdPitch.domain.service;
 
 import com.ColdPitch.domain.entity.*;
 import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
+import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
 import com.ColdPitch.domain.entity.dto.jwt.RefreshToken;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.jwt.TokenRequestDto;
@@ -55,7 +56,7 @@ public class UserService {
     public UserResponseDto signUpUser(UserRequestDto userRoleDto) {
         //TODO 유저 이메일, 닉네임 중복 확인 ( 이메일 형식, 전화번호 형식 확인 부분도 추가해야함)
         User user = makeUser(userRoleDto);
-        return UserResponseDto.of(userRepository.save(user));
+        return UserResponseDto.fromEntity(userRepository.save(user));
     }
 
     @Transactional
@@ -65,9 +66,10 @@ public class UserService {
         User user = userRepository.save(makeUser(userRequestDto));
 
         //실제 존재하는 기업 회원인지 검증하는 로직
-        CompanyRegistration companyRegistration = companyRegistrationService.validateAndSaveCompanyRegistration(companyRequestDto.getCompanyRegistrationDto(), user);
+        CompanyRegistrationDto dto = companyRequestDto.getCompanyRegistrationDto();
+        CompanyRegistration companyRegistration = companyRegistrationService.validateAndSaveCompanyRegistration(dto, user);
         user.registerCompany(companyRegistration);
-        return UserResponseDto.of(user);
+        return UserResponseDto.fromEntity(user);
     }
 
     @Transactional
@@ -77,12 +79,34 @@ public class UserService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
         //RefreshToken 저장
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
+        RefreshToken refreshToken = new RefreshToken(authentication.getName(), tokenDto.getRefreshToken());
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
+    }
+
+    @Transactional
+    public void logout(String nowLoginEmail) {
+        refreshTokenRepository.deleteByKey(nowLoginEmail);
+    }
+
+    @Transactional
+    public UserResponseDto updateProfile(@ApiIgnore String userEmail, UserRequestDto userRequestDto) {
+        //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
+        User user = userRepository.findOneWithAuthoritiesByEmail(userEmail).orElseThrow();
+        user.updateProfile(userRequestDto);
+        user.updatePassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        return UserResponseDto.fromEntity(user);
+    }
+
+    @Transactional
+    public void deleteUser(String email) {
+        //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
+        List<User> users = userRepository.findUserByEmailIncludeDeletedUser(email).orElseThrow();
+        if (!users.isEmpty() && users.get(0).getCurState() == CurState.DELETED) {
+            throw new CustomException(USER_ALREADY_WITHDRAWN);
+        }
+        logout(email); //리프레시 토큰을 삭제한다.
+        userRepository.deleteByEmail(email);
     }
 
     @Transactional
@@ -105,69 +129,18 @@ public class UserService {
         return tokenDto;
     }
 
-    @Transactional
-    public void logout(String nowLoginEmail) {
-        refreshTokenRepository.deleteByKey(nowLoginEmail);
-    }
 
+    //조회
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow();
     }
 
-    //현재 시큐리티 컨텍스에 있는 유저정보와 권환 정보를 준다
-    public Optional<User> getMemberWithAuthorities() {
-        return SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findOneWithAuthoritiesByEmail);
-    }
-
-    @Transactional
-    public UserResponseDto updateProfile(@ApiIgnore String userEmail, UserRequestDto userRequestDto) {
-        //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
-        User user = userRepository.findOneWithAuthoritiesByEmail(userEmail).orElseThrow();
-        user.updateProfile(userRequestDto);
-        user.updatePassword(passwordEncoder.encode(userRequestDto.getPassword()));
-        return UserResponseDto.of(user);
+    public UserResponseDto findByNickName(String nickname) {
+        return UserResponseDto.fromEntity(userRepository.findByNickname(nickname).orElseThrow(() -> new CustomException(USER_NICKNAME_NOT_FOUND)));
     }
 
     public List<UserResponseDto> findAllUser() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserResponseDto::of)
-                .collect(Collectors.toList());
-
-    }
-
-    public UserResponseDto findByNickName(String nickname) {
-        Optional<User> find = userRepository.findByNickname(nickname);
-        if (find.isPresent()) {
-            return UserResponseDto.of(find.get());
-        }
-        throw new CustomException(USER_NICKNAME_NOT_FOUND);
-    }
-
-    @Transactional
-    public void deleteUser(String email) {
-        //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
-        List<User> users = userRepository.findUserByEmailIncludeDeletedUser(email).orElseThrow();
-        if (!users.isEmpty() && users.get(0).getCurState() == CurState.DELETED) {
-            throw new CustomException(USER_ALREADY_WITHDRAWN);
-        }
-        logout(email); //리프레시 토큰을 삭제한다.
-        userRepository.deleteByEmail(email);
-    }
-
-    private User makeUser(UserRequestDto userRequestDto) {
-        return User.builder()
-                .name(userRequestDto.getName())
-                .nickname(userRequestDto.getNickname())
-                .password(passwordEncoder.encode(userRequestDto.getPassword()))
-                .email(userRequestDto.getEmail())
-                .phoneNumber(userRequestDto.getPhoneNumber())
-                .userType(UserType.of(userRequestDto.getUserType()))
-                .curState(CurState.LIVE)
-                .posts(new ArrayList<>())
-                .userTags(new ArrayList<>())
-                .companyRegistration(null)
-                .nickname(userRequestDto.getNickname()).build();
+        return userRepository.findAll().stream().map(UserResponseDto::fromEntity).collect(Collectors.toList());
     }
 
     public List<PostResponseDto> getEvaluatedPostsByUser(String email) {
@@ -209,5 +182,25 @@ public class UserService {
     public List<PostResponseDto> findMyWritePost(String email) {
         User user = userRepository.findOneWithAuthoritiesByEmail(email).orElseThrow();
         return user.getPosts().stream().map(o -> PostResponseDto.of(o, null)).collect(Collectors.toList());
+    }
+
+    //현재 시큐리티 컨텍스에 있는 유저정보와 권환 정보를 준다
+    public Optional<User> getMemberWithAuthorities() {
+        return SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findOneWithAuthoritiesByEmail);
+    }
+
+    private User makeUser(UserRequestDto userRequestDto) {
+        return User.builder()
+                .name(userRequestDto.getName())
+                .nickname(userRequestDto.getNickname())
+                .password(passwordEncoder.encode(userRequestDto.getPassword()))
+                .email(userRequestDto.getEmail())
+                .phoneNumber(userRequestDto.getPhoneNumber())
+                .userType(UserType.of(userRequestDto.getUserType()))
+                .curState(CurState.LIVE)
+                .posts(new ArrayList<>())
+                .userTags(new ArrayList<>())
+                .companyRegistration(null)
+                .nickname(userRequestDto.getNickname()).build();
     }
 }
