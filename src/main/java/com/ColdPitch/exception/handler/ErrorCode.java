@@ -16,6 +16,14 @@ public enum ErrorCode {
     REQUEST_TIMEOUT(HttpStatus.REQUEST_TIMEOUT, "접근 요청시간이 만료되었습니다"),                    //  408
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부적인 서버 에러가 발생했습니다"),      //  500
     NOT_IMPLEMENTED(HttpStatus.NOT_IMPLEMENTED, "구현되지 않은 기능입니다"),                       //  501
+    INVALID_JWT_AUTHORIZATION(HttpStatus.INTERNAL_SERVER_ERROR, "잘못된 JWT 서명입니다."),
+    EXPIRED_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, "잘못된 JWT 서명입니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, "잘못된 JWT 서명입니다."),
+    INVALID_JWT_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, "잘못된 JWT 서명입니다."),
+    NO_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "JWT 서명이 존재하지 않습니다."),
+    NO_AUTHORIZATION_TOKEN(HttpStatus.FORBIDDEN, "권한이 맞지 않습니다."),
+
+
 
     // User
     EMAIL_NOT_EXISTS(HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다"),
@@ -51,7 +59,6 @@ public enum ErrorCode {
     COMPANY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 기업입니다."),
     COMPANY_EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "외부 요청 API에서 에러가 발생하였습니다."),
     COMPANY_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
-
 
     private final HttpStatus status;
     private final String message;
