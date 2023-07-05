@@ -2,6 +2,7 @@ package com.ColdPitch.domain.entity.dto.usertag;
 
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Getter
@@ -10,5 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TagRequestDto {
+    @NotEmpty
     List<String> userTag;
 }
