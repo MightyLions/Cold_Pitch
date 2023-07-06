@@ -1,6 +1,6 @@
 package com.ColdPitch.domain.service;
 
-import com.ColdPitch.config.security.JwtConfig;
+import com.ColdPitch.config.okHttp.ApiConfig;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationValidationDto;
 import com.ColdPitch.exception.CustomException;
@@ -24,7 +24,7 @@ import java.util.List;
 public class CompanyRegistrationValidator {
 
     private final String API_URL = "http://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey=";
-    private final JwtConfig jwtConfig;
+    private final ApiConfig apiConfig;
     private final OkHttpClient client;
 
     public boolean validateCompanyRegistration(CompanyRegistrationValidationDto validationDto) {
@@ -38,7 +38,7 @@ public class CompanyRegistrationValidator {
         Request request = new Request.Builder()
                 .header("Access-Control-Request-Method", "POST")
                 .header("Origin", ServerUtil.getCurrentBaseUrl())
-                .url(API_URL + jwtConfig.getServiceKey())
+                .url(API_URL + apiConfig.getServiceKey())
                 .post(body)
                 .build();
 
