@@ -4,7 +4,9 @@
  * @since 2023-07-05 PM 9:56
  */
 
-package com.ColdPitch.validation;
+package com.ColdPitch.validation.annotations;
+
+import com.ColdPitch.validation.EnumValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

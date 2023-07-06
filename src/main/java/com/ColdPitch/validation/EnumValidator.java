@@ -6,6 +6,8 @@
 
 package com.ColdPitch.validation;
 
+import com.ColdPitch.validation.annotations.ValidEnum;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
