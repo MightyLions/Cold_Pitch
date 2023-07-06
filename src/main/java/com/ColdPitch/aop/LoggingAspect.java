@@ -29,6 +29,7 @@ public class LoggingAspect {
     @Around("com.ColdPitch.aop.LoggingAspect.onRequest()")
     public Object requestLogging(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        log.info("{}", request.getRequestURL());
         long start = System.currentTimeMillis();
 
         try {
