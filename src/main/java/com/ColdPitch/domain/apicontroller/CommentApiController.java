@@ -20,13 +20,9 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,8 +56,6 @@ public class CommentApiController {
                 }
 
                 if (!commentRepository.existsById(id)) {
-//                    throw new NoSuchElementException("No Matching Comment Id");
-//                    throw new EmailNotExistsException(ErrorCode.EMAIL_NOT_EXISTS);
                     throw new CustomException(ErrorCode.COMMENT_BAD_REQUEST);
                 }
                 return ResponseEntity.ok(Collections.singletonList(
@@ -79,7 +73,11 @@ public class CommentApiController {
 
     @PostMapping("/comment")
     @Operation(summary = "댓글을 등록하는 POST 메소드", description = "댓글 요청 DTO를 바탕으로 댓글을 등록하는 메소드")
-    public ResponseEntity<CommentResponseDto> postComment(CommentRequestDto requestDto) {
+    public ResponseEntity<CommentResponseDto> postComment(
+            @Valid
+            @RequestBody
+            CommentRequestDto requestDto
+    ) {
         if (requestDto == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -108,7 +106,11 @@ public class CommentApiController {
 
     @PatchMapping("/comment")
     @Operation(summary = "댓글을 수정하는 PATCH 메소드", description = "댓글 요청 DTO를 바탕으로 댓글을 수정하는 메소드")
-    public ResponseEntity<CommentResponseDto> patchComment(CommentRequestDto requestDto) {
+    public ResponseEntity<CommentResponseDto> patchComment(
+            @Valid
+            @RequestBody
+            CommentRequestDto requestDto
+    ) {
         if (requestDto == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -134,7 +136,8 @@ public class CommentApiController {
     @Operation(summary = "댓글을 삭제하는 DELETE 메소드", description = "댓글 id를 기반으로 댓글 상태를 DELETED로 변경")
     public ResponseEntity<CommentResponseDto> deleteComment(
         @ApiParam(name = "댓글 id")
-        @RequestParam(name = "CommentId", required = true) Long commentId) {
+        @RequestParam(name = "CommentId", required = true) Long commentId
+    ) {
         if (!commentRepository.existsById(commentId)) {
             return ResponseEntity.noContent().build();
         }
@@ -153,7 +156,8 @@ public class CommentApiController {
     @Operation(summary = "더미 댓글을 생성 메소드", description = "주어진 갯수만큼 더미 댓글을 생성하는 메소드")
     public ResponseEntity<List<CommentResponseDto>> postDummyComment(
         @ApiParam("생성 갯수")
-        @RequestParam(name="amount", defaultValue = "10") int amount) {
+        @RequestParam(name="amount", defaultValue = "10") int amount
+    ) {
         List<CommentResponseDto> list = new ArrayList<>();
 
         for (long i = 0; i < amount; i++) {

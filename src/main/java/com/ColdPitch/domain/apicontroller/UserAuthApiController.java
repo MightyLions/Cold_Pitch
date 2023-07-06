@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -26,14 +28,14 @@ public class UserAuthApiController {
 
     @PostMapping(value = "/user/signup")
     @Operation(summary = "유저 회원가입", description = "유저 회원 가입 API")
-    public ResponseEntity<UserResponseDto> userSignup(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserResponseDto> userSignup(@Valid @RequestBody UserRequestDto userRequestDto) {
         UserResponseDto userResponseDto = userService.signUpUser(userRequestDto);
         return ResponseEntity.status(200).body(userResponseDto);
     }
 
     @PostMapping(value = "/business/signup")
     @Operation(summary = "기업 회원가입", description = "기업 회원 가입 API")
-    public ResponseEntity<UserResponseDto> businessSignup(@RequestBody CompanyRequestDto companyRequestDto) {
+    public ResponseEntity<UserResponseDto> businessSignup(@Valid @RequestBody CompanyRequestDto companyRequestDto) {
         UserResponseDto userResponseDto = userService.signUpCompany(companyRequestDto);
         return ResponseEntity.status(200).body(userResponseDto);
     }
@@ -55,7 +57,7 @@ public class UserAuthApiController {
 
     @PostMapping("/reissue")
     @Operation(summary = "토큰 재 발급")
-    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+    public ResponseEntity<TokenDto> reissue(@Valid @RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
     }
 }

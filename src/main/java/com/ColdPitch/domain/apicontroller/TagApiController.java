@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class TagApiController {
     }
 
     @PostMapping
-    public ResponseEntity<TagResponseDto> createTag(TagRequestDto tagRequestDto) {
+    public ResponseEntity<TagResponseDto> createTag(@Valid TagRequestDto tagRequestDto) {
         return ResponseEntity.ok(TagResponseDto.of(tagService.createTag(tagRequestDto)));
     }
 }

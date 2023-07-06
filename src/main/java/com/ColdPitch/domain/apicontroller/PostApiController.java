@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -22,21 +24,21 @@ public class PostApiController {
 
     @PostMapping
     @Operation(summary = "게시글 등록")
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto postRequestDto) {
+    public ResponseEntity<PostResponseDto> createPost(@Valid @RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200)
             .body(postService.createPost(postRequestDto));
     }
 
     @PatchMapping
     @Operation(summary = "게시글 수정")
-    public ResponseEntity<PostResponseDto> updatePost(@RequestBody PostRequestDto postRequestDto) {
+    public ResponseEntity<PostResponseDto> updatePost(@Valid @RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200)
             .body(postService.updatePost(postRequestDto));
     }
 
     @PatchMapping("/{postId}/{status}")
     @Operation(summary = "게시글 상태변경")
-    public ResponseEntity<PostResponseDto> changeStatus(@RequestBody PostRequestDto postRequestDto) {
+    public ResponseEntity<PostResponseDto> changeStatus(@Valid @RequestBody PostRequestDto postRequestDto) {
         return ResponseEntity.status(200)
             .body(postService.postStateChange(postRequestDto));
     }

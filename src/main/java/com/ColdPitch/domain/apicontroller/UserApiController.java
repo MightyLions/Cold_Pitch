@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class UserApiController {
 
     @PatchMapping
     @Operation(summary = "유저 수정", description = "유저 이름, 전화번호, 닉네임, password 변경 기능")
-    public ResponseEntity<UserResponseDto> updateProfile(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserResponseDto> updateProfile(@Valid @RequestBody UserRequestDto userRequestDto) {
         return ResponseEntity.status(200).body(userService.updateProfile(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new), userRequestDto));
     }
 
