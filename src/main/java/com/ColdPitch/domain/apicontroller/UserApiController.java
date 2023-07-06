@@ -93,8 +93,9 @@ public class UserApiController {
     }
 
     @GetMapping("/user/evaluated-posts")
+    @Operation(summary = "유저가 평가한 글 전체 조회 (좋아요, 싫어요, 댓글)")
     public ResponseEntity<List<PostResponseDto>> getEvaluatedPostsByUser() {
-        List<PostResponseDto> posts = userService.getEvaluatedPostsByUser(
+        List<PostResponseDto> posts = userService.getEvaluatedPostsByUserFetch(
                 SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new));
         return ResponseEntity.status(200).body(posts);
     }

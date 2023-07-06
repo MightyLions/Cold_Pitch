@@ -11,6 +11,7 @@ import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
+import com.ColdPitch.domain.entity.post.LikeState;
 import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.*;
@@ -27,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ColdPitch.exception.handler.ErrorCode.*;
@@ -47,6 +45,7 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final CompanyRegistrationService companyRegistrationService;
     private final CommentService commentService;
+    private final CommentRepository commentRepository;
     private final PostService postService;
     private final LikeRepository likeRepository;
     private final DislikeRepository dislikeRepository;
@@ -171,6 +170,32 @@ public class UserService {
 
         List<PostResponseDto> postResponses = posts.stream()
                 .map(post -> PostResponseDto.of(post, postService.getSelection(userId, post.getId())))
+                .collect(Collectors.toList());
+
+        // 게시글 작성 시간별로 내림차순으로 정렬 (최신글이 제일 위에 오도록)
+        postResponses.sort(Comparator.comparing(PostResponseDto::getCreateAt).reversed());
+
+        return postResponses;
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> getEvaluatedPostsByUserFetch(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
+        Long userId = user.getId();
+
+        // 좋아요, 싫어요, 댓글의 Post Id 수집
+        Set<Long> postIds = new HashSet<>();
+        likeRepository.findByUserId(userId).ifPresent(likes -> likes.forEach(like -> postIds.add(like.getPostId())));
+        dislikeRepository.findByUserId(userId).ifPresent(dislikes -> dislikes.forEach(dislike -> postIds.add(dislike.getPostId())));
+        commentRepository.findByUserId(userId).ifPresent(comments -> comments.forEach(comment -> postIds.add(comment.getPostId())));
+
+        List<Post> posts = postRepository.findByIdIn(postIds);
+
+        Map<Long, LikeState> likeStates = postService.getLikeDislikeBatch(userId, postIds);
+
+        List<PostResponseDto> postResponses = posts.stream()
+                .map(post -> PostResponseDto.of(post, likeStates.get(post.getId())))
                 .collect(Collectors.toList());
 
         // 게시글 작성 시간별로 내림차순으로 정렬 (최신글이 제일 위에 오도록)
