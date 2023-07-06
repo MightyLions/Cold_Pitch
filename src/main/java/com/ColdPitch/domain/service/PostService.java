@@ -15,12 +15,10 @@ import com.ColdPitch.domain.repository.PostRepository;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.exception.handler.ErrorCode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 import com.ColdPitch.utils.SecurityUtil;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -180,5 +178,25 @@ public class PostService {
         }
 
         return post;
+    }
+
+    public Map<Long, LikeState> getLikeDislikeBatch(Long userId, Set<Long> postIds) {
+        List<Like> likes = likeRepository.findByUserIdAndPostIdIn(userId, postIds);
+        List<Dislike> dislikes = dislikeRepository.findByUserIdAndPostIdIn(userId, postIds);
+
+        Map<Long, LikeState> likeStates = new HashMap<>();
+        for (Long postId : postIds) {
+            likeStates.put(postId, LikeState.UNSELECTED);
+        }
+
+        for (Like like : likes) {
+            likeStates.put(like.getPostId(), LikeState.LIKE);
+        }
+
+        for (Dislike dislike : dislikes) {
+            likeStates.put(dislike.getPostId(), LikeState.DISLIKE);
+        }
+
+        return likeStates;
     }
 }
