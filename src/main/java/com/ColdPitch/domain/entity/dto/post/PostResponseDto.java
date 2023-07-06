@@ -6,6 +6,7 @@ import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
 import com.ColdPitch.domain.entity.post.Category;
 import com.ColdPitch.domain.entity.post.LikeState;
 import com.ColdPitch.domain.entity.post.PostState;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import org.springframework.lang.Nullable;
 @Data
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PostResponseDto {
     private Long id;
     private String title;
@@ -35,7 +37,7 @@ public class PostResponseDto {
     private int dislikeCnt;
     private LikeState userChoice;
 
-    public static PostResponseDto of(Post post, @Nullable LikeState userChoice) {
+    public static PostResponseDto of(Post post, LikeState userChoice) {
         return PostResponseDto.builder()
             .id(post.getId())
             .title(post.getTitle())

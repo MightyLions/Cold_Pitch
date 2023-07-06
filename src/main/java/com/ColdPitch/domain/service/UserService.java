@@ -170,7 +170,7 @@ public class UserService {
         }
 
         List<PostResponseDto> postResponses = posts.stream()
-                .map(post -> PostResponseDto.of(post, postService.getLikeDislike(userId, post.getId())))
+                .map(post -> PostResponseDto.of(post, postService.getSelection(userId, post.getId())))
                 .collect(Collectors.toList());
 
         // 게시글 작성 시간별로 내림차순으로 정렬 (최신글이 제일 위에 오도록)
