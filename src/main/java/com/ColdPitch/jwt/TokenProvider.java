@@ -3,6 +3,7 @@ package com.ColdPitch.jwt;
 import com.ColdPitch.config.security.JwtConfig;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.CustomSecurityException;
 import com.ColdPitch.exception.handler.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -102,14 +103,17 @@ public class TokenProvider implements InitializingBean {
             return true; //문제 없음
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
+            throw new CustomSecurityException(ErrorCode.INVALID_JWT_AUTHORIZATION);
         } catch (ExpiredJwtException e) {
             log.info("만료된 JWT 토큰입니다.");
+            throw new CustomSecurityException(ErrorCode.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
+            throw new CustomSecurityException(ErrorCode.UNSUPPORTED_TOKEN);
         } catch (IllegalArgumentException e) {
             log.info("JWT 토큰이 잘못되었습니다.");
+            throw new CustomSecurityException(ErrorCode.INVALID_JWT_TOKEN);
         }
-        return false;
     }
 
     @Override
