@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -13,12 +16,15 @@ import lombok.NoArgsConstructor;
 public class CompanyRegistrationDto {
 
     @JsonProperty("b_no")
+    @NotBlank
     private String b_no = "";
 
     @JsonProperty("start_dt")
+    @NotBlank
     private String start_dt = "";
 
     @JsonProperty("p_nm")
+    @NotBlank
     private String p_nm = "";
 
     @JsonProperty("b_nm")

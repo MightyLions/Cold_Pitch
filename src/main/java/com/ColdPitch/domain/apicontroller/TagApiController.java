@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class TagApiController {
     private final TagService tagService;
 
     @PostMapping
-    public ResponseEntity<TagResponseDto> createTag(TagRequestDto tagRequestDto) {
+    public ResponseEntity<TagResponseDto> createTag(@Valid TagRequestDto tagRequestDto) {
         return ResponseEntity.ok(TagResponseDto.of(tagService.createTag(tagRequestDto)));
     }
 

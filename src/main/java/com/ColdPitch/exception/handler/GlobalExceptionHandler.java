@@ -3,12 +3,20 @@ package com.ColdPitch.exception.handler;
 import com.ColdPitch.exception.CustomException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
@@ -38,6 +46,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String body = new Gson().toJson(jsonObject);
 
         return ResponseEntity.status(400).body(body);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        Map<String, String> validExceptions = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(
+                error -> {
+                    validExceptions.put(error.getField(), error.getDefaultMessage());
+                }
+        );
+
+        return ResponseEntity.badRequest().body(validExceptions);
     }
 
     @ExceptionHandler(Exception.class)

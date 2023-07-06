@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class CompanyRegistrationController {
 
     @PostMapping("/validate")
     @Operation(summary = "사업자 등록번호 진위검증")
-    public ResponseEntity<CompanyRegistrationDto> validate(@RequestBody CompanyRegistrationDto companyRegistrationDto, BindingResult result) {
+    public ResponseEntity<CompanyRegistrationDto> validate(@Valid @RequestBody CompanyRegistrationDto companyRegistrationDto, BindingResult result) {
         if (result.hasErrors()) {
             throw new CustomException(ErrorCode.POST_BAD_REQUEST);
         }
