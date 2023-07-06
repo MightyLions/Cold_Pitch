@@ -39,8 +39,8 @@ public class CompanyRegistrationDto {
     @JsonProperty("b_type")
     private String b_type = "";
 
-    @JsonProperty("company_address")
-    private String companyAddress;
+    @JsonProperty("b_adr")
+    private String b_adr = "";
 
     @JsonProperty("company_description")
     private String companyDescription;

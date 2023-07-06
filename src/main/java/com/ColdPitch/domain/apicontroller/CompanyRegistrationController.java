@@ -4,6 +4,7 @@ import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto
 import com.ColdPitch.domain.service.CompanyRegistrationService;
 import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.exception.handler.ErrorCode;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -22,10 +23,8 @@ public class CompanyRegistrationController {
     private final CompanyRegistrationService companyRegistrationService;
 
     @PostMapping("/validate")
-    public ResponseEntity<CompanyRegistrationDto> validate(
-            @Valid @RequestBody CompanyRegistrationDto companyRegistrationDto,
-            BindingResult result
-    ) {
+    @Operation(summary = "사업자 등록번호 진위검증")
+    public ResponseEntity<CompanyRegistrationDto> validate(@Valid @RequestBody CompanyRegistrationDto companyRegistrationDto, BindingResult result) {
         if (result.hasErrors()) {
             throw new CustomException(ErrorCode.POST_BAD_REQUEST);
         }

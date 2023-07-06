@@ -40,10 +40,6 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Category category;
 
-
-    @Column
-    private Long boardId;
-
     @Column(nullable = false)
     private int likeCnt;
 
@@ -99,20 +95,8 @@ public class Post extends BaseEntity {
             ", status='" + status + '\'' +
             ", category='" + category + '\'' +
             ", userId=" + user.toString() +
-            ", boardId=" + boardId +
             ", " + super.toString() +
             '}';
-    }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Post post = (Post) o;
-        return Objects.equals(id, post.getId());
     }
 
     public static Post toEntity(PostRequestDto requestDto, User user) {
@@ -121,7 +105,7 @@ public class Post extends BaseEntity {
             .text(requestDto.getText())
             .category(requestDto.getCategory())
             .user(user)
-            .status(requestDto.getStatus())
+            .status(PostState.OPEN)
             .comments(new ArrayList<>())
             .build();
     }

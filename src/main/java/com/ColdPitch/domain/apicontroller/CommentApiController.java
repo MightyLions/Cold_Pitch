@@ -87,7 +87,7 @@ public class CommentApiController {
                 throw new CustomException(ErrorCode.USER_NOT_FOUND);
             }
             UserResponseDto userResponseDto = UserResponseDto
-                .of(userRepository.findByEmail
+                .fromEntity(userRepository.findByEmail
                         (SecurityUtil.getCurrentUserEmail().orElse(null))
                     .orElseThrow(() -> new CustomException(ErrorCode.INTERNAL_SERVER_ERROR)));
             if (!userResponseDto.getId().equals(requestDto.getUserId())) {
@@ -120,7 +120,7 @@ public class CommentApiController {
                 throw new CustomException(ErrorCode.USER_NOT_FOUND);
             }
             UserResponseDto userResponseDto = UserResponseDto
-                .of(userRepository.findByEmail
+                .fromEntity(userRepository.findByEmail
                         (SecurityUtil.getCurrentUserEmail().orElse(null))
                     .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_AUTHOR_NOT_MATCH)));
             if (!userResponseDto.getId().equals(requestDto.getUserId())) {

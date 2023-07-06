@@ -3,7 +3,10 @@ package com.ColdPitch.domain.entity.dto.user;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -29,7 +32,7 @@ public class UserResponseDto {
         this.curState = savedMember.getCurState();
     }
 
-    public static UserResponseDto of(User savedMember) {
+    public static UserResponseDto fromEntity(User savedMember) {
         return UserResponseDto.builder().id(savedMember.getId())
                 .name(savedMember.getName())
                 .nickname(savedMember.getNickname())
