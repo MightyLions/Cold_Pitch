@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class UserRequestDto {
     @NotBlank
     private String email;
 
+    @Pattern(message = "전화번호가 아닙니다", regexp = "\\d{3}-\\d{4}-\\d{4}")
     private String phoneNumber;
     @NotNull
     @NotBlank

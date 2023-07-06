@@ -1,7 +1,7 @@
 package com.ColdPitch.domain.entity.dto.solution;
 
 import com.ColdPitch.domain.entity.solution.SolutionState;
-import com.ColdPitch.validation.ValidEnum;
+import com.ColdPitch.validation.annotations.ValidEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
