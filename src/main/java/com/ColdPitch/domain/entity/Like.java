@@ -28,4 +28,11 @@ public class Like extends BaseEntity{
 
     @Column(nullable = false)
     private Long postId;
+
+    public static Like toEntity(Long userId, Long postId) {
+        return Like.builder()
+            .userId(userId)
+            .postId(postId)
+            .build();
+    }
 }

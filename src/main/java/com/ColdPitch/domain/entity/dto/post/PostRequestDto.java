@@ -21,4 +21,3 @@ public class PostRequestDto {
     private Category category;
 }
 
-// status는 따로 API를 분리
