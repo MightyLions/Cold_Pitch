@@ -1,7 +1,6 @@
 package com.ColdPitch.domain.entity.dto.jwt;
 
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +18,6 @@ public class RefreshToken {
 
     private String value;
 
-    @Builder
     public RefreshToken(String key, String value) {
         this.key = key;
         this.value = value;

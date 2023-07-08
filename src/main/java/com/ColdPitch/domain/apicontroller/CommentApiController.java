@@ -78,12 +78,11 @@ public class CommentApiController {
         //  현재 댓글에서의 userId와 현재 로그인한 유저의 id를 비교
         if (!SecurityUtil.checkCurrentUserRole("ADMIN")) {
             UserResponseDto userResponseDto = UserResponseDto
-                    .of(userRepository.findByEmail
-                                    (SecurityUtil.getCurrentUserEmail().orElse(null))
-                            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
-
+                .fromEntity(userRepository.findByEmail
+                        (SecurityUtil.getCurrentUserEmail().orElse(null))
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
             if (!userResponseDto.getId().equals(requestDto.getUserId())) {
-                throw new CustomException(ErrorCode.USER_REQUEST_USER_NOT_MATCH);
+                throw new CustomException(ErrorCode.USER_CURRENT_USER_REQUEST_USER_NOT_MATCH);
             }
         }
 
@@ -105,7 +104,7 @@ public class CommentApiController {
         if (!SecurityUtil.checkCurrentUserRole("ADMIN")) {
 
             UserResponseDto userResponseDto = UserResponseDto
-                    .of(userRepository.findByEmail
+                    .fromEntity(userRepository.findByEmail
                                     (SecurityUtil.getCurrentUserEmail().orElse(null))
                             .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_AUTHOR_NOT_MATCH)));
             if (!userResponseDto.getId().equals(requestDto.getUserId())) {

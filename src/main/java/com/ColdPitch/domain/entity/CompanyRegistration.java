@@ -49,7 +49,7 @@ public class CompanyRegistration extends BaseEntity {
 
     //사업장 주소
     @Column(name = "company_address", nullable = false)
-    private String companyAddress;
+    private String b_adr;
 
     //기업 소개
     @Column(name = "company_description", nullable = false)
@@ -72,7 +72,7 @@ public class CompanyRegistration extends BaseEntity {
                 ", corp_no='" + corp_no + '\'' +
                 ", b_sector='" + b_sector + '\'' +
                 ", b_type='" + b_type + '\'' +
-                ", companyAddress='" + companyAddress + '\'' +
+                ", b_adr='" + b_adr + '\'' +
                 ", " + super.toString() +
                 '}';
     }

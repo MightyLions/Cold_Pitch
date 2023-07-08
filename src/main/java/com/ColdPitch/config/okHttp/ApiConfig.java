@@ -1,4 +1,4 @@
-package com.ColdPitch.config.security;
+package com.ColdPitch.config.okHttp;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,16 +9,15 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 /**
- * jwt secret key 관리 부분 
+ * api key 관리를 위한 파일
  */
 @Configuration
 @PropertySource(value = {"classpath:secret.properties"})
-@ConfigurationProperties(prefix = "jwt")
+@ConfigurationProperties(prefix = "api")
 @Getter
 @Setter
 @ToString
 @Component
-public class JwtConfig {
-    private String secretKey;
-    private int expirationTime;
+public class ApiConfig {
+    private String serviceKey;
 }

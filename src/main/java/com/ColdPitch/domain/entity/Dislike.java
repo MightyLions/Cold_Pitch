@@ -28,4 +28,12 @@ public class Dislike extends BaseEntity{
 
     @Column(nullable = false)
     private Long postId;
+
+    public static Dislike toEntity(Long userId, Long postId) {
+        return Dislike.builder()
+            .userId(userId)
+            .postId(postId)
+            .build();
+    }
+
 }
