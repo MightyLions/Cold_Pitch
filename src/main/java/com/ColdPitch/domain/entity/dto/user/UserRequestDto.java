@@ -1,5 +1,7 @@
 package com.ColdPitch.domain.entity.dto.user;
 
+import com.ColdPitch.domain.entity.user.UserType;
+import com.ColdPitch.validation.annotations.ValidEnum;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +32,7 @@ public class UserRequestDto {
     @Pattern(message = "전화번호가 아닙니다", regexp = "\\d{3}-\\d{4}-\\d{4}")
     private String phoneNumber;
     @NotNull
-    @NotBlank
-    private String userType;
+    @ValidEnum(enumClass = UserType.class)
+    private UserType userType;
 
 }
