@@ -5,6 +5,10 @@ import com.ColdPitch.domain.entity.QComment;
 import com.ColdPitch.domain.entity.comment.CommentState;
 import com.ColdPitch.domain.repository.support.Querydsl4RepositorySupport;
 import java.util.List;
+import java.util.Optional;
+
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.handler.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,18 +25,10 @@ public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> findAllByPostId(Long postId) {
+    public List<Comment> findAllByPostIdNotIncludingDeleted(Long postId) {
         return selectFrom(comment)
             .where(comment.postId.eq(postId))
             .where(comment.status.ne(CommentState.DELETED))
-            .fetch();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Comment> findAllByPostIdForAdmin(Long postId) {
-        return selectFrom(comment)
-            .where(comment.postId.eq(postId))
             .fetch();
     }
 
@@ -40,6 +36,14 @@ public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements
     @Transactional(readOnly = true)
     public List<Comment> findAllByParentId(Long pCommentId) {
         return selectFrom(comment)
+                .where(comment.pId.eq(pCommentId))
+                .fetch();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Comment> findAllByParentIdNotIncludeDeleted(Long pCommentId) {
+        return selectFrom(comment)
             .where(comment.pId.eq(pCommentId))
             .where(comment.status.ne(CommentState.DELETED))
             .fetch();
@@ -47,32 +51,17 @@ public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> findAllByParentIdForAdmin(Long pCommentId) {
-        return selectFrom(comment)
-            .where(comment.pId.eq(pCommentId))
-            .fetch();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Comment> findAllByUserId(Long userId) {
+    public List<Comment> findAllByUserIdNotIncludingDeleted(Long userId) {
         return selectFrom(comment)
             .where(comment.userId.eq(userId))
             .where(comment.status.ne(CommentState.DELETED))
             .fetch();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Comment> findAllByUserIdForAdmin(Long userId) {
-        return selectFrom(comment)
-            .where(comment.userId.eq(userId))
-            .fetch();
-    }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> findAllForUser() {
+    public List<Comment> findAllNotIncludingDeleted() {
         return selectFrom(QComment.comment)
             .where(QComment.comment.status.ne(CommentState.DELETED))
             .fetch();
@@ -80,20 +69,13 @@ public class CommentRepositoryImpl extends Querydsl4RepositorySupport implements
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> findAllForAdmin() {
-        return selectFrom(QComment.comment)
-            .fetch();
+    public Optional<Comment> findByIdNotIncludingDeleted(Long id) {
+        return selectFrom(comment)
+                .where(comment.id.eq(id))
+                .where(comment.status.ne(CommentState.DELETED))
+                .fetch()
+                .stream()
+                .findAny();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Comment findByIdForUser(Long id) {
-        return selectFrom(comment)
-            .where(comment.id.eq(id))
-            .where(comment.status.ne(CommentState.DELETED))
-            .fetch()
-            .stream()
-            .findAny()
-            .orElse(null);
-    }
 }

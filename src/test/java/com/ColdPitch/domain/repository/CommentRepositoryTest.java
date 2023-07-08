@@ -100,7 +100,7 @@ public class CommentRepositoryTest {
     @Test
     @DisplayName("CommentRepository(QueryDsl) 테스트\nfindAllByPostId()")
     void findAllByPostIdTest() {
-        List<Comment> list = commentRepository.findAllByPostId(POST_ID);
+        List<Comment> list = commentRepository.findAllByPostIdNotIncludingDeleted(POST_ID);
 
         list.forEach(comment -> log.info(comment.toString()));
     }
@@ -116,7 +116,7 @@ public class CommentRepositoryTest {
     @Test
     @DisplayName("CommentRepository(QueryDSL) 테스트\nfindAllByParentId()")
     void findAllByParentId() {
-        List<Comment> list = commentRepository.findAllByParentId(PARENT_COMMENT_ID);
+        List<Comment> list = commentRepository.findAllByParentIdNotIncludeDeleted(PARENT_COMMENT_ID);
 
         list.forEach(comment -> log.info(comment.toString()));
     }
@@ -124,7 +124,7 @@ public class CommentRepositoryTest {
     @Test
     @DisplayName("CommentRepository(QueryDSL) 테스트\nfindAllByUserId()")
     void findAllByUserId() {
-        List<Comment> list = commentRepository.findAllByUserId(USER_ID);
+        List<Comment> list = commentRepository.findAllByUserIdNotIncludingDeleted(USER_ID);
 
         list.forEach(comment -> log.info(comment.toString()));
     }

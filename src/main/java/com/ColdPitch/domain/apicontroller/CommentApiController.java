@@ -13,10 +13,11 @@ import com.ColdPitch.exception.handler.ErrorCode;
 import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,40 +27,31 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/comment")
 @Transactional
 public class CommentApiController {
     private final CommentService commentService;
-    private final CommentRepository commentRepository;
+    //  TODO 나중에 CustomUserDetails가 추가될때 지우기
     private final UserRepository userRepository;
 
-    @GetMapping("/comment")
+    @GetMapping
     @Transactional(readOnly = true)
     @Operation(summary = "댓글을 조회하는 GET 메소드", description = "주어진 type과 id를 바탕으로 댓글을 조회")
     public ResponseEntity<List<CommentResponseDto>> getCommentList(
-        @ApiParam(value="댓글 id")
-        @RequestParam(name = "CommentId", required = false) Long id,
-        @ApiParam(value="결과 요청 타입")
-        @RequestParam(name = "CommentRequestType", required = true) CommentRequestType type) {
+            @ApiParam(value = "댓글 id")
+            @RequestParam(name = "CommentId", required = false) Long id,
+            @ApiParam(value = "결과 요청 타입")
+            @RequestParam(name = "CommentRequestType") CommentRequestType type) {
         switch (type) {
-            case POST_ID :
+            case POST_ID:
                 return ResponseEntity.ok(commentService.findListByPostId(id));
-            case COMMENT_ID :
+            case COMMENT_ID:
                 if (id == null) {
-                    return ResponseEntity.ok(commentRepository
-                        .findAll()
-                        .stream()
-                        .filter(comment -> !comment.getStatus().equals(CommentState.DELETED))
-                        .map(CommentService::commentToResponseDto)
-                        .collect(Collectors.toList())
-                    );
+                    return ResponseEntity.ok(commentService.findAll());
                 }
 
-                if (!commentRepository.existsById(id)) {
-                    throw new CustomException(ErrorCode.COMMENT_BAD_REQUEST);
-                }
-                return ResponseEntity.ok(Collections.singletonList(
-                    commentService.findCommentsByCommentId(id)));
+                return ResponseEntity.ok(Collections
+                        .singletonList(commentService.findCommentById(id)));
             case USER_ID:
                 return ResponseEntity.ok(commentService.findCommentsByUserId(id));
             case ALL:
@@ -71,7 +63,7 @@ public class CommentApiController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/comment")
+    @PostMapping
     @Operation(summary = "댓글을 등록하는 POST 메소드", description = "댓글 요청 DTO를 바탕으로 댓글을 등록하는 메소드")
     public ResponseEntity<CommentResponseDto> postComment(
             @Valid
@@ -82,29 +74,23 @@ public class CommentApiController {
             return ResponseEntity.badRequest().build();
         }
 
+        //  TODO 추후에 CustomUserDetails를 추가해서 제거할 코드
+        //  현재 댓글에서의 userId와 현재 로그인한 유저의 id를 비교
         if (!SecurityUtil.checkCurrentUserRole("ADMIN")) {
-            if (!userRepository.existsById(requestDto.getUserId())) {
-                throw new CustomException(ErrorCode.USER_NOT_FOUND);
-            }
             UserResponseDto userResponseDto = UserResponseDto
-                .of(userRepository.findByEmail
-                        (SecurityUtil.getCurrentUserEmail().orElse(null))
-                    .orElseThrow(() -> new CustomException(ErrorCode.INTERNAL_SERVER_ERROR)));
+                    .of(userRepository.findByEmail
+                                    (SecurityUtil.getCurrentUserEmail().orElse(null))
+                            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
+
             if (!userResponseDto.getId().equals(requestDto.getUserId())) {
-                throw new CustomException(ErrorCode.USER_NOT_MATCH);
+                throw new CustomException(ErrorCode.USER_REQUEST_USER_NOT_MATCH);
             }
         }
 
-        CommentResponseDto responseDto = commentService.saveCommentRequestDto(requestDto);
-
-        if (responseDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(commentService.saveCommentRequestDto(requestDto));
     }
 
-    @PatchMapping("/comment")
+    @PatchMapping
     @Operation(summary = "댓글을 수정하는 PATCH 메소드", description = "댓글 요청 DTO를 바탕으로 댓글을 수정하는 메소드")
     public ResponseEntity<CommentResponseDto> patchComment(
             @Valid
@@ -115,59 +101,64 @@ public class CommentApiController {
             return ResponseEntity.badRequest().build();
         }
 
+        //  TODO 추후에 CustomUserDetails를 추가해서 제거할 코드
         if (!SecurityUtil.checkCurrentUserRole("ADMIN")) {
-            if (!userRepository.existsById(requestDto.getUserId())) {
-                throw new CustomException(ErrorCode.USER_NOT_FOUND);
-            }
+
             UserResponseDto userResponseDto = UserResponseDto
-                .of(userRepository.findByEmail
-                        (SecurityUtil.getCurrentUserEmail().orElse(null))
-                    .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_AUTHOR_NOT_MATCH)));
+                    .of(userRepository.findByEmail
+                                    (SecurityUtil.getCurrentUserEmail().orElse(null))
+                            .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_AUTHOR_NOT_MATCH)));
             if (!userResponseDto.getId().equals(requestDto.getUserId())) {
                 throw new CustomException(ErrorCode.USER_NOT_MATCH);
             }
         }
 
         return ResponseEntity.ok(
-            commentService.updateComment(requestDto.getId(), requestDto.getText()));
+                commentService.updateComment(requestDto.getId(), requestDto.getText()));
     }
 
-    @DeleteMapping("/comment")
+    @DeleteMapping
     @Operation(summary = "댓글을 삭제하는 DELETE 메소드", description = "댓글 id를 기반으로 댓글 상태를 DELETED로 변경")
     public ResponseEntity<CommentResponseDto> deleteComment(
-        @ApiParam(name = "댓글 id")
-        @RequestParam(name = "CommentId", required = true) Long commentId
+            @ApiParam(name = "댓글 id")
+            @RequestParam(name = "CommentId")
+            Long commentId
     ) {
-        if (!commentRepository.existsById(commentId)) {
-            return ResponseEntity.noContent().build();
-        }
-
-        commentService.changeState(commentId, CommentState.DELETED);
+        if (!commentService.changeState(commentId, CommentState.DELETED)) {
+            ResponseEntity.internalServerError().build();
+        };
 
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/comment/reply")
-    public ResponseEntity<List<CommentResponseDto>> getReplyComments(Long parentId) {
+    @GetMapping("/reply")
+    @Operation(summary = "댓글을 검색하는 GET 메소드", description = "부모 댓글 id를 기반으로 검색하는 GET 메소드")
+    public ResponseEntity<List<CommentResponseDto>> getReplyComments(
+            @ApiParam(name = "부모 댓글 id")
+            @RequestParam(name = "ParentId")
+            Long parentId
+    ) {
         return ResponseEntity.ok(commentService.findCommentsByParentId(parentId));
     }
 
-    @PostMapping("/comment/dummy")
+    //  TODO DEBUG 디버깅용 메소드
+    //  나중에 지우기
+    @PostMapping("/dummy")
     @Operation(summary = "더미 댓글을 생성 메소드", description = "주어진 갯수만큼 더미 댓글을 생성하는 메소드")
     public ResponseEntity<List<CommentResponseDto>> postDummyComment(
-        @ApiParam("생성 갯수")
-        @RequestParam(name="amount", defaultValue = "10") int amount
+            @ApiParam("생성 갯수")
+            @RequestParam(name = "Amount", defaultValue = "10") int amount
     ) {
         List<CommentResponseDto> list = new ArrayList<>();
 
         for (long i = 0; i < amount; i++) {
             CommentRequestDto requestDto = CommentRequestDto.builder()
-                .userId(i)
-                .text("dummy comment " + i)
-                .postId((long) Math.max(1, (1.0 - Math.random()) * Math.max(3, amount / 5)))
-                .pCommentId((long) Math.max(1, (1.0 - Math.random()) * Math.max(3, amount / 5)))
-                .status(CommentState.OPEN)
-                .build();
+                    .userId(i)
+                    .text("dummy comment " + i)
+                    .postId((long) Math.max(1, (1.0 - Math.random()) * Math.max(3, amount / 5)))
+                    .pCommentId((long) Math.max(1, (1.0 - Math.random()) * Math.max(3, amount / 5)))
+                    .status(CommentState.OPEN)
+                    .build();
 
             if (i == 0) {
                 requestDto.setPostId(2L);
