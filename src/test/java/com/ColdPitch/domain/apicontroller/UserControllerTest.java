@@ -4,6 +4,7 @@ import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
+import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.RefreshTokenService;
 import com.ColdPitch.domain.service.UserService;
@@ -61,8 +62,8 @@ class UserControllerTest {
 
     @BeforeEach
     public void initUser() {
-        userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
-        userService.signUpUser(new UserRequestDto("Anickname", "Aname", "Apassword", "Aemail@naver.com", "010-7558-2444", "ADMIN"));
+        userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER));
+        userService.signUpUser(new UserRequestDto("Anickname", "Aname", "Apassword", "Aemail@naver.com", "010-7558-2444", UserType.ADMIN));
 
         user1 = userRepository.findByNickname("nickname").orElseThrow();
         admin1 = userRepository.findByNickname("Anickname").orElseThrow();

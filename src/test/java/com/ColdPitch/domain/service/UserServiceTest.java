@@ -90,7 +90,7 @@ class UserServiceTest {
         User savedUser = userService.findUserByEmail(companyRequestDto.getEmail());
         assertThat(savedUser.getEmail()).isEqualTo(companyRequestDto.getEmail());
         assertThat(savedUser.getPhoneNumber()).isEqualTo(companyRequestDto.getPhoneNumber());
-        assertThat(savedUser.getUserType().name()).isEqualTo(companyRequestDto.getUserType());
+        assertThat(savedUser.getUserType()).isEqualTo(companyRequestDto.getUserType());
         assertThat(savedUser.getNickname()).isEqualTo(companyRequestDto.getNickname());
         assertThat(savedUser.getName()).isEqualTo(companyRequestDto.getName());
         assertTrue(checkPassword(savedUser.getPassword(), companyRequestDto.getPassword()));
