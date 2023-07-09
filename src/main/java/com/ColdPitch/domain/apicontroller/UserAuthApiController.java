@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.apicontroller;
 
+import com.ColdPitch.config.security.JwtConfig;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.jwt.TokenRequestDto;
 import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
@@ -7,10 +8,13 @@ import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.service.UserService;
+import com.ColdPitch.jwt.JwtFilter;
 import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +29,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/auth")
 public class UserAuthApiController {
     private final UserService userService;
+    private final JwtConfig jwtConfig;
 
     @PostMapping(value = "/user/signup")
     @Operation(summary = "유저 회원가입", description = "유저 회원 가입 API")
@@ -43,16 +48,25 @@ public class UserAuthApiController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
         TokenDto loginResponse = userService.login(loginDto);
-        return ResponseEntity.status(200).body(loginResponse);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + loginResponse.getAccessToken());
+        String cookie = "refreshToken=" + loginResponse.getRefreshToken() + "; Path=/; Max-Age=" + jwtConfig.getRefreshExpirationTime() + "; HttpOnly; readonly";
+        httpHeaders.add("Set-Cookie", cookie);
+        return new ResponseEntity<>(loginResponse, httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "리프레시 토큰 삭제")
     public ResponseEntity<Void> logout() {
         userService.logout(SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new));
-        return ResponseEntity.status(200).build();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        String cookie = "refreshToken= ; Path=/; Max-Age=0; HttpOnly; readonly";
+        httpHeaders.add("Set-Cookie", cookie);
+        return new ResponseEntity<>(null, httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/reissue")

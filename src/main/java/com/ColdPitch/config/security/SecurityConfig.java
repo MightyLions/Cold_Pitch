@@ -1,5 +1,6 @@
 package com.ColdPitch.config.security;
 
+import com.ColdPitch.domain.repository.RefreshTokenRepository;
 import com.ColdPitch.exception.ExceptionHandleFilter;
 import com.ColdPitch.jwt.JwtFilter;
 import com.ColdPitch.jwt.TokenProvider;
@@ -29,7 +30,8 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final ExceptionHandleFilter exceptionHandleFilter;
     private final CorsFilter corsFilter;
-
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtConfig jwtConfig;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -56,8 +58,9 @@ public class SecurityConfig {
         security.csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
+                .addFilterBefore(new JwtFilter(refreshTokenRepository, tokenUtils, jwtConfig), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(exceptionHandleFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(exceptionHandleFilter, UsernamePasswordAuthenticationFilter.class);
 
         // 세션정책 대상 전체(세션을 사용하지 않는다)
         security.sessionManagement(sessionManagement ->
@@ -71,14 +74,11 @@ public class SecurityConfig {
 //                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
 
-        // login disable
-        security.formLogin().disable();
+        // login, logout disable
+        security.formLogin().disable().logout().disable();
 
         // http disable
         security.httpBasic().disable();
-
-        // jwt filter
-        security.addFilterBefore(new JwtFilter(tokenUtils), UsernamePasswordAuthenticationFilter.class);
 
         //jwt exception handling
         security.exceptionHandling()

@@ -44,7 +44,7 @@ public class TokenProvider implements InitializingBean {
         long now = new Date().getTime();
 
         //access token 생성
-        Date accessTokenExpiresIn = new Date(now + jwtConfig.getExpirationTime());
+        Date accessTokenExpiresIn = new Date(now + jwtConfig.getAccessExpirationTime());
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName()) //payload
                 .claim(AUTHORITIES_KEY, authorities) //payload
@@ -52,8 +52,9 @@ public class TokenProvider implements InitializingBean {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
         //refresh token 생성
+        Date refreshTokenExpiresIn = new Date(now + jwtConfig.getRefreshExpirationTime());
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + jwtConfig.getExpirationTime()))
+                .setExpiration(refreshTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
@@ -104,9 +105,6 @@ public class TokenProvider implements InitializingBean {
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
             throw new CustomSecurityException(ErrorCode.INVALID_JWT_AUTHORIZATION);
-        } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
-            throw new CustomSecurityException(ErrorCode.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
             throw new CustomSecurityException(ErrorCode.UNSUPPORTED_TOKEN);
@@ -117,7 +115,7 @@ public class TokenProvider implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         byte[] decode = Decoders.BASE64.decode(jwtConfig.getSecretKey());
         this.key = Keys.hmacShaKeyFor(decode);
     }

@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.apicontroller;
 
+import com.ColdPitch.config.security.JwtConfig;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
@@ -8,11 +9,14 @@ import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.UserService;
+import com.ColdPitch.jwt.JwtFilter;
 import com.ColdPitch.utils.RandomUtil;
 import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +32,7 @@ import java.util.List;
 public class UserApiController {
     private final UserService userService;
     private final UserRepository userRepository; //더미네이터 생성으로 인해 잠시 추가 나중에 삭제할것임
+    private final JwtConfig jwtConfig;
 
     @GetMapping
     @Operation(summary = "유저 전체 조회 ( 이후에 ADMIN 권한으로 열기)")
@@ -79,8 +84,14 @@ public class UserApiController {
         UserRequestDto urd = new UserRequestDto("testNick", "testName", "testPass", "testEamil@naver.com", "010-1234-1234", UserType.USER);
         userRepository.deleteByEmail(urd.getEmail());
         userService.signUpUser(urd);
-        TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
-        return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
+        TokenDto loginResponse = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
+
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + loginResponse.getAccessToken());
+        String cookie = "refreshToken=" + loginResponse.getRefreshToken() + "; Path=/; Max-Age=" + jwtConfig.getRefreshExpirationTime() + "; HttpOnly; readonly";
+        httpHeaders.add("Set-Cookie", cookie);
+        return new ResponseEntity<>("Bearer " + loginResponse.getAccessToken(), httpHeaders, HttpStatus.OK);
     }
 
     @Transactional
@@ -90,8 +101,13 @@ public class UserApiController {
         UserRequestDto urd = new UserRequestDto("testANick", "testAName", "testAPass", "testAEamil@naver.com", "010-5678-5678", UserType.ADMIN);
         userRepository.deleteByEmail(urd.getEmail());
         userService.signUpUser(urd);
-        TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
-        return ResponseEntity.status(200).body("Bearer " + login.getAccessToken());
+        TokenDto loginResponse = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + loginResponse.getAccessToken());
+        String cookie = "refreshToken=" + loginResponse.getRefreshToken() + "; Path=/; Max-Age=" + jwtConfig.getRefreshExpirationTime() + "; HttpOnly; readonly";
+        httpHeaders.add("Set-Cookie", cookie);
+        return new ResponseEntity<>("Bearer " + loginResponse.getAccessToken(), httpHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/user/evaluated-posts")
