@@ -2,20 +2,17 @@ package com.ColdPitch.domain.repository;
 
 import com.ColdPitch.domain.entity.Comment;
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentRepositoryCustom {
-    List<Comment> findAllByPostId(Long postId);
-    List<Comment> findAllByPostIdForAdmin(Long postId);
-
+    List<Comment> findAllByPostIdNotIncludingDeleted(Long postId);
     List<Comment> findAllByParentId(Long pCommentId);
-    List<Comment> findAllByParentIdForAdmin(Long pCommentId);
 
-    List<Comment> findAllByUserId(Long userId);
-    List<Comment> findAllByUserIdForAdmin(Long userId);
+    List<Comment> findAllByParentIdNotIncludeDeleted(Long pCommentId);
 
-    List<Comment> findAllForUser();
+    List<Comment> findAllByUserIdNotIncludingDeleted(Long userId);
 
-    List<Comment> findAllForAdmin();
+    List<Comment> findAllNotIncludingDeleted();
 
-    Comment findByIdForUser(Long id);
+    Optional<Comment> findByIdNotIncludingDeleted(Long id);
 }

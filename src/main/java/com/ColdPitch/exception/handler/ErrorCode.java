@@ -29,6 +29,7 @@ public enum ErrorCode {
     EMAIL_NOT_EXISTS(HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다"),
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다"),
     USER_NOT_MATCH(HttpStatus.INTERNAL_SERVER_ERROR, "유저 정보가 일치하지 않습니다"),
+    USER_CURRENT_USER_REQUEST_USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "요청한 유저정보와 현재 유저정보가 일치하지 않습니다"),
     USER_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "로그아웃 된 사용자입니다."),
     USER_INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 Refresh Token 입니다."),
     USER_INVALID_USER_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "토큰의 정보가 유저 정보가 일치하지 않습니다."),
@@ -50,6 +51,7 @@ public enum ErrorCode {
     COMMENT_DELETE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "댓글을 삭제하던 중 오류가 발생했습니다"),
     COMMENT_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다"),
     COMMENT_AUTHOR_NOT_MATCH(HttpStatus.FORBIDDEN, "댓글을 등록한 유저가 아닙니다"),
+    COMMENT_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "댓글을 처리하던 중 서버 에러가 발생했습니다"),
 
     // Like
     LIKE_ALREADY_SELECTED(HttpStatus.BAD_REQUEST, "이미 좋아요를 누른 게시물입니다."),

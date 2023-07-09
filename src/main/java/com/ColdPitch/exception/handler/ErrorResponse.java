@@ -20,6 +20,7 @@ public class ErrorResponse {
     private HttpStatus httpStatus;
 
     public ErrorResponse(ErrorCode errorCode) {
+        this.status = errorCode.getStatus().value();
         this.errorCode = errorCode;
         this.httpStatus = errorCode.getStatus();
         this.message = errorCode.getMessage();

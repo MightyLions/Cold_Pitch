@@ -188,7 +188,7 @@ public class UserService {
         Set<Long> postIds = new HashSet<>();
         likeRepository.findByUserId(userId).ifPresent(likes -> likes.forEach(like -> postIds.add(like.getPostId())));
         dislikeRepository.findByUserId(userId).ifPresent(dislikes -> dislikes.forEach(dislike -> postIds.add(dislike.getPostId())));
-        commentRepository.findByUserId(userId).ifPresent(comments -> comments.forEach(comment -> postIds.add(comment.getPostId())));
+        Optional.of(commentRepository.findAllByUserId(userId)).ifPresent(comments -> comments.forEach(comment -> postIds.add(comment.getPostId())));
 
         List<Post> posts = postRepository.findByIdIn(postIds);
 
@@ -221,7 +221,7 @@ public class UserService {
                 .password(passwordEncoder.encode(userRequestDto.getPassword()))
                 .email(userRequestDto.getEmail())
                 .phoneNumber(userRequestDto.getPhoneNumber())
-                .userType(UserType.of(userRequestDto.getUserType()))
+                .userType(userRequestDto.getUserType())
                 .curState(CurState.LIVE)
                 .posts(new ArrayList<>())
                 .userTags(new ArrayList<>())

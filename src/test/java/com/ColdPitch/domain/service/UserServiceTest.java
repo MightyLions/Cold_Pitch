@@ -7,6 +7,7 @@ import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.user.CurState;
+import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.jwt.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,7 @@ class UserServiceTest {
 
     @BeforeEach
     void init() {
-        userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
+        userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER);
         //벨리데이터 모킹
         when(companyRegistrationValidator.validateCompanyRegistration(any())).thenReturn(true);
     }
@@ -79,7 +80,7 @@ class UserServiceTest {
     @DisplayName("기업회원 회원가입을 확인한다. ")
     public void signupCompany() {
         //given
-        UserRequestDto companyRequestDto = new UserRequestDto("Bnickname", "Bname", "Bpassword", "Bemail@naver.com", "010-7558-2452", "BUSINESS");
+        UserRequestDto companyRequestDto = new UserRequestDto("Bnickname", "Bname", "Bpassword", "Bemail@naver.com", "010-7558-2452", UserType.BUSINESS);
         CompanyRegistrationDto companyRegistrationDto = new CompanyRegistrationDto("12345678", "20230526", "test", "test", "(주)테스트", "0000000000000", "부동산업", "부동산중개업", "test", "test");
 
         // when

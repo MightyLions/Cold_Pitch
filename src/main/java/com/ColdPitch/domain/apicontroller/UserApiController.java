@@ -5,6 +5,7 @@ import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
+import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.UserService;
 import com.ColdPitch.utils.RandomUtil;
@@ -62,7 +63,7 @@ public class UserApiController {
 
     @GetMapping("/dummy")
     @Operation(summary = "USER 더미데이터 생성", description = "default USER, 원하는 경우 ADMIN 입력")
-    public ResponseEntity<List<UserResponseDto>> makeDummyUser(@RequestParam(defaultValue = "USER", name = "userType(Default : USER)") String userType, @RequestParam(defaultValue = "5", name = "size(Default : 5)") int size) {
+    public ResponseEntity<List<UserResponseDto>> makeDummyUser(@Valid @RequestParam(defaultValue = "USER", name = "userType(Default : USER)") UserType userType, @RequestParam(defaultValue = "5", name = "size(Default : 5)") int size) {
         List<UserResponseDto> list = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             long rand = RandomUtil.getRandom(Integer.MAX_VALUE);
@@ -75,7 +76,7 @@ public class UserApiController {
     @GetMapping("/testUserToken")
     @Operation(summary = "USER 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyUserToken() {
-        UserRequestDto urd = new UserRequestDto("testNick", "testName", "testPass", "testEamil@naver.com", "010-1234-1234", "USER");
+        UserRequestDto urd = new UserRequestDto("testNick", "testName", "testPass", "testEamil@naver.com", "010-1234-1234", UserType.USER);
         userRepository.deleteByEmail(urd.getEmail());
         userService.signUpUser(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
@@ -86,7 +87,7 @@ public class UserApiController {
     @GetMapping("/testAdminToken")
     @Operation(summary = "ADMIN 테스트 토큰 생성")
     public ResponseEntity<String> makeDummyAdminToken() {
-        UserRequestDto urd = new UserRequestDto("testANick", "testAName", "testAPass", "testAEamil@naver.com", "010-5678-5678", "ADMIN");
+        UserRequestDto urd = new UserRequestDto("testANick", "testAName", "testAPass", "testAEamil@naver.com", "010-5678-5678", UserType.ADMIN);
         userRepository.deleteByEmail(urd.getEmail());
         userService.signUpUser(urd);
         TokenDto login = userService.login(new LoginDto(urd.getEmail(), urd.getPassword()));
