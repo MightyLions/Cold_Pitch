@@ -7,6 +7,7 @@ import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.usertag.TagRequestDto;
+import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.repository.UserTagRepository;
 import com.ColdPitch.domain.service.TagService;
@@ -107,7 +108,7 @@ class UserTagControllerTest {
 
     @BeforeEach
     public void initUser() {
-        userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
+        userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER));
         user = userRepository.findByNickname("nickname").orElseThrow();
         login = userService.login(new LoginDto("email@naver.com", "password"));
         tag1 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag1", "tag1"));

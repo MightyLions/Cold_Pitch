@@ -5,6 +5,7 @@ import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
+import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.service.RefreshTokenService;
 import com.ColdPitch.domain.service.UserService;
@@ -52,7 +53,7 @@ class UserAuthApiControllerTest {
     public void signUpUserControllerTest() throws Exception {
         //given
         ObjectMapper objectMapper = new ObjectMapper();
-        UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
+        UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER);
         String requestBody = objectMapper.writeValueAsString(userRequestDto);
 
         //when
@@ -74,7 +75,7 @@ class UserAuthApiControllerTest {
     @DisplayName("유저 로그인 성공 확인")
     public void loginSuccessTest() throws Exception {
         //given 유저 저장
-        UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
+        UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER);
         userService.signUpUser(userRequestDto);
 
 
@@ -112,7 +113,7 @@ class UserAuthApiControllerTest {
     @DisplayName("유저 로그아웃 테스트")
     public void logoutTest() throws Exception {
         //given
-        UserResponseDto user = userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER"));
+        UserResponseDto user = userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER));
         Assertions.assertThat(userService.findUserByEmail(user.getEmail()).getNickname()).isEqualTo(user.getNickname());
 
         LoginDto loginDto = new LoginDto("email@naver.com", "password");

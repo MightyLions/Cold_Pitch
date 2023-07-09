@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 /**
- * jwt secret key 관리 부분 
+ * jwt secret key 관리 부분
  */
 @Configuration
 @PropertySource(value = {"classpath:secret.properties"})
@@ -20,5 +20,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtConfig {
     private String secretKey;
-    private int expirationTime;
+    private int accessExpirationTime;
+    private int refreshExpirationTime;
 }

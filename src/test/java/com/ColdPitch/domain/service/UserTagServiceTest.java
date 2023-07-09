@@ -8,6 +8,7 @@ import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.CompanyResponseDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.usertag.TagRequestDto;
+import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserTagRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,15 +69,15 @@ class UserTagServiceTest {
         //given
         userTagService.setTag(new TagRequestDto(List.of("tag1", "tag2")), company);
         userTagService.setTag(new TagRequestDto(List.of("tag2", "tag3")), company1);
-        log.info("COMPANY = {}",userTagService.findMyTag(company));
-        log.info("COMPANY1 = {}",userTagService.findMyTag(company1));
+        log.info("COMPANY = {}", userTagService.findMyTag(company));
+        log.info("COMPANY1 = {}", userTagService.findMyTag(company1));
 
 
         // when
-        List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new TagRequestDto(List.of("tag1","tag3")));
+        List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new TagRequestDto(List.of("tag1", "tag3")));
 
         //then
-        log.info("{}",find);
+        log.info("{}", find);
         assertThat(find.size()).isEqualTo(2);
     }
 
@@ -91,7 +92,7 @@ class UserTagServiceTest {
         List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new TagRequestDto(List.of("tag2")));
 
         //then
-        log.info("{}",find);
+        log.info("{}", find);
         assertThat(find.size()).isEqualTo(2);
     }
 
@@ -114,9 +115,9 @@ class UserTagServiceTest {
         //mocking
         when(companyRegistrationValidator.validateCompanyRegistration(any())).thenReturn(true);
 
-        UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", "USER");
-        UserRequestDto companyRequestDto = new UserRequestDto("Bnickname", "Bname", "Bpassword", "Bemail@naver.com", "010-3333-2452", "BUSINESS");
-        UserRequestDto companyRequestDto1 = new UserRequestDto("Bnickname1", "Bname1", "Bpassword1", "Bemail@naver.com1", "010-3333-2451", "BUSINESS");
+        UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER);
+        UserRequestDto companyRequestDto = new UserRequestDto("Bnickname", "Bname", "Bpassword", "Bemail@naver.com", "010-3333-2452", UserType.BUSINESS);
+        UserRequestDto companyRequestDto1 = new UserRequestDto("Bnickname1", "Bname1", "Bpassword1", "Bemail@naver.com1", "010-3333-2451", UserType.BUSINESS);
         CompanyRegistrationDto companyRegistrationDto = new CompanyRegistrationDto("12345678", "20230526", "test", "test", "(주)테스트", "0000000000000", "test", "test", "test", "test");
         CompanyRegistrationDto companyRegistrationDto1 = new CompanyRegistrationDto("98765432", "20230526", "test1", "test1", "(주)테스트1", "0000000000000", "test1", "test1", "test1", "test1");
 
