@@ -60,7 +60,10 @@ public enum ErrorCode {
     // CompanyRegistration
     COMPANY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 기업입니다."),
     COMPANY_EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "외부 요청 API에서 에러가 발생하였습니다."),
-    COMPANY_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+    COMPANY_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+
+    // Sentiment
+    SENTIMENT_EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "외부 요청 API에서 에러가 발생하였습니다.");
 
     private final HttpStatus status;
     private final String message;
