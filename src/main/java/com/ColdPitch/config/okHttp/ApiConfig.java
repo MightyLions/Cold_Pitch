@@ -19,5 +19,7 @@ import org.springframework.stereotype.Component;
 @ToString
 @Component
 public class ApiConfig {
-    private String serviceKey;
+    private String companyServiceKey;
+    private String sentimentKeyId;
+    private String sentimentKey;
 }

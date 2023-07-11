@@ -38,7 +38,7 @@ public class CompanyRegistrationValidator {
         Request request = new Request.Builder()
                 .header("Access-Control-Request-Method", "POST")
                 .header("Origin", ServerUtil.getCurrentBaseUrl())
-                .url(API_URL + apiConfig.getServiceKey())
+                .url(API_URL + apiConfig.getCompanyServiceKey())
                 .post(body)
                 .build();
 
