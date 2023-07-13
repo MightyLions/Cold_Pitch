@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class SentimentRequestDto {
-    private String text;
+    private String content;
 }
