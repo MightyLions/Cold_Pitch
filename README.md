@@ -313,11 +313,11 @@ HTTP 상태 코드
         <td align="center"> 팀원 </td>
     </tr>
     <tr>
-        <td><img src="" width="100px;" alt=""/><br> </td>
-        <td><img src="" width="100px;" alt=""/><br> </td>
-        <td><img src="" width="100px;" alt=""/><br> </td>
-        <td><img src="https://github.com/MightyLions/Cold_Pitch/assets/81156109/bebb0fda-6749-474f-a59d-4ec56612eea2" width="100px; " alt=""/></td>
-        <td><img src="" width="100px;" alt=""/><br> </td>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129060687432388760/20230708_161837.jpg" width="100px;" alt=""/><br> </td>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129060472948269108/20230301_165045_mod.jpg" width="100px;" alt=""/><br> </td>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129060979322409032/image.png" width="100px;" alt=""/><br> </td>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129062297340498011/KakaoTalk_Photo_2023-07-13-23-50-08.jpeg" width="100px; " alt=""/></td>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129062741437591733/IMG_3247.png" width="100px;" alt=""/><br> </td>
         <td><img src="" width="100px;" alt=""/><br> </td>
     </tr>
     <tr>
