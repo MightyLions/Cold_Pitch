@@ -1,5 +1,6 @@
 package com.ColdPitch.config.okHttp;
 
+import com.ColdPitch.core.factory.YamlLoadFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
  * api key 관리를 위한 파일
  */
 @Configuration
-@PropertySource(value = {"classpath:secret.properties"})
+@PropertySource(value = {"classpath:secret.yml"}, factory = YamlLoadFactory.class)
 @ConfigurationProperties(prefix = "api")
 @Getter
 @Setter
