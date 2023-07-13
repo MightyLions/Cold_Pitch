@@ -24,7 +24,6 @@ public enum ErrorCode {
     NO_AUTHORIZATION_TOKEN(HttpStatus.FORBIDDEN, "권한이 맞지 않습니다."),
 
 
-
     // User
     EMAIL_NOT_EXISTS(HttpStatus.BAD_REQUEST, "존재하지 않는 이메일입니다"),
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다"),
@@ -60,7 +59,12 @@ public enum ErrorCode {
     // CompanyRegistration
     COMPANY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 기업입니다."),
     COMPANY_EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "외부 요청 API에서 에러가 발생하였습니다."),
-    COMPANY_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+    COMPANY_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+
+    // file
+    FILE_NOT_EXIST(HttpStatus.BAD_REQUEST, "파일이 비어있습니다."),
+    FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "알 수 없는 파일입니다."),
+    ;
 
     private final HttpStatus status;
     private final String message;
