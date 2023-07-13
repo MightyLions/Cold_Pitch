@@ -4,22 +4,50 @@
 
 ## <span style="color:lightblue">⌛️ 프로젝트 요약
 
+### "초기 스타트업과 소비자 간의 상호작용을 촉진하는 플랫폼"
+
 | 분류 |           내용            | X |     스택     |  버전   |   
 |----|:-----------------------:|---|:----------:|:-----:|
 | 주제 | 스타트업 - 소비자 상호작용 촉진 플랫폼  | X |    JAVA    |  11   |
-| 인원 |            6            | X | SpringBoot | 2.7.1 |
-| 기간 | 2023.05.01 ~ 2023.07.21 | X |   MySQL    |       |
+| 인원 |            6            | X | SpringBoot | 2.7.11 |
+| 기간 | 2023.05.01 ~ 2023.07.21 | X |   MySQL    | latest      |
 
 <br>
 
-> ### "초기 스타트업과 소비자 간의 상호작용을 촉진하는 플랫폼"
+
 
 ## <span style="color:lightblue">📘 프로젝트 배경
 
 - 넓은 범위의 디지털 기기의 보급으로 정보의 양과 확산 속도가 급격하게 증가하여 이를 소비자들이 적극적으로 활용하고 있음.
 - 이에 따라, 제품이나 서비스의 품질, 브랜드 이미지와 마케팅 전략 등에 소비자들의 평가와 선택이 큰 영향을 미치고 있음.
 
--![img_6.png](readmeImage/survey.png)
+![img_6.png](readmeImage/survey.png)
+
+<br>
+
+## <span style="color:lightblue">🔍 예상 기대효과
+#### 경제적 효과
+ 1. 스타트업의 안정적 시장 진입과 성장
+ 2. 플랫폼 사용자 유치를 통한 스타트업 수익 창출
+    
+#### 기술적 효과
+ 1. 디지털 신기술의 활용
+      
+#### 사회적 효과
+ 1. 스타트업 커뮤니티 활성화
+ 2. 국내외 스타트업과의 교류와 유입
+ 3. 스타트업 생태계 확장에 따른 고용 창출
+
+
+<br>
+
+## <span style="color:lightblue">💻 개발내용 및 목표
+### 서비스 다이어그램 
+![img_3.png](readmeImage/service-diagram.png)
+### 시퀀스 다이어그램
+![img_5.png](readmeImage/sequence-diagram.png)
+### ER 다이어 그램 
+![img_2.png](readmeImage/erdiagram.png)
 
 <br>
 
@@ -33,17 +61,6 @@
 협업 도구 : <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white">
 <img src="https://img.shields.io/badge/Notion -000000?style=for-the-badge&logo=Notion&logoColor=white">
 <img src="https://img.shields.io/badge/Drive -4285F4?style=for-the-badge&logo=GoogleDrive&logoColor=white"><br>
-
-
-<br>
-
-## <span style="color:lightblue">💻 개발내용 및 목표
-### 서비스 다이어그램 
-![img_3.png](readmeImage/service-diagram.png)
-### 시퀀스 다이어그램
-![img_5.png](readmeImage/sequence-diagram.png)
-### ER 다이어 그램 
-![img_2.png](readmeImage/erdiagram.png)
 
 <br>
 
@@ -242,9 +259,12 @@ HTTP 상태 코드
 
 ## <span style="color:lightblue">🧐 비즈니스 로직
 
-- (초기)
-- (메인)
-- (확장성)
+![스크린샷 2023-07-13 오전 10 09 01](https://github.com/MightyLions/Cold_Pitch/assets/81156109/c9e17de1-1b12-465e-b184-61db0f252b6e)
+
+![스크린샷 2023-07-13 오전 10 09 27](https://github.com/MightyLions/Cold_Pitch/assets/81156109/bffeb593-fd30-438e-8a2b-a268876198a6)
+
+![스크린샷 2023-07-13 오전 10 09 41](https://github.com/MightyLions/Cold_Pitch/assets/81156109/623d2d90-0574-4d0c-ab58-13c3e039db05)
+
 
 <br>
 
