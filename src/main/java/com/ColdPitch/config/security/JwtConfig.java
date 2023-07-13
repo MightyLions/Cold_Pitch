@@ -1,5 +1,6 @@
 package com.ColdPitch.config.security;
 
+import com.ColdPitch.core.factory.YamlLoadFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
  * jwt secret key 관리 부분
  */
 @Configuration
-@PropertySource(value = {"classpath:secret.properties"})
+@PropertySource(value = {"classpath:secret.yml"}, factory = YamlLoadFactory.class)
 @ConfigurationProperties(prefix = "jwt")
 @Getter
 @Setter

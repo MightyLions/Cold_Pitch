@@ -1,7 +1,6 @@
 package com.ColdPitch.config.cloud;
 
 import com.ColdPitch.core.factory.YamlLoadFactory;
-import com.ColdPitch.core.manager.AWSFileManager;
 import com.ColdPitch.core.manager.FileManager;
 import com.ColdPitch.core.manager.SolutionFileManager;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -14,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource(value = {"application-s3.yml"}, factory = YamlLoadFactory.class)
+@PropertySource(value = {"classpath:application-s3.yml"}, factory = YamlLoadFactory.class)
 public class S3Config {
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;

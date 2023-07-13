@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@PropertySource(value = {"application-s3.yml"}, factory = YamlLoadFactory.class)
+@PropertySource(value = {"classpath:application-s3.yml"}, factory = YamlLoadFactory.class)
 @Slf4j
-public abstract class AWSFileManager implements FileManager{
+public abstract class AWSFileManager implements FileManager {
     private final AmazonS3 s3Client;
-    @Value(value="${cloud.aws.s3.bucket}")
+    @Value(value = "${cloud.aws.s3.bucket}")
     private String bucketName;
 
     @Override
@@ -33,7 +33,7 @@ public abstract class AWSFileManager implements FileManager{
         ObjectMetadata objectMetadata = metaDataInstance(multipartFile);
         String fileUrl = makeFileUrl(path, multipartFile);
 
-        try (InputStream is = multipartFile.getInputStream()){
+        try (InputStream is = multipartFile.getInputStream()) {
             s3Client.putObject(new PutObjectRequest(bucketName, fileUrl, is, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicReadWrite));
 
