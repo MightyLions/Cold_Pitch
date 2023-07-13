@@ -42,12 +42,24 @@
 <br>
 
 ## <span style="color:lightblue">💻 개발내용 및 목표
-### 서비스 다이어그램 
+<details>
+<summary><h3>서비스 다이어그램</h3></summary>
+ 
 ![img_3.png](readmeImage/service-diagram.png)
-### 시퀀스 다이어그램
+
+</details>
+<details>
+<summary><h3>시퀀스 다이어그램</h3></summary>
+ 
 ![img_5.png](readmeImage/sequence-diagram.png)
-### ER 다이어 그램 
+
+</details>
+<details>
+<summary><h3>ER 다이어그램</h3></summary>
+
 ![img_2.png](readmeImage/erdiagram.png)
+
+</details>
 
 <br>
 
@@ -258,13 +270,28 @@ HTTP 상태 코드
 </details>
 
 ## <span style="color:lightblue">🧐 비즈니스 로직
+<details>
+<summary>초기 비즈니스 모델</summary>
+ 
+![스크린샷 2023-07-13 오전 10 25 48](https://github.com/MightyLions/Cold_Pitch/assets/81156109/7a7a862a-4469-4415-abaf-df47d4e4558b)
 
-![스크린샷 2023-07-13 오전 10 09 01](https://github.com/MightyLions/Cold_Pitch/assets/81156109/c9e17de1-1b12-465e-b184-61db0f252b6e)
 
-![스크린샷 2023-07-13 오전 10 09 27](https://github.com/MightyLions/Cold_Pitch/assets/81156109/bffeb593-fd30-438e-8a2b-a268876198a6)
+</details>
 
-![스크린샷 2023-07-13 오전 10 09 41](https://github.com/MightyLions/Cold_Pitch/assets/81156109/623d2d90-0574-4d0c-ab58-13c3e039db05)
+<details>
+<summary>메인 비즈니스 모델</summary>
+ 
+![스크린샷 2023-07-13 오전 10 25 57](https://github.com/MightyLions/Cold_Pitch/assets/81156109/2c04703d-93b7-495d-97fa-4653bb9e1e6f)
 
+</details>
+
+<details>
+<summary>확장 비즈니스 모델</summary>
+ 
+![스크린샷 2023-07-13 오전 10 26 08](https://github.com/MightyLions/Cold_Pitch/assets/81156109/57c59e35-b4d9-41f8-a032-83009cc3384c)
+
+
+</details>
 
 <br>
 
