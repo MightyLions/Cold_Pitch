@@ -1,6 +1,8 @@
 package com.ColdPitch.core.manager;
 
 
+import com.ColdPitch.exception.CustomException;
+import com.ColdPitch.exception.handler.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +25,7 @@ public abstract class AbstractFileManager implements FileManager{
     }
 
     @Override
-    public String upload(MultipartFile file) throws IOException {
+    public String upload(String url, MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             return null;
         }
@@ -39,7 +41,7 @@ public abstract class AbstractFileManager implements FileManager{
             return uuid;
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            throw new IOException("file upload error");
+            throw new CustomException(ErrorCode.FILE_NOT_FOUND);
         }
     }
 

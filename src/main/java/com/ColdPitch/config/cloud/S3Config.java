@@ -1,21 +1,22 @@
 package com.ColdPitch.config.cloud;
 
 import com.ColdPitch.core.factory.YamlLoadFactory;
-//import com.amazonaws.auth.AWSStaticCredentialsProvider;
-//import com.amazonaws.auth.BasicAWSCredentials;
-//import com.amazonaws.services.s3.AmazonS3Client;
-//import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.ColdPitch.core.manager.AWSFileManager;
+import com.ColdPitch.core.manager.FileManager;
+import com.ColdPitch.core.manager.SolutionFileManager;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-/*@Configuration
-//@ConfigurationProperties(prefix = "cloud")
-@PropertySource(value = {"application-s3.yml"}, factory = YamlLoadFactory.class)*/
+@Configuration
+@PropertySource(value = {"application-s3.yml"}, factory = YamlLoadFactory.class)
 public class S3Config {
-  /*  @Value("${cloud.aws.credentials.access-key}")
+    @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
     @Value("${cloud.aws.credentials.secret-key}")
     private String secretKey;
@@ -29,5 +30,10 @@ public class S3Config {
                 .withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
-    }*/
+    }
+
+    @Bean
+    public FileManager awsFileManager() {
+        return new SolutionFileManager(amazonS3Client());
+    }
 }
