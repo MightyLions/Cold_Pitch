@@ -61,13 +61,13 @@ public enum ErrorCode {
     COMPANY_EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "외부 요청 API에서 에러가 발생하였습니다."),
     COMPANY_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
-    ;
     // Sentiment
-    SENTIMENT_EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "외부 요청 API에서 에러가 발생하였습니다.");
-  
+    SENTIMENT_EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "외부 요청 API에서 에러가 발생하였습니다."),
+
     // file
     FILE_NOT_EXIST(HttpStatus.BAD_REQUEST, "파일이 비어있습니다."),
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "알 수 없는 파일입니다."),
+    ;
 
     private final HttpStatus status;
     private final String message;
