@@ -70,7 +70,7 @@
 ## <span style="color:lightblue">🛠️ 기술 스택 및 의존성
 
 통합 개발 환경 : <img src="https://img.shields.io/badge/IntelliJ-000000?style=for-the-badge&logo=IntelliJ IDEA&logoColor=white">  
-개발 언어 : <img src="https://img.shields.io/badge/JAVA-17-FFFFFF?style=for-the-badge&logo=openjdk&logoColor=FFFFFF"><br>
+개발 언어 : <img src="https://img.shields.io/badge/JAVA-11-FFFFFF?style=for-the-badge&logo=openjdk&logoColor=FFFFFF"><br>
 개발 프레임 워크: <img src="https://img.shields.io/badge/SpringBoot-3.1.1-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=6DB33F">   <img src="https://img.shields.io/badge/JUnit5-FFFFFF?style=for-the-badge&logo=JUnit5&logoColor=6DB33F"><br>
 데이터베이스 : <img src="https://img.shields.io/badge/mysql-003B57?style=for-the-badge&logo=Mysql&logoColor=white"><br>
 배포 도구 : <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"> <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">    <br>
