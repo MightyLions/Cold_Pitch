@@ -316,7 +316,7 @@ HTTP 상태 코드
         <td><img src="" width="100px;" alt=""/><br> </td>
         <td><img src="" width="100px;" alt=""/><br> </td>
         <td><img src="" width="100px;" alt=""/><br> </td>
-        <td><img src="" width="100px;" alt=""/><br> </td>
+        <td><img src="https://github.com/MightyLions/Cold_Pitch/assets/81156109/bebb0fda-6749-474f-a59d-4ec56612eea2" width="100px; " alt=""/></td>
         <td><img src="" width="100px;" alt=""/><br> </td>
         <td><img src="" width="100px;" alt=""/><br> </td>
     </tr>
