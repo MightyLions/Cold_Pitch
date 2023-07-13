@@ -2,9 +2,13 @@
 
 <br>
 
-## <span style="color:lightblue">⌛️ 프로젝트 요약
+## <span style="color:lightblue">🎟️ 프로젝트 주제
 
-### "초기 스타트업과 소비자 간의 상호작용을 촉진하는 플랫폼"
+### <span style="color:lightgreen"> "초기 스타트업과 소비자 간의 상호작용을 촉진하는 플랫폼"
+
+<br>
+
+## <span style="color:lightblue">⌛️ 프로젝트 요약
 
 | 분류 |           내용            | X |     스택     |  버전   |   
 |----|:-----------------------:|---|:----------:|:-----:|
