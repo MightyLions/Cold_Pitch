@@ -1,5 +1,40 @@
 # <span style="color:orange">🍑 Cold_Pitch
 
+## <span style="color:lightblue">👥 팀원 소개
+
+<div>
+<table>
+  <tbody>
+    <tr>
+        <td align="center"> 팀장 </td>
+        <td align="center"> 팀원 </td>
+        <td align="center"> 팀원 </td>
+        <td align="center"> 팀원 </td>
+        <td align="center"> 팀원 </td>
+        <td align="center"> 팀원 </td>
+    </tr>
+    <tr>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129064811020419173/1689260416581.jpg" width="100px;" alt=""/><br> </td>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129060472948269108/20230301_165045_mod.jpg" width="100px;" alt=""/><br> </td>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129064787821735946/image.png" width="100px;" alt=""/><br> </td>
+        <td><img src="https://github.com/MightyLions/Cold_Pitch/assets/81156109/02117bc0-f64e-4625-9b5e-b2487d727b30" width="100px; " alt=""/></td>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129062741437591733/IMG_3247.png" width="100px;" alt=""/><br> </td>
+        <td><img src="" width="100px;" alt=""/><br> </td>
+
+   </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/sangdob"> 박상도 </a></td>
+      <td align="center"><a href="https://github.com/mon0mon"> 이민기 </a></td>
+      <td align="center"><a href="https://github.com/dyKim"> 김도영 </a></td>
+      <td align="center"><a href="https://github.com/dlrjs2360"> 이희건 </a></td>
+      <td align="center"><a href="https://github.com/juhee77"> 박주희 </a></td>
+      <td align="center"><a href="https://github.com/bear31eun"> 이정은 </a></td>
+    </tr>
+
+  </tbody>
+</table>
+</div>
+
 <br>
 
 ## <span style="color:lightblue">🎟️ 프로젝트 주제
@@ -298,41 +333,6 @@ HTTP 상태 코드
 </details>
 
 <br>
-
-## <span style="color:lightblue">👥 팀원 소개
-
-<div>
-<table>
-  <tbody>
-    <tr>
-        <td align="center"> 팀장 </td>
-        <td align="center"> 팀원 </td>
-        <td align="center"> 팀원 </td>
-        <td align="center"> 팀원 </td>
-        <td align="center"> 팀원 </td>
-        <td align="center"> 팀원 </td>
-    </tr>
-    <tr>
-        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129064811020419173/1689260416581.jpg" width="100px;" alt=""/><br> </td>
-        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129060472948269108/20230301_165045_mod.jpg" width="100px;" alt=""/><br> </td>
-        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129064787821735946/image.png" width="100px;" alt=""/><br> </td>
-        <td><img src="https://github.com/MightyLions/Cold_Pitch/assets/81156109/02117bc0-f64e-4625-9b5e-b2487d727b30" width="100px; " alt=""/></td>
-        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129062741437591733/IMG_3247.png" width="100px;" alt=""/><br> </td>
-        <td><img src="" width="100px;" alt=""/><br> </td>
-
-    </tr>
-    <tr>
-      <td align="center"><a href="https://github.com/sangdob"> 박상도 </a></td>
-      <td align="center"><a href="https://github.com/mon0mon"> 이민기 </a></td>
-      <td align="center"><a href="https://github.com/dyKim"> 김도영 </a></td>
-      <td align="center"><a href="https://github.com/dlrjs2360"> 이희건 </a></td>
-      <td align="center"><a href="https://github.com/juhee77"> 박주희 </a></td>
-      <td align="center"><a href="https://github.com/bear31eun"> 이정은 </a></td>
-    </tr>
-
-  </tbody>
-</table>
-</div>
 
 ## <span style="color:lightblue">🗂️ 버전기록
 
