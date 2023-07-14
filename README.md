@@ -1,5 +1,17 @@
 # <span style="color:orange">🍑 Cold_Pitch
 
+## <span style="color:lightblue">🎟️ 프로젝트 주제
+
+### <span style="color:lightgreen"> "초기 스타트업과 소비자 간의 상호작용을 촉진하는 플랫폼"
+
+## <span style="color:lightblue">⌛️ 프로젝트 요약
+
+| 분류 |           내용            | X |     스택     |  버전   |   
+|----|:-----------------------:|---|:----------:|:-----:|
+| 주제 | 스타트업 - 소비자 상호작용 촉진 플랫폼  | X |    JAVA    |  11   |
+| 인원 |            6            | X | SpringBoot | 2.7.11 |
+| 기간 | 2023.05.01 ~ 2023.07.21 | X |   MySQL    | latest      |
+
 ## <span style="color:lightblue">👥 팀원 소개
 
 <div>
@@ -36,24 +48,6 @@
 </div>
 
 <br>
-
-## <span style="color:lightblue">🎟️ 프로젝트 주제
-
-### <span style="color:lightgreen"> "초기 스타트업과 소비자 간의 상호작용을 촉진하는 플랫폼"
-
-<br>
-
-## <span style="color:lightblue">⌛️ 프로젝트 요약
-
-| 분류 |           내용            | X |     스택     |  버전   |   
-|----|:-----------------------:|---|:----------:|:-----:|
-| 주제 | 스타트업 - 소비자 상호작용 촉진 플랫폼  | X |    JAVA    |  11   |
-| 인원 |            6            | X | SpringBoot | 2.7.11 |
-| 기간 | 2023.05.01 ~ 2023.07.21 | X |   MySQL    | latest      |
-
-<br>
-
-
 
 ## <span style="color:lightblue">📘 프로젝트 배경
 
