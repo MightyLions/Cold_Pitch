@@ -278,4 +278,17 @@ public class UserService {
         user.updateAvatar(uploadedAvatar);
         return uploadedAvatar;
     }
+
+    public String findAvatar(String nickname) {
+        String email = SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
+        //path의 유저 이름과 현재 로그인한 유저의 이름이 다른경우 에러를 던짐
+        if (!user.getNickname().equals(nickname)) {
+            log.info("{} {}", user.getNickname(), nickname);
+            throw new CustomException(BAD_REQUEST);
+        }
+
+        if (user.getAvatar() == null) return null;
+        return userFileManager.read(user.getAvatar());
+    }
 }

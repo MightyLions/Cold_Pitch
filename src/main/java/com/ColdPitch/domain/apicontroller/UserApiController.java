@@ -54,6 +54,12 @@ public class UserApiController {
         return ResponseEntity.status(200).body(userService.findByNickName(nickname));
     }
 
+    @GetMapping("/{nickname}/avatar")
+    @Operation(summary = "유저 사진 확인")
+    public ResponseEntity<String> findAvatar(@PathVariable("nickname") String nickname) {
+        return ResponseEntity.status(200).body(userService.findAvatar(nickname));
+    }
+
     @PatchMapping
     @Operation(summary = "유저 수정", description = "유저 이름, 전화번호, 닉네임, password 변경 기능")
     public ResponseEntity<UserResponseDto> updateProfile(@Valid @RequestBody UserRequestDto userRequestDto) {

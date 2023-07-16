@@ -72,6 +72,11 @@ public abstract class AWSFileManager implements FileManager {
 
     }
 
+    @Override
+    public String read(String path) {
+        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, s3Client.getBucketLocation(bucketName), path);
+    }
+
     private static String makeFileUrl(String path, MultipartFile multipartFile) {
         String extension = getExtension(multipartFile);
         String fileName = UUID.randomUUID() + "." + extension;
