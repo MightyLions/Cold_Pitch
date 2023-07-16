@@ -18,7 +18,6 @@ import com.ColdPitch.domain.repository.*;
 import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.jwt.TokenProvider;
 import com.ColdPitch.utils.SecurityUtil;
-import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -52,10 +51,9 @@ public class UserService {
     private final LikeRepository likeRepository;
     private final DislikeRepository dislikeRepository;
     private final PostRepository postRepository;
-    private final AmazonS3Client amazonS3Client;
     private final FileManager userFileManager;
 
-    public UserService(AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository, PasswordEncoder passwordEncoder, TokenProvider tokenProvider, RefreshTokenRepository refreshTokenRepository, CompanyRegistrationService companyRegistrationService, CommentService commentService, CommentRepository commentRepository, PostService postService, LikeRepository likeRepository, DislikeRepository dislikeRepository, PostRepository postRepository, AmazonS3Client amazonS3Client, @Qualifier("userFileManager") FileManager userFileManager) {
+    public UserService(AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository, PasswordEncoder passwordEncoder, TokenProvider tokenProvider, RefreshTokenRepository refreshTokenRepository, CompanyRegistrationService companyRegistrationService, CommentService commentService, CommentRepository commentRepository, PostService postService, LikeRepository likeRepository, DislikeRepository dislikeRepository, PostRepository postRepository, @Qualifier("userFileManager") FileManager userFileManager) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -68,7 +66,6 @@ public class UserService {
         this.likeRepository = likeRepository;
         this.dislikeRepository = dislikeRepository;
         this.postRepository = postRepository;
-        this.amazonS3Client = amazonS3Client;
         this.userFileManager = userFileManager;
     }
 

@@ -1,5 +1,7 @@
 package com.ColdPitch.domain.apicontroller;
 
+import com.ColdPitch.core.manager.AWSFileManager;
+import com.ColdPitch.core.manager.UserFileManager;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
@@ -12,20 +14,25 @@ import com.ColdPitch.domain.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -128,6 +135,41 @@ class UserAuthApiControllerTest {
 
         //then
         Assertions.assertThat(refreshTokenService.findKey("email@naver.com")).isEqualTo(Optional.empty());
+    }
+
+
+    @Test
+    @Disabled
+    @DisplayName("유저 이미지 업로드 테스트 // 테스트 중")
+    public void avatarTest() throws Exception {
+        //mocking
+        AWSFileManager mockObject = mock(AWSFileManager.class);
+        UserFileManager mock2Object = mock(UserFileManager.class);
+        MockMultipartFile avatar = new MockMultipartFile("file", "image.png", "image/png", "<<jpg data>>".getBytes(StandardCharsets.UTF_8));
+        when(mockObject.upload("test", avatar)).thenReturn("/test");
+        when(mock2Object.upload("test", avatar)).thenReturn("/test");
+
+        //given
+        UserResponseDto user = userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER));
+        Assertions.assertThat(userService.findUserByEmail(user.getEmail()).getNickname()).isEqualTo(user.getNickname());
+
+        LoginDto loginDto = new LoginDto("email@naver.com", "password");
+        TokenDto login = userService.login(loginDto);
+
+        Assertions.assertThat(mockObject.upload("test", avatar)).isEqualTo("/test");
+
+        //when 유저 이미지 업로드
+        mockMvc.perform(multipart("/api/v1/user/{nickname}/avatar", user.getNickname())
+                        .file(avatar)
+                        .header("Authorization", "Bearer " + login.getAccessToken())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk())
+//                .andExpect(jsonPath("string").value("/test"))
+                .andDo(print());
+
+        //then
+        Assertions.assertThat(userRepository.findByEmail(user.getEmail()).get().getAvatar()).isEqualTo("/test");
+        verify(mockObject, times(3));
     }
 
 
