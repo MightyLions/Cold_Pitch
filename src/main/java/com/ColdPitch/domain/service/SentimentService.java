@@ -25,7 +25,7 @@ public class SentimentService {
                 .map(Comment::getText)
                 .collect(Collectors.joining(" "));
 
-        SentimentRequestDto requestDto = new SentimentRequestDto();
+        SentimentRequestDto requestDto = new SentimentRequestDto(commentsText);
         requestDto.setContent(commentsText);
         return sentimentAnalysisApiClient.callSentimentApi(requestDto);
     }

@@ -7,6 +7,7 @@ import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.exception.handler.ErrorCode;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SentimentApiClient {
     private final String API_URL = "https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze";
     private final ApiConfig apiConfig;
@@ -39,6 +41,8 @@ public class SentimentApiClient {
             }
 
             String responseBody = response.body().string();
+            // TODO 테스트 코드
+            log.info(responseBody);
             return gson.fromJson(responseBody, SentimentResponseDto.class);
         } catch (IOException e) {
             throw new CustomException(ErrorCode.SENTIMENT_EXTERNAL_API_ERROR);
