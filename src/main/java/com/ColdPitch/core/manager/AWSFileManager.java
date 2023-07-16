@@ -5,6 +5,7 @@ import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.exception.handler.ErrorCode;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,9 @@ public abstract class AWSFileManager implements FileManager {
 
     @Override
     public boolean delete(String fileName) {
-        return false;
+        DeleteObjectRequest request = new DeleteObjectRequest(bucketName, fileName);
+        s3Client.deleteObject(request);
+        return true;
     }
 
     @Override
