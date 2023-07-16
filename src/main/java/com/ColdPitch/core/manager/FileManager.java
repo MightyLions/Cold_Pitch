@@ -10,4 +10,5 @@ public interface FileManager {
     List<String> uploads(MultipartFile[] multipartFiles) throws IOException;
     boolean delete(String fileName);
     void download(String filePath, String fileName);
+    String read(String avatar);
 }

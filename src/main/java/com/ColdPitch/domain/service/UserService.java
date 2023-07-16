@@ -1,5 +1,6 @@
 package com.ColdPitch.domain.service;
 
+import com.ColdPitch.core.manager.FileManager;
 import com.ColdPitch.domain.entity.*;
 import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
@@ -13,21 +14,22 @@ import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.dto.user.UserResponseDto;
 import com.ColdPitch.domain.entity.post.LikeState;
 import com.ColdPitch.domain.entity.user.CurState;
-import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.*;
 import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.jwt.TokenProvider;
 import com.ColdPitch.utils.SecurityUtil;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,6 @@ import static com.ColdPitch.exception.handler.ErrorCode.*;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
@@ -50,6 +51,23 @@ public class UserService {
     private final LikeRepository likeRepository;
     private final DislikeRepository dislikeRepository;
     private final PostRepository postRepository;
+    private final FileManager userFileManager;
+
+    public UserService(AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository, PasswordEncoder passwordEncoder, TokenProvider tokenProvider, RefreshTokenRepository refreshTokenRepository, CompanyRegistrationService companyRegistrationService, CommentService commentService, CommentRepository commentRepository, PostService postService, LikeRepository likeRepository, DislikeRepository dislikeRepository, PostRepository postRepository, @Qualifier("userFileManager") FileManager userFileManager) {
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenProvider = tokenProvider;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.companyRegistrationService = companyRegistrationService;
+        this.commentService = commentService;
+        this.commentRepository = commentRepository;
+        this.postService = postService;
+        this.likeRepository = likeRepository;
+        this.dislikeRepository = dislikeRepository;
+        this.postRepository = postRepository;
+        this.userFileManager = userFileManager;
+    }
 
     @Transactional
     public UserResponseDto signUpUser(UserRequestDto userRoleDto) {
@@ -227,5 +245,47 @@ public class UserService {
                 .userTags(new ArrayList<>())
                 .companyRegistration(null)
                 .nickname(userRequestDto.getNickname()).build();
+    }
+
+    @Transactional
+    public String uploadAvatar(String nickname, MultipartFile multipartFile) {
+        String email = SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
+        //path의 유저 이름과 현재 로그인한 유저의 이름이 다른경우 에러를 던짐
+        if (!user.getNickname().equals(nickname)) {
+            log.info("{} {}", user.getNickname(), nickname);
+            throw new CustomException(BAD_REQUEST);
+        }
+
+        //만약 사진을 가지고 있다면 삭제한다.
+        if (user.getAvatar() != null) {
+            userFileManager.delete(user.getAvatar());
+            user.deleteAvatar();
+        }
+
+        //파일 업로드
+        String uploadedAvatar;
+        try {
+            uploadedAvatar = userFileManager.upload("test", multipartFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        //이미지 주소를 리턴한다
+        user.updateAvatar(uploadedAvatar);
+        return uploadedAvatar;
+    }
+
+    public String findAvatar(String nickname) {
+        String email = SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
+        //path의 유저 이름과 현재 로그인한 유저의 이름이 다른경우 에러를 던짐
+        if (!user.getNickname().equals(nickname)) {
+            log.info("{} {}", user.getNickname(), nickname);
+            throw new CustomException(BAD_REQUEST);
+        }
+
+        if (user.getAvatar() == null) return null;
+        return userFileManager.read(user.getAvatar());
     }
 }

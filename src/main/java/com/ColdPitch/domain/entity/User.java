@@ -4,6 +4,7 @@ import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.user.CurState;
 import com.ColdPitch.domain.entity.user.UserType;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -48,7 +49,6 @@ public class User extends BaseEntity {
     @JoinColumn(name = "company_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private CompanyRegistration companyRegistration;
 
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserType userType;
@@ -56,6 +56,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CurState curState;
+
+    @Builder.Default
+    private String avatar = null;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
@@ -101,5 +104,13 @@ public class User extends BaseEntity {
         if (!posts.contains(post)) {
             this.posts.add(post);
         }
+    }
+
+    public void updateAvatar(String userAvatar) {
+        this.avatar = userAvatar;
+    }
+
+    public void deleteAvatar() {
+        this.avatar = null;
     }
 }
