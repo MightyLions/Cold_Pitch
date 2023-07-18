@@ -35,7 +35,7 @@
         <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129064787821735946/image.png" width="100px;" alt=""/><br> </td>
         <td><img src="https://github.com/MightyLions/Cold_Pitch/assets/81156109/02117bc0-f64e-4625-9b5e-b2487d727b30" width="100px; " alt=""/></td>
         <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129062741437591733/IMG_3247.png" width="100px;" alt=""/><br> </td>
-        <td><img src="" width="100px;" alt=""/><br> </td>
+        <td><img src="https://cdn.discordapp.com/attachments/1100586774889246832/1129069755291156490/3472513308326963556_20230714001724733.jpg" width="100px;" alt=""/><br> </td>
 
    </tr>
     <tr>
@@ -282,7 +282,7 @@
 ~~~
 
 </details>
-
+<!--
 ## <span style="color:lightblue">😉 오류처리
 <details>
 <summary> 오류 처리 문서</summary>
@@ -302,7 +302,7 @@ HTTP 상태 코드
 | 501 |   구현되지 않은 기능입니다	    |    요청한 기능이 구현되지 않은 경우 반환됩니다.     |
 | 401 | JWT 서명이 존재하지 않습니다	  |       JWT 서명이 없을 때 반환됩니다.        |
 | 403 |     권한이 맞지 않습니다     |       	권한이 맞지 않을 때 반환됩니다.        |
-
+-->
 
 </details>
 
