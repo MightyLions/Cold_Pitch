@@ -4,9 +4,7 @@ import com.ColdPitch.core.factory.YamlLoadFactory;
 import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.exception.handler.ErrorCode;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,12 +60,21 @@ public abstract class AWSFileManager implements FileManager {
 
     @Override
     public boolean delete(String fileName) {
-        return false;
+        if (!s3Client.doesObjectExist(bucketName, fileName)) {
+            throw new AmazonS3Exception("Object " + fileName + " 존재하지 않는 이미지 입니다!");
+        }
+        s3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
+        return true;
     }
 
     @Override
     public void download(String filePath, String fileName) {
 
+    }
+
+    @Override
+    public String read(String path) {
+        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, s3Client.getBucketLocation(bucketName), path);
     }
 
     private static String makeFileUrl(String path, MultipartFile multipartFile) {

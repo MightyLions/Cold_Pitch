@@ -3,6 +3,7 @@ package com.ColdPitch.config.cloud;
 import com.ColdPitch.core.factory.YamlLoadFactory;
 import com.ColdPitch.core.manager.FileManager;
 import com.ColdPitch.core.manager.SolutionFileManager;
+import com.ColdPitch.core.manager.UserFileManager;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -34,5 +35,10 @@ public class S3Config {
     @Bean
     public FileManager awsFileManager() {
         return new SolutionFileManager(amazonS3Client());
+    }
+
+    @Bean
+    public FileManager userFileManager() {
+        return new UserFileManager(amazonS3Client());
     }
 }
