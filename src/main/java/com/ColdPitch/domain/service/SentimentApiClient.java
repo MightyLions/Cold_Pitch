@@ -23,6 +23,10 @@ public class SentimentApiClient {
     private final Gson gson;
 
     public SentimentResponseDto callSentimentApi(SentimentRequestDto requestDto) {
+        if (requestDto == null || requestDto.getContent().isEmpty()) {
+            throw new CustomException(ErrorCode.SENTIMENT_EMPTY_VALUE);
+        }
+
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
         String json = gson.toJson(requestDto);
 
@@ -41,11 +45,13 @@ public class SentimentApiClient {
             }
 
             String responseBody = response.body().string();
-            // TODO 테스트 코드
-            log.info(responseBody);
             return gson.fromJson(responseBody, SentimentResponseDto.class);
         } catch (IOException e) {
             throw new CustomException(ErrorCode.SENTIMENT_EXTERNAL_API_ERROR);
+        } catch (NullPointerException e) {
+            throw new CustomException(ErrorCode.SENTIMENT_BAD_RESPONSE);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SENTIMENT_INTERNAL_SERVER_ERROR);
         }
     }
 }
