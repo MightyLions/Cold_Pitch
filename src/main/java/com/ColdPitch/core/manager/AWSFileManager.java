@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -42,17 +43,6 @@ public abstract class AWSFileManager implements FileManager {
         }
     }
 
-
-    private static class getExtension {
-        public final String fileName;
-        public final String ext;
-
-        public getExtension(String fileName, String ext) {
-            this.fileName = fileName;
-            this.ext = ext;
-        }
-    }
-
     @Override
     public boolean delete(String fileName) {
         if (!s3Client.doesObjectExist(bucketName, fileName)) {
@@ -75,7 +65,7 @@ public abstract class AWSFileManager implements FileManager {
     private static String makeFileUrl(String path, MultipartFile multipartFile) {
         String extension = getExtension(multipartFile);
         String fileName = UUID.randomUUID() + "." + extension;
-        return path + "/" + fileName;
+        return path + File.separator + fileName;
     }
 
     private static String getExtension(MultipartFile multipartFile) {
