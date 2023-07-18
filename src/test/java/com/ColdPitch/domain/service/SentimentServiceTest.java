@@ -41,45 +41,10 @@ public class SentimentServiceTest {
     @DisplayName("짧은 감정 분석 예시")
     public void sentimentTestcase1() throws Exception {
         SentimentRequestDto sentimentRequestDto = new SentimentRequestDto(shortInputString);
-//        SentimentResponseDto expectedResponseDto = new SentimentResponseDto();
-//        expectedResponseDto.setDocument(
-//                new DocumentDto("negative",
-//                        new ConfidenceScoresDto(
-//                                0.6246391,
-//                                0.0077638756,
-//                                99.3676
-//                        ))
-//        );
-//        expectedResponseDto.setSentences(
-//                List.of(
-//                        new SentenceDto[]{
-//                                new SentenceDto(
-//                                        "싸늘하다",
-//                                        "negative",
-//                                        new ConfidenceScoresDto(
-//                                                0.0036366594,
-//                                                0.0002274021,
-//                                                0.9961359
-//                                        )
-//                                ),
-//                                new SentenceDto(
-//                                        "가슴에 비수가 날아와 꽂힌다.",
-//                                        "negative",
-//                                        new ConfidenceScoresDto(
-//                                                0.071320035,
-//                                                0.000704263,
-//                                                0.9279757
-//                                        )
-//                                ),
-//                        }
-//                )
-//        );
 
         SentimentResponseDto responseDto = sentimentApiClient.callSentimentApi(sentimentRequestDto);
 
         log.info(responseDto.toString());
-
-//        Assertions.assertEquals(expectedResponseDto, responseDto);
     }
 
     @Test
@@ -89,5 +54,13 @@ public class SentimentServiceTest {
         SentimentResponseDto sentimentResponseDto = sentimentApiClient.callSentimentApi(sentimentRequestDto);
 
         log.info(sentimentResponseDto.toString());
+    }
+
+    @Test
+    public void sentimentAndWordCloud1() {
+        SentimentClassifiedResponseDto responseDto = sentimentService.getAnalyzedSentimentAndWordMapByLiteralString(longInputString);
+
+        log.info("positive : {}", responseDto.getPositiveWordMapList().toString());
+        log.info("negative : {}", responseDto.getNegativeWordMapList().toString());
     }
 }

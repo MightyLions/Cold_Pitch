@@ -3,10 +3,8 @@
  * @author ARA
  */
 
-package com.ColdPitch.domain.component;
+package com.ColdPitch.domain.service;
 
-import com.ColdPitch.domain.service.IWordAnalysisService;
-import com.ColdPitch.domain.service.WordAnalysisService;
 import com.ColdPitch.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
