@@ -54,6 +54,9 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "postId", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private List<Comment> comments;
 
+    @ElementCollection
+    private List<String> files = new ArrayList<>();
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -107,6 +110,7 @@ public class Post extends BaseEntity {
             .user(user)
             .status(PostState.OPEN)
             .comments(new ArrayList<>())
+            .files(new ArrayList<>())
             .build();
     }
 
@@ -114,6 +118,10 @@ public class Post extends BaseEntity {
         this.title = requestDto.getTitle();
         this.text = requestDto.getText();
         this.category = requestDto.getCategory();
+    }
+
+    public void addFile(String fileUrl) {
+        this.files.add(fileUrl);
     }
 
 }

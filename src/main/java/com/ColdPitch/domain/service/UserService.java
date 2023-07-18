@@ -265,11 +265,7 @@ public class UserService {
 
         //파일 업로드
         String uploadedAvatar;
-        try {
-            uploadedAvatar = userFileManager.upload("test", multipartFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        uploadedAvatar = userFileManager.upload("test", multipartFile);
 
         //이미지 주소를 리턴한다
         user.updateAvatar(uploadedAvatar);

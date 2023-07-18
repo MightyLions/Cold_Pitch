@@ -25,7 +25,7 @@ public abstract class AbstractFileManager implements FileManager{
     }
 
     @Override
-    public String upload(String url, MultipartFile file) throws IOException {
+    public String upload(String url, MultipartFile file) {
         if (file.isEmpty()) {
             return null;
         }

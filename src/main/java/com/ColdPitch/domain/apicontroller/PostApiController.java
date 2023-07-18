@@ -6,13 +6,16 @@ import com.ColdPitch.domain.entity.post.PostState;
 import com.ColdPitch.domain.service.PostService;
 import com.ColdPitch.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -22,18 +25,22 @@ public class PostApiController {
 
     private final PostService postService;
 
-    @PostMapping
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시글 등록")
-    public ResponseEntity<PostResponseDto> createPost(@Valid @RequestBody PostRequestDto postRequestDto) {
+    public ResponseEntity<PostResponseDto> createPost(
+        @Valid @RequestPart PostRequestDto postRequestDto,
+        @RequestPart List<MultipartFile> files) {
         return ResponseEntity.status(200)
-            .body(postService.createPost(postRequestDto));
+            .body(postService.createPost(postRequestDto,files));
     }
 
-    @PatchMapping
+    @PatchMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "게시글 수정")
-    public ResponseEntity<PostResponseDto> updatePost(@Valid @RequestBody PostRequestDto postRequestDto) {
+    public ResponseEntity<PostResponseDto> updatePost(
+        @Valid @RequestPart PostRequestDto postRequestDto,
+        @RequestPart List<MultipartFile> files) {
         return ResponseEntity.status(200)
-            .body(postService.updatePost(postRequestDto));
+            .body(postService.updatePost(postRequestDto,files));
     }
 
     @PatchMapping("/{postId}/status")

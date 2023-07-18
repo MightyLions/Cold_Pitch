@@ -17,7 +17,7 @@ public class UserFileManager extends AWSFileManager {
     }
 
     @Override
-    public String upload(String string, MultipartFile multipartFile) throws IOException {
+    public String upload(String string, MultipartFile multipartFile) {
         validateFileExists(multipartFile);
 
         StringBuilder sb = new StringBuilder();

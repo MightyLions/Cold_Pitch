@@ -25,7 +25,7 @@ public abstract class AWSFileManager implements FileManager {
     private String bucketName;
 
     @Override
-    public String upload(String path, MultipartFile multipartFile) throws IOException {
+    public String upload(String path, MultipartFile multipartFile) {
         existFile(multipartFile);
 
         ObjectMetadata objectMetadata = metaDataInstance(multipartFile);
@@ -51,11 +51,6 @@ public abstract class AWSFileManager implements FileManager {
             this.fileName = fileName;
             this.ext = ext;
         }
-    }
-
-    @Override
-    public List<String> uploads(MultipartFile[] multipartFile) throws IOException {
-        return null;
     }
 
     @Override
