@@ -18,8 +18,8 @@ import com.ColdPitch.domain.repository.*;
 import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.jwt.TokenProvider;
 import com.ColdPitch.utils.SecurityUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +37,7 @@ import static com.ColdPitch.exception.handler.ErrorCode.*;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
@@ -52,22 +52,6 @@ public class UserService {
     private final DislikeRepository dislikeRepository;
     private final PostRepository postRepository;
     private final FileManager userFileManager;
-
-    public UserService(AuthenticationManagerBuilder authenticationManagerBuilder, UserRepository userRepository, PasswordEncoder passwordEncoder, TokenProvider tokenProvider, RefreshTokenRepository refreshTokenRepository, CompanyRegistrationService companyRegistrationService, CommentService commentService, CommentRepository commentRepository, PostService postService, LikeRepository likeRepository, DislikeRepository dislikeRepository, PostRepository postRepository, @Qualifier("userFileManager") FileManager userFileManager) {
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.tokenProvider = tokenProvider;
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.companyRegistrationService = companyRegistrationService;
-        this.commentService = commentService;
-        this.commentRepository = commentRepository;
-        this.postService = postService;
-        this.likeRepository = likeRepository;
-        this.dislikeRepository = dislikeRepository;
-        this.postRepository = postRepository;
-        this.userFileManager = userFileManager;
-    }
 
     @Transactional
     public UserResponseDto signUpUser(UserRequestDto userRoleDto) {

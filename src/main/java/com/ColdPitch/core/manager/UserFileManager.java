@@ -6,12 +6,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class UserFileManager extends AWSFileManager {
+
+    private final String path = "profile" + File.separator + ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Asia/Seoul")).toLocalDate().toString();
 
     public UserFileManager(AmazonS3 s3Client) {
         super(s3Client);
@@ -20,14 +21,7 @@ public class UserFileManager extends AWSFileManager {
     @Override
     public String upload(String string, MultipartFile multipartFile) {
         validateFileExists(multipartFile);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(File.separator);
-        String timeNow = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Asia/Seoul")).toLocalDate().toString();
-        sb.append(File.separator);
-        sb.append(timeNow);
-
-        return super.upload(sb.toString(), multipartFile);
+        return super.upload(path, multipartFile);
     }
 
     @Override
