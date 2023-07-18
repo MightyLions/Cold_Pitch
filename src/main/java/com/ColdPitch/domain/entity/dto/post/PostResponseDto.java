@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.lang.Nullable;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -31,6 +32,7 @@ public class PostResponseDto {
     private String createdBy;
     private String modifiedBy;
     private List<CommentResponseDto> comments;
+    private List<String> files;
 
     // 좋아요 관련
     private int likeCnt;
@@ -56,6 +58,7 @@ public class PostResponseDto {
                 .stream()
                 .map(CommentResponseDto::of)
                 .collect(Collectors.toList()))
+            .files(post.getFiles())
             .build();
     }
 

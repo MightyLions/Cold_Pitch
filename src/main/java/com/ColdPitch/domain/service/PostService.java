@@ -1,5 +1,7 @@
 package com.ColdPitch.domain.service;
 
+import com.ColdPitch.core.manager.FileManager;
+import com.ColdPitch.core.manager.PostFileManager;
 import com.ColdPitch.domain.entity.Dislike;
 import com.ColdPitch.domain.entity.Like;
 import com.ColdPitch.domain.entity.Post;
@@ -16,13 +18,16 @@ import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.exception.CustomException;
 import com.ColdPitch.exception.handler.ErrorCode;
 
+import java.io.IOException;
 import java.util.*;
 
 import com.ColdPitch.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -34,16 +39,20 @@ public class PostService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final DislikeRepository dislikeRepository;
+    private final FileManager postFileManager;
 
     /**
      * @param requestDto 게시글 정보
      * @apiNote 게시글 등록
      */
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto) {
+    public PostResponseDto createPost(PostRequestDto requestDto, List<MultipartFile> files) {
         User user = getUserFromAuth();
         Post post = Post.toEntity(requestDto, user);
         user.addPost(post);
+        for (MultipartFile file : files) {
+            post.addFile(postFileManager.upload("test", file));
+        }
         return PostResponseDto.of(postRepository.save(post), LikeState.UNSELECTED);
     }
 
@@ -52,10 +61,14 @@ public class PostService {
      * @apiNote 게시물 수정
      */
     @Transactional
-    public PostResponseDto updatePost(PostRequestDto requestDto) {
+    public PostResponseDto updatePost(PostRequestDto requestDto, List<MultipartFile> files) {
         User user = getUserFromAuth();
         Post post = getPostByAuth(requestDto.getId(), user.getId());
         post.updatePost(requestDto);
+        if (!post.getFiles().isEmpty()) { post.getFiles().clear(); }
+        for (MultipartFile file : files) {
+            post.addFile(postFileManager.upload("test", file));
+        }
         return PostResponseDto.of(post, getSelection(user.getId(), post.getId()));
     }
 
@@ -199,4 +212,7 @@ public class PostService {
 
         return likeStates;
     }
+
+
+
 }

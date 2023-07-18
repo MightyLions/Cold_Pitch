@@ -4,18 +4,23 @@ import com.ColdPitch.domain.entity.post.Category;
 import com.ColdPitch.domain.entity.post.PostState;
 import com.ColdPitch.validation.annotations.ValidEnum;
 import com.sun.istack.NotNull;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class PostRequestDto {
     @Min(1)
     @Max(Integer.MAX_VALUE)
