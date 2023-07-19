@@ -1,31 +1,22 @@
 package com.ColdPitch.domain.entity.dto.sentiment;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SentimentResponseDto {
-    private Document document;
-    private List<Sentence> sentences;
+    private DocumentDto document;
+    private List<SentenceDto> sentences;
 
-    @Data
-    public static class Document {
-        private String sentiment;
-        private ConfidenceScores confidence;
-    }
-
-    @Data
-    public static class Sentence {
-        private String sentiment;
-        private String content;
-        private ConfidenceScores confidence;
-    }
-
-    @Data
-    public static class ConfidenceScores {
-        private double negative;
-        private double positive;
-        private double neutral;
+    @Override
+    public String toString() {
+        return "SentimentResponseDto{" +
+                "document=" + document +
+                ", sentences=" + sentences +
+                '}';
     }
 }

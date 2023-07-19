@@ -62,7 +62,14 @@ public enum ErrorCode {
     COMPANY_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
     // Sentiment
-    SENTIMENT_EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "외부 요청 API에서 에러가 발생하였습니다."),
+    SENTIMENT_EXTERNAL_API_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "외부 요청 API에서 에러가 발생하였습니다."),
+    SENTIMENT_BAD_RESPONSE(HttpStatus.SERVICE_UNAVAILABLE, "외부 요청 API에서 잘못된 응답을 수신했습니다."),
+    SENTIMENT_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "감정 분석 중 내부 서버 에러가 발생했습니다."),
+    SENTIMENT_EMPTY_VALUE(HttpStatus.BAD_REQUEST, "감정 분석을 할 문자열은 공백이거나 NULL일 수 없습니다."),
+
+    // WordAnalysis
+    WORDANALYSIS_EMPTY_VALUE(HttpStatus.INTERNAL_SERVER_ERROR, "단어 분석 라이브러리에 빈 값이 들어왔습니다."),
+    WORDANALYSIS_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "단어 분석 중 오류가 발생했습니다."),
 
     // file
     FILE_NOT_EXIST(HttpStatus.BAD_REQUEST, "파일이 비어있습니다."),
