@@ -4,10 +4,12 @@ import com.ColdPitch.domain.entity.Tag;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.UserTag;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
+import com.ColdPitch.domain.entity.dto.tag.TagRequestDto;
 import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.CompanyResponseDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
-import com.ColdPitch.domain.entity.dto.usertag.TagRequestDto;
+import com.ColdPitch.domain.entity.dto.usertag.SaveTagRequestDto;
+import com.ColdPitch.domain.entity.dto.usertag.TagResponseDto;
 import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserTagRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +45,7 @@ class UserTagServiceTest {
 
     private User user;
     private User company, company1;
-    private Tag tag1, tag2, tag3, tag4;
+    private TagResponseDto tag1, tag2, tag3, tag4;
 
     @Test
     @DisplayName("유저회원 테그 입력 기능 확인")
@@ -51,14 +53,16 @@ class UserTagServiceTest {
         //given
 
         // when
-        userTagService.setTag(new TagRequestDto(List.of("tag1", "tag2")), user);
+        userTagService.setTag(new SaveTagRequestDto(List.of("tag1", "tag2")), user);
 
         //then
         List<UserTag> allUserTags = userTagRepository.findAll();
         assertThat(allUserTags.size()).isEqualTo(2);
-        assertThat(allUserTags.get(0).getTag()).isEqualTo(tag1);
+        Tag tag = allUserTags.get(0).getTag();
+        assertThat(tag.getTagName()).isEqualTo(tag1.getName());
         assertThat(allUserTags.get(0).getUser()).isEqualTo(user);
-        assertThat(allUserTags.get(1).getTag()).isEqualTo(tag2);
+        tag = allUserTags.get(1).getTag();
+        assertThat(tag.getTagName()).isEqualTo(tag2.getName());
         assertThat(allUserTags.get(1).getUser()).isEqualTo(user);
     }
 
@@ -67,14 +71,14 @@ class UserTagServiceTest {
     @DisplayName("태그를 기반으로 회사를 찾는 기능 or - other things")
     public void findCompanyByTagORTest1() {
         //given
-        userTagService.setTag(new TagRequestDto(List.of("tag1", "tag2")), company);
-        userTagService.setTag(new TagRequestDto(List.of("tag2", "tag3")), company1);
+        userTagService.setTag(new SaveTagRequestDto(List.of("tag1", "tag2")), company);
+        userTagService.setTag(new SaveTagRequestDto(List.of("tag2", "tag3")), company1);
         log.info("COMPANY = {}", userTagService.findMyTag(company));
         log.info("COMPANY1 = {}", userTagService.findMyTag(company1));
 
 
         // when
-        List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new TagRequestDto(List.of("tag1", "tag3")));
+        List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new SaveTagRequestDto(List.of("tag1", "tag3")));
 
         //then
         log.info("{}", find);
@@ -85,11 +89,11 @@ class UserTagServiceTest {
     @DisplayName("태그를 기반으로 회사를 찾는 기능 or- same things")
     public void findCompanyByTagORTest2() {
         //given
-        userTagService.setTag(new TagRequestDto(List.of("tag1", "tag2")), company);
-        userTagService.setTag(new TagRequestDto(List.of("tag2", "tag3")), company1);
+        userTagService.setTag(new SaveTagRequestDto(List.of("tag1", "tag2")), company);
+        userTagService.setTag(new SaveTagRequestDto(List.of("tag2", "tag3")), company1);
 
         // when
-        List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new TagRequestDto(List.of("tag2")));
+        List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new SaveTagRequestDto(List.of("tag2")));
 
         //then
         log.info("{}", find);
@@ -100,10 +104,10 @@ class UserTagServiceTest {
     @DisplayName("태그를 기반으로 회사를 찾는 기능 or - empty")
     public void findCompanyByTagORTest3() {
         //given
-        userTagService.setTag(new TagRequestDto(List.of("tag1", "tag2")), company);
+        userTagService.setTag(new SaveTagRequestDto(List.of("tag1", "tag2")), company);
 
         // when
-        List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new TagRequestDto(List.of()));
+        List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new SaveTagRequestDto(List.of()));
 
         //then
         assertThat(find.size()).isEqualTo(0);
@@ -130,10 +134,10 @@ class UserTagServiceTest {
         company = userService.findUserByEmail(companyRequestDto.getEmail());
         company1 = userService.findUserByEmail(companyRequestDto1.getEmail());
 
-        tag1 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag1", "tag1"));
-        tag2 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag2", "tag2"));
-        tag3 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag3", "tag3"));
-        tag4 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag4", "tag4"));
+        tag1 = tagService.createTag(new TagRequestDto("tag1", "tag1"));
+        tag2 = tagService.createTag(new TagRequestDto("tag2", "tag2"));
+        tag3 = tagService.createTag(new TagRequestDto("tag3", "tag3"));
+        tag4 = tagService.createTag(new TagRequestDto("tag4", "tag4"));
     }
 
 }

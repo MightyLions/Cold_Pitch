@@ -1,8 +1,8 @@
 package com.ColdPitch.domain.apicontroller;
 
 import com.ColdPitch.domain.entity.dto.user.CompanyResponseDto;
+import com.ColdPitch.domain.entity.dto.usertag.SaveTagRequestDto;
 import com.ColdPitch.domain.entity.dto.usertag.TagResponseDto;
-import com.ColdPitch.domain.entity.dto.usertag.TagRequestDto;
 import com.ColdPitch.domain.service.UserService;
 import com.ColdPitch.domain.service.UserTagService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,8 +24,8 @@ public class UserTagController {
 
     @PostMapping
     @Operation(summary = "유저 - 테그 등록, 유저 테그 정보를 ENUM으로 받아온다. 로그인 되어있다는 가정")
-    public ResponseEntity<List<TagResponseDto>> saveUserTag(@Valid @RequestBody TagRequestDto TagRequestDto) {
-        return ResponseEntity.status(200).body(userTagService.setTag(TagRequestDto, userService.getMemberWithAuthorities().orElseThrow(IllegalAccessError::new)));
+    public ResponseEntity<List<TagResponseDto>> saveUserTag(@Valid @RequestBody SaveTagRequestDto SaveTagRequestDto) {
+        return ResponseEntity.status(200).body(userTagService.setTag(SaveTagRequestDto, userService.getMemberWithAuthorities().orElseThrow(IllegalAccessError::new)));
     }
 
     @GetMapping
@@ -37,7 +37,7 @@ public class UserTagController {
 
     @PostMapping("/tagname")
     @Operation(summary = "찾고자 하는 테그를 입력하면 해당 태그를 가지고 있는 모든 회사를 찾아준다.(or 조건)")
-    public ResponseEntity<List<CompanyResponseDto>> findCompanyByUserTag(@Valid @RequestBody TagRequestDto tagRequestDto) {
-        return ResponseEntity.status(200).body(userTagService.findCompanyByEachAllTags(tagRequestDto));
+    public ResponseEntity<List<CompanyResponseDto>> findCompanyByUserTag(@Valid @RequestBody SaveTagRequestDto saveTagRequestDto) {
+        return ResponseEntity.status(200).body(userTagService.findCompanyByEachAllTags(saveTagRequestDto));
     }
 }

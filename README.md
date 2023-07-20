@@ -201,7 +201,7 @@
 │   │   │   │   ├── SolutionRequestDto.java
 │   │   │   │   └── SolutionResponseDto.java
 │   │   │   ├── tag
-│   │   │   │   └── TagRequestDto.java
+│   │   │   │   └── SaveTagRequestDto.java
 │   │   │   ├── user
 │   │   │   │   ├── CompanyRequestDto.java
 │   │   │   │   ├── CompanyResponseDto.java
@@ -209,7 +209,7 @@
 │   │   │   │   ├── UserRequestDto.java
 │   │   │   │   └── UserResponseDto.java
 │   │   │   └── usertag
-│   │   │       ├── TagRequestDto.java
+│   │   │       ├── SaveTagRequestDto.java
 │   │   │       └── TagResponseDto.java
 │   │   ├── post
 │   │   │   ├── Category.java
