@@ -6,7 +6,6 @@ import com.ColdPitch.domain.entity.dto.comment.CommentResponseDto;
 import com.ColdPitch.domain.entity.dto.companyRegistraion.CompanyRegistrationDto;
 import com.ColdPitch.domain.entity.dto.jwt.RefreshToken;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
-import com.ColdPitch.domain.entity.dto.jwt.TokenRequestDto;
 import com.ColdPitch.domain.entity.dto.post.PostResponseDto;
 import com.ColdPitch.domain.entity.dto.user.CompanyRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
@@ -100,6 +99,31 @@ public class UserService {
     }
 
     @Transactional
+    public String uploadAvatar(String nickname, MultipartFile multipartFile) {
+        String email = SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
+        //path의 유저 이름과 현재 로그인한 유저의 이름이 다른경우 에러를 던짐
+        if (!user.getNickname().equals(nickname)) {
+            log.info("{} {}", user.getNickname(), nickname);
+            throw new CustomException(BAD_REQUEST);
+        }
+
+        //만약 사진을 가지고 있다면 삭제한다.
+        if (user.getAvatar() != null) {
+            userFileManager.delete(user.getAvatar());
+            user.deleteAvatar();
+        }
+
+        //파일 업로드
+        String uploadedAvatar;
+        uploadedAvatar = userFileManager.upload("test", multipartFile);
+
+        //이미지 주소를 리턴한다
+        user.updateAvatar(uploadedAvatar);
+        return uploadedAvatar;
+    }
+
+    @Transactional
     public void deleteUser(String email) {
         //TODO 수정시에 validation 확인 ( 로그인한 사람이 본인이 맞는지 확인 )
         List<User> users = userRepository.findUserByEmailIncludeDeletedUser(email).orElseThrow();
@@ -110,28 +134,7 @@ public class UserService {
         userRepository.deleteByEmail(email);
     }
 
-    @Transactional
-    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
-        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            throw new CustomException(USER_INVALID_REFRESH_TOKEN);
-        }
-
-        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName()).orElseThrow(() -> new CustomException(USER_NOT_ACTIVE));
-
-        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
-            throw new CustomException(USER_INVALID_USER_REFRESH_TOKEN);
-        }
-
-        //새로운 토큰 발급
-        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-        RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
-        return tokenDto;
-    }
-
-
-    //조회
+    //조회 서비스
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow();
     }
@@ -170,17 +173,13 @@ public class UserService {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + comment.getPostId())));
         }
 
-        List<PostResponseDto> postResponses = posts.stream()
-                .map(post -> PostResponseDto.of(post, postService.getSelection(userId, post.getId())))
-                .collect(Collectors.toList());
-
         // 게시글 작성 시간별로 내림차순으로 정렬 (최신글이 제일 위에 오도록)
-        postResponses.sort(Comparator.comparing(PostResponseDto::getCreateAt).reversed());
-
-        return postResponses;
+        return posts.stream()
+                .map(post -> PostResponseDto.of(post, postService.getSelection(userId, post.getId())))
+                .sorted(Comparator.comparing(PostResponseDto::getCreateAt).reversed())
+                .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<PostResponseDto> getEvaluatedPostsByUserFetch(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
@@ -196,26 +195,37 @@ public class UserService {
 
         Map<Long, LikeState> likeStates = postService.getLikeDislikeBatch(userId, postIds);
 
-        List<PostResponseDto> postResponses = posts.stream()
-                .map(post -> PostResponseDto.of(post, likeStates.get(post.getId())))
-                .collect(Collectors.toList());
-
         // 게시글 작성 시간별로 내림차순으로 정렬 (최신글이 제일 위에 오도록)
-        postResponses.sort(Comparator.comparing(PostResponseDto::getCreateAt).reversed());
-
-        return postResponses;
+        return posts.stream()
+                .map(post -> PostResponseDto.of(post, likeStates.get(post.getId())))
+                .sorted(Comparator.comparing(PostResponseDto::getCreateAt).reversed())
+                .collect(Collectors.toList());
     }
 
     public List<PostResponseDto> findMyWritePost(String email) {
         User user = userRepository.findOneWithAuthoritiesByEmail(email).orElseThrow();
         return user.getPosts().stream().map(o -> PostResponseDto.of(o, null)).collect(Collectors.toList());
     }
-
     //현재 시큐리티 컨텍스에 있는 유저정보와 권환 정보를 준다
+
+    public String findAvatar(String nickname) {
+        String email = SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
+        //path의 유저 이름과 현재 로그인한 유저의 이름이 다른경우 에러를 던짐
+        if (!user.getNickname().equals(nickname)) {
+            log.info("{} {}", user.getNickname(), nickname);
+            throw new CustomException(BAD_REQUEST);
+        }
+
+        if (user.getAvatar() == null) return null;
+        return userFileManager.read(user.getAvatar());
+    }
+
     public Optional<User> getMemberWithAuthorities() {
         return SecurityUtil.getCurrentUserEmail().flatMap(userRepository::findOneWithAuthoritiesByEmail);
     }
 
+    //user builder
     private User makeUser(UserRequestDto userRequestDto) {
         return User.builder()
                 .name(userRequestDto.getName())
@@ -229,43 +239,5 @@ public class UserService {
                 .userTags(new ArrayList<>())
                 .companyRegistration(null)
                 .nickname(userRequestDto.getNickname()).build();
-    }
-
-    @Transactional
-    public String uploadAvatar(String nickname, MultipartFile multipartFile) {
-        String email = SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new);
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
-        //path의 유저 이름과 현재 로그인한 유저의 이름이 다른경우 에러를 던짐
-        if (!user.getNickname().equals(nickname)) {
-            log.info("{} {}", user.getNickname(), nickname);
-            throw new CustomException(BAD_REQUEST);
-        }
-
-        //만약 사진을 가지고 있다면 삭제한다.
-        if (user.getAvatar() != null) {
-            userFileManager.delete(user.getAvatar());
-            user.deleteAvatar();
-        }
-
-        //파일 업로드
-        String uploadedAvatar;
-        uploadedAvatar = userFileManager.upload("test", multipartFile);
-
-        //이미지 주소를 리턴한다
-        user.updateAvatar(uploadedAvatar);
-        return uploadedAvatar;
-    }
-
-    public String findAvatar(String nickname) {
-        String email = SecurityUtil.getCurrentUserEmail().orElseThrow(IllegalAccessError::new);
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid email: " + email));
-        //path의 유저 이름과 현재 로그인한 유저의 이름이 다른경우 에러를 던짐
-        if (!user.getNickname().equals(nickname)) {
-            log.info("{} {}", user.getNickname(), nickname);
-            throw new CustomException(BAD_REQUEST);
-        }
-
-        if (user.getAvatar() == null) return null;
-        return userFileManager.read(user.getAvatar());
     }
 }

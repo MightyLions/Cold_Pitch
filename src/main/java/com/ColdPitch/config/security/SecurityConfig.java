@@ -70,8 +70,7 @@ public class SecurityConfig {
         // request 정책
         security.authorizeHttpRequests()
                 .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/api/v1/user/**", "/api/v1/auth/**").permitAll()
-//                .antMatchers("/**").permitAll()
+                .antMatchers( "/api/v1/auth/**").permitAll()
                 .anyRequest().authenticated();
 
         // login, logout disable
