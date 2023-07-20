@@ -61,7 +61,7 @@ public class User extends BaseEntity {
     private String avatar = null;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<UserTag> userTags;
 
     @JsonIgnore

@@ -1,6 +1,8 @@
 package com.ColdPitch.domain.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import net.minidev.json.annotate.JsonIgnore;
 
@@ -25,7 +27,7 @@ public class Tag extends BaseEntity {
     private String description;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UserTag> userTags;
 
     @Override
@@ -34,7 +36,7 @@ public class Tag extends BaseEntity {
                 "id=" + id +
                 ", tagName='" + tagName + '\'' +
                 ", description='" + description + '\'' +
-                super.toString()+
+                super.toString() +
                 '}';
     }
 }
