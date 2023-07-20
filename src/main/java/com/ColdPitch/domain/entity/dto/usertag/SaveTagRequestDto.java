@@ -10,7 +10,8 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagRequestDto {
+public class SaveTagRequestDto {
     @NotEmpty
     List<String> userTag;
 }
+

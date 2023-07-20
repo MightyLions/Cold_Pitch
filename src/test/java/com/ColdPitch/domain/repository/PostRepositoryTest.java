@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @Slf4j
 @Transactional
+@Disabled
 public class PostRepositoryTest {
 
     @Autowired

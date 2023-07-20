@@ -24,11 +24,11 @@ public class TagApiController {
 
     @PostMapping
     public ResponseEntity<TagResponseDto> createTag(@Valid TagRequestDto tagRequestDto) {
-        return ResponseEntity.ok(TagResponseDto.of(tagService.createTag(tagRequestDto)));
+        return ResponseEntity.ok(tagService.createTag(tagRequestDto));
     }
 
     @GetMapping
     public ResponseEntity<List<TagResponseDto>> getAllTags() {
-        return ResponseEntity.ok(tagService.getAllTags().stream().map(TagResponseDto::of).collect(Collectors.toList()));
+        return ResponseEntity.ok(tagService.getAllTags());
     }
 }

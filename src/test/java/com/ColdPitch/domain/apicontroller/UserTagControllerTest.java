@@ -4,9 +4,11 @@ import com.ColdPitch.domain.entity.Tag;
 import com.ColdPitch.domain.entity.User;
 import com.ColdPitch.domain.entity.UserTag;
 import com.ColdPitch.domain.entity.dto.jwt.TokenDto;
+import com.ColdPitch.domain.entity.dto.tag.TagRequestDto;
 import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
-import com.ColdPitch.domain.entity.dto.usertag.TagRequestDto;
+import com.ColdPitch.domain.entity.dto.usertag.SaveTagRequestDto;
+import com.ColdPitch.domain.entity.dto.usertag.TagResponseDto;
 import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserRepository;
 import com.ColdPitch.domain.repository.UserTagRepository;
@@ -55,7 +57,7 @@ class UserTagControllerTest {
 
     private User user;
     private TokenDto login;
-    private Tag tag1, tag2, tag3;
+    private TagResponseDto tag1, tag2, tag3;
 
     @Test
     @DisplayName("유저 테그입력 테스트")
@@ -63,8 +65,8 @@ class UserTagControllerTest {
         //given
         Assertions.assertThat(userService.findUserByEmail(user.getEmail()).getNickname()).isEqualTo(user.getNickname());
         ObjectMapper objectMapper = new ObjectMapper();
-        TagRequestDto TagRequestDto = new TagRequestDto(List.of("tag1", "tag2"));
-        String requestBody = objectMapper.writeValueAsString(TagRequestDto);
+        SaveTagRequestDto SaveTagRequestDto = new SaveTagRequestDto(List.of("tag1", "tag2"));
+        String requestBody = objectMapper.writeValueAsString(SaveTagRequestDto);
 
         //when 회원가입 되지 않은 유저 로그인시에
         mockMvc.perform(post("/api/v1/usertag")
@@ -79,9 +81,11 @@ class UserTagControllerTest {
         //then
         List<UserTag> allUserTags = userTagRepository.findAll();
         assertThat(allUserTags.size()).isEqualTo(2);
-        assertThat(allUserTags.get(0).getTag()).isEqualTo(tag1);
+        Tag expected1 = allUserTags.get(0).getTag();
+        assertThat(expected1.getTagName()).isEqualTo(tag1.getName());
         assertThat(allUserTags.get(0).getUser()).isEqualTo(user);
-        assertThat(allUserTags.get(1).getTag()).isEqualTo(tag2);
+        expected1 = allUserTags.get(1).getTag();
+        assertThat(expected1.getTagName()).isEqualTo(tag2.getName());
         assertThat(allUserTags.get(1).getUser()).isEqualTo(user);
     }
 
@@ -89,7 +93,7 @@ class UserTagControllerTest {
     @DisplayName("유저 테그조회 테스트")
     public void findTagTest() throws Exception {
         //given
-        userTagService.setTag(new TagRequestDto(List.of("tag1", "tag2", "tag3")), user);
+        userTagService.setTag(new SaveTagRequestDto(List.of("tag1", "tag2", "tag3")), user);
 
         //when 회원가입 되지 않은 유저 로그인시에
         mockMvc.perform(get("/api/v1/usertag")
@@ -111,8 +115,8 @@ class UserTagControllerTest {
         userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER));
         user = userRepository.findByNickname("nickname").orElseThrow();
         login = userService.login(new LoginDto("email@naver.com", "password"));
-        tag1 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag1", "tag1"));
-        tag2 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag2", "tag2"));
-        tag3 = tagService.createTag(new com.ColdPitch.domain.entity.dto.tag.TagRequestDto("tag3", "tag3"));
+        tag1 = tagService.createTag(new TagRequestDto("tag1", "tag1"));
+        tag2 = tagService.createTag(new TagRequestDto("tag2", "tag2"));
+        tag3 = tagService.createTag(new TagRequestDto("tag3", "tag3"));
     }
 }

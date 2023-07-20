@@ -71,10 +71,13 @@ public enum ErrorCode {
     WORDANALYSIS_EMPTY_VALUE(HttpStatus.INTERNAL_SERVER_ERROR, "단어 분석 라이브러리에 빈 값이 들어왔습니다."),
     WORDANALYSIS_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "단어 분석 중 오류가 발생했습니다."),
 
-    // file
+    // tag
+    DUPLICATE_TAG_NAME(HttpStatus.BAD_REQUEST, "중복된 테그이름이 존재합니다."),
+    INVALID_TAG_NAME(HttpStatus.BAD_REQUEST, "유효하지 않은 테그이름입니다."),
+
+    // file,
     FILE_NOT_EXIST(HttpStatus.BAD_REQUEST, "파일이 비어있습니다."),
-    FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "알 수 없는 파일입니다."),
-    ;
+    FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "알 수 없는 파일입니다.");
 
     private final HttpStatus status;
     private final String message;
