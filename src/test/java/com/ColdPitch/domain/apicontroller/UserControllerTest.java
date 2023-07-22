@@ -6,7 +6,6 @@ import com.ColdPitch.domain.entity.dto.user.LoginDto;
 import com.ColdPitch.domain.entity.dto.user.UserRequestDto;
 import com.ColdPitch.domain.entity.user.UserType;
 import com.ColdPitch.domain.repository.UserRepository;
-import com.ColdPitch.domain.service.RefreshTokenService;
 import com.ColdPitch.domain.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,8 +35,6 @@ class UserControllerTest {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
-    @Autowired
-    private RefreshTokenService refreshTokenService;
 
     private User user1, admin1;
     private TokenDto userToken1, adminToken1;
