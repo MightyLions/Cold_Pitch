@@ -64,6 +64,7 @@ class UserAuthApiControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("nickname").value("nickname"))
                 .andExpect(jsonPath("email").value("email@naver.com"));
+
         //then
         User find = userRepository.findByEmail("email@naver.com").orElseThrow();
         assertTrue(passwordEncoder.matches("password", find.getPassword()));
@@ -78,13 +79,12 @@ class UserAuthApiControllerTest {
         UserRequestDto userRequestDto = new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER);
         userService.signUpUser(userRequestDto);
 
-
         //when
         ObjectMapper objectMapper = new ObjectMapper();
         LoginDto loginDto = new LoginDto("email@naver.com", "password");
         String requestBody = objectMapper.writeValueAsString(loginDto);
 
-        //when
+        //then
         mockMvc.perform(post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(requestBody))
@@ -114,8 +114,6 @@ class UserAuthApiControllerTest {
     public void logoutTest() throws Exception {
         //given
         UserResponseDto user = userService.signUpUser(new UserRequestDto("nickname", "name", "password", "email@naver.com", "010-7558-2452", UserType.USER));
-        Assertions.assertThat(userService.findUserByEmail(user.getEmail()).getNickname()).isEqualTo(user.getNickname());
-
         LoginDto loginDto = new LoginDto("email@naver.com", "password");
         TokenDto login = userService.login(loginDto);
 

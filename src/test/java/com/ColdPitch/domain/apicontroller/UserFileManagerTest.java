@@ -45,18 +45,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @AutoConfigureMockMvc
 public class UserFileManagerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @InjectMocks
-    private UserService userService;
 
     @MockBean(name = "userFileManager")
     private FileManager userFileManager;
-
+    @InjectMocks
+    private UserService userService;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private AuthenticationManagerBuilder authenticationManagerBuilder;
     @Autowired

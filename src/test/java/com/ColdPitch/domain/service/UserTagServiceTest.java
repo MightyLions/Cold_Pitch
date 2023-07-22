@@ -73,9 +73,6 @@ class UserTagServiceTest {
         //given
         userTagService.setTag(new SaveTagRequestDto(List.of("tag1", "tag2")), company);
         userTagService.setTag(new SaveTagRequestDto(List.of("tag2", "tag3")), company1);
-        log.info("COMPANY = {}", userTagService.findMyTag(company));
-        log.info("COMPANY1 = {}", userTagService.findMyTag(company1));
-
 
         // when
         List<CompanyResponseDto> find = userTagService.findCompanyByEachAllTags(new SaveTagRequestDto(List.of("tag1", "tag3")));
