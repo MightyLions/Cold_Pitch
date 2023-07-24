@@ -62,7 +62,6 @@ class UserRepositoryTest {
 
         //then
         for (int i = 0; i < 10; i++) {
-            //log.info("{}", all.get(i));
             assertThat(all.get(i).getName()).isEqualTo("test" + i);
         }
     }
