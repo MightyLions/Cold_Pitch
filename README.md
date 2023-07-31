@@ -41,7 +41,7 @@
     <tr>
       <td align="center"><a href="https://github.com/sangdob"> 박상도 </a></td>
       <td align="center"><a href="https://github.com/mon0mon"> 이민기 </a></td>
-      <td align="center"><a href="https://github.com/dyKim"> 김도영 </a></td>
+      <td align="center"><a href="https://github.com/greedyBackEnd"> 김도영 </a></td>
       <td align="center"><a href="https://github.com/dlrjs2360"> 이희건 </a></td>
       <td align="center"><a href="https://github.com/juhee77"> 박주희 </a></td>
       <td align="center"><a href="https://github.com/bear31eun"> 이정은 </a></td>
